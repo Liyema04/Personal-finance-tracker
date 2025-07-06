@@ -17,11 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from landing_page.views import landing_page_welcome, default, landing_page_about, landing_page_contact
+from transactions.views import transactions_login_page, transactions_register_page, transactions_add_transaction_page, transactions_user_dashboard
 
 urlpatterns = [
+    # landing_page(component) - urls
     path('', default, name='default'),
     path('welcome/', landing_page_welcome, name='welcome'), # welcome/(landing page)
-    path('about/', landing_page_about, name='about'), # welcome/(landing page)
-    path('contact/', landing_page_contact, name='contact'), 
+    path('about/', landing_page_about, name='about'),
+    path('contact/', landing_page_contact, name='contact'),
+    # transactions(component) - urls
+    path('login/', transactions_login_page, name='login'),
+    path('register/', transactions_register_page, name='register'),
+    # crud
+    path('add-transaction', transactions_add_transaction_page, name='add_transaction'),
+    # visualise spending data
+    path('dashboard', transactions_user_dashboard, name='dashboard'), 
+    # admin 
     path('admin/', admin.site.urls),
 ]
