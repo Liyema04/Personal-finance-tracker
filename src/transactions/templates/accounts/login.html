@@ -46,6 +46,14 @@
             </div>
             <!-- Submit button -->
             <button type="submit" class="btn btn-primary btn-block mb-4 w-100">Sign in</button>
+
+            <!-- Account created (Confirmation) -->
+            {% for message in messages %}
+                <div class="alert alert-success text-center" role="alert">
+                    {{message}}
+                </div>
+            {% endfor %}
+
             <!-- Register buttons -->
             <div class="text-center">
                 <p>First time with us? <a href="{% url 'register' %}">Register</a></p>                

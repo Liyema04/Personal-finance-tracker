@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 # Create your views here.
 """
@@ -27,6 +28,8 @@ def transactions_register_page(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save() # Creates a new user
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account was created for ' + user) 
             return redirect("login") # Redirects to login 
     else:
         form = UserRegistrationForm()
