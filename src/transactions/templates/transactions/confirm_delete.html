@@ -1,0 +1,30 @@
+{% extends 'transactions/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}<title>Are you sure?</title>{% endblock %}
+{% block content %}
+    {% block sidebar %}
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="tracker-sidebar bg-light p-3" style="width: 220px;">
+            <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-cash-stack me-2"></i> Transactions
+                </a>
+                </li>    
+            <!-- More menu items -->
+            </ul>
+        </nav>
+    </div>
+    {% endblock %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <p>Delete transaction for ${{ transaction.amount }}?</p>
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+    
+{% endblock %}

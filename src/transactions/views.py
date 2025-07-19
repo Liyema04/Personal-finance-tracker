@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from .models import Transaction
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 """
@@ -35,6 +37,8 @@ def transactions_register_page(request):
         form = UserRegistrationForm()
     return render(request, "accounts/register.html",{"form": form})
 
+# Transaction CRUD Views
+@login_required
 def transactions_add_transaction_page(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
@@ -46,6 +50,65 @@ def transactions_add_transaction_page(request):
     else:
         form = TransactionForm()
     return render(request, "transactions/add_transaction.html", {"form": form})
-
+@login_required
+def transactions_edit_transaction_page(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # (transaction.user = request.user)
+    if request.method == "POST":
+        form = TransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            transaction.user = request.user
+            form.save()
+            messages.success(request, 'Transaction updated successfuly!')
+            return redirect ("dashboard")
+    else:
+        form = TransactionForm(instance=transaction) # Pre-update
+        return render(request, "transactions/edit_transaction.html", {"form": form, "transaction": transaction})
+@login_required
+def transactions_delete_transaction_page(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # same as update
+    if request.method == "POST":
+        transaction.user = request.user
+        transaction.delete()
+        messages.success(request, 'Transaction deleted!')
+        return redirect ("dashboard")
+    return render(request, "transactions/confirm_delete.html", {"transaction": transaction})
+    
+                
+@login_required
 def transactions_user_dashboard(request):
-    return render(request, "transactions/dashboard.html")
+    form = TransactionForm()
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    context = {
+        'form': form,
+        'transactions': transactions,
+        'total_income': sum(t.amount for t in transactions if t.type == 'income'),
+        'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
+    }
+    return render(request, "transactions/dashboard.html", context)
+
+# user's list of Transactions (all)
+@login_required
+def transactions_list_page(request, transaction_id):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    context = {
+        'transactions': transactions,
+        'total_count': transactions.count(),
+        'total_income': sum(t.amount for t in transactions if t.type == 'income'),
+        'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
+    }
+    return render(request, "transactions/transactions_list.html", context)
+
+# Shows one transacrion e.g(Most recent in detail !READ-Only!)
+def transactions_detail_page(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+    
+    context = {
+        'transaction': transaction,
+        'similar_transactions': Transaction.objects.filter(
+            user = request.user,
+            category = transaction.category
+        ).exclude(id = transaction_id).order_by('-date')[:3] # Suggests related items
+    } 
+    return render(request, "transactions/transaction_detail.html", context)
+    

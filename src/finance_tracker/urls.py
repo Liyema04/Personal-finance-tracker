@@ -17,7 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from landing_page.views import landing_page_welcome, default, landing_page_about, landing_page_contact
-from transactions.views import transactions_login_page, transactions_register_page, transactions_add_transaction_page, transactions_user_dashboard
+from transactions.views import (
+    transactions_login_page, 
+    transactions_register_page,
+    # CRUD - views.py
+    transactions_add_transaction_page,
+    # not implemented
+    transactions_list_page,
+    transactions_detail_page,
+    transactions_edit_transaction_page,
+    transactions_delete_transaction_page,
+    # dash - views.py
+    transactions_user_dashboard     
+)
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # landing_page(component) - urls
@@ -25,13 +39,21 @@ urlpatterns = [
     path('welcome/', landing_page_welcome, name='welcome'), # welcome/(landing page)
     path('about/', landing_page_about, name='about'),
     path('contact/', landing_page_contact, name='contact'),
+    
     # transactions(component) - urls
     path('login/', transactions_login_page, name='login'),
     path('register/', transactions_register_page, name='register'),
-    # crud
-    path('add-transaction', transactions_add_transaction_page, name='add_transaction'),
+    
+    # Transaction CRUD (grouped under /transactions)
+    path('transactions/', transactions_list_page, name='list_transaction'), # Read: list all
+    path('transactions/<int:transaction_id>/', transactions_detail_page, name='detail_transaction'), #Read: detail
+    path('transactions/add/', transactions_add_transaction_page, name='add_transaction'), # Create/ Add - (new)
+    path('transactions/<int:transaction_id>/edit/', transactions_edit_transaction_page, name='edit_transaction'), # Update
+    path('transactions/<int:transaction_id>/delete', transactions_delete_transaction_page, name='delete_transaction'), # Delete
+    
     # visualise spending data
     path('dashboard', transactions_user_dashboard, name='dashboard'), 
+    
     # admin 
     path('admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

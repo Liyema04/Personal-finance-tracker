@@ -1,0 +1,72 @@
+{% extends 'transactions/index.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}<title>Edit Transaction</title>{% endblock %}
+
+{% block content %}
+  {% block header %}
+  <!-- Header (reuse or customize as needed) -->
+  <header class="tracker-header bg-white shadow-sm p-3 mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+              <h1 class="m-0 fs-4 text-primary">Senti<span class="text-secondary">Wise</span></h1>
+          </div>
+          <!-- Add any buttons or dropdowns here if needed -->
+          <div class="d-flex align-items-center">
+              <!-- button -->
+              <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
+                  <img src="{% static 'images/avatar.jpeg' %}" width="36" class="rounded-circle">
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                  <li><a class="dropdown-item" href="{% url 'login' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+              </ul>
+              </div>
+          </div>
+    </div>
+  </header>
+  {% endblock %}
+  {% block sidebar %}
+  <div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 col-lg-2">
+      <nav class="tracker-sidebar bg-light p-3 h-100">
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="{% url 'dashboard' %}">
+              <i class="bi bi-cash-stack me-2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="#">
+              <i class="bi bi-cash-stack me-2"></i> Transactions
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {% endblock %}
+    <!-- Form Block -->
+    <div class="col-md-7 d-flex align-items-start justify-content-center">
+      <div class="card shadow-sm w-100" style="max-width: 500px;">
+        <div class="card-header bg-primary text-white">
+          <h5>Update Transaction</h5>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success mt-3">
+              <i class="bi bi-check-lg me-2"></i>Save Changes
+            </button>
+            <!-- not for delete -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
