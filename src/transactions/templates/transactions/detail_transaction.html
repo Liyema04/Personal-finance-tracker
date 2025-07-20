@@ -2,44 +2,61 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{% extends 'base.html' %}
-
 {% block content %}
-<div class="row">
-  <div class="col-md-8">
-    <div class="card shadow">
-      <div class="card-header">
-        <h5>Transaction Details</h5>
-      </div>
-      <div class="card-body">
-        <dl class="row">
-          <dt class="col-sm-3">Amount</dt>
-          <dd class="col-sm-9">${{ transaction.amount }}</dd>
-          
-          <dt class="col-sm-3">Type</dt>
-          <dd class="col-sm-9">
-            <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-              {{ transaction.type|title }}
-            </span>
-          </dd>
-          
-          <!-- Additional fields -->
-        </dl>
+<div class="tracker-main-content p-4 flex-grow-1">
+  <div class="row">
+    <div class="rounded mb-3">
+      <h1>{{ transaction.description }}</h1> <!--Description-->
+    </div>
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header">
+          <h5>Details</h5>
+        </div>
+        <div class="card-body">
+          <dl class="row">
+            <dt class="col-sm-3">Date</dt>
+            <dd class="col-sm-9">{{ transaction.date|date:"M d, Y"}}</dd>
+
+            <dt class="col-sm-3">Amount</dt>
+            <dd class="col-sm-9">R{{ transaction.amount }}</dd>
+            
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9">
+              <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                {{ transaction.type|title }}
+              </span>
+            </dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">
+              <!-- {{ category_display|default:transaction.category }} -->
+              {% if transaction.category == 'SALARY' %}
+                <i class="bi bi-briefcase me-1"></i> Work/Salary
+              {% elif transaction.category == 'SIDE_HUSTLE' %}
+                <i class="bi bi-laptop me-1"></i> Side Hustle 
+              {% else %}
+                {{ category_display|default:transaction.category }}
+              {% endif %}      
+            </dd>
+            <!-- Additional fields -->
+          </dl>
+        </div>
       </div>
     </div>
-  </div>
-  
-  <div class="col-md-4">
-    <div class="card shadow">
-      <div class="card-header">
-        <h5>Similar Transactions</h5>
-      </div>
-      <div class="card-body">
-        {% for t in similar_transactions %}
-        <div class="py-2 border-bottom">
-          {{ t.date|date:"M d" }}: ${{ t.amount }}
+    
+    <div class="col-md-4">
+      <div class="card shadow">
+        <div class="card-header">
+          <h5>Similar</h5>
         </div>
-        {% endfor %}
+        <div class="card-body">
+          {% for t in similar_transactions %}
+          <div class="py-2 border-bottom">
+            {{ t.date|date:"M d" }}: R{{ t.amount }}
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>

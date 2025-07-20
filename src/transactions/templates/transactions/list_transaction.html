@@ -26,14 +26,22 @@
             <tr>
                 <td>{{ t.date|date:"M d, Y" }}</td>
                 <td>R{{ t.amount }}</td>
-                <td>{{ t.category }}</td>
+                <td>
+                  {% if t.category == 'SALARY' %}
+                      <i class="bi bi-briefcase me-1"></i> Work/Salary
+                    {% elif t.category == 'SIDE_HUSTLE' %}
+                      <i class="bi bi-laptop me-1"></i> Side Hustle 
+                    {% else %}
+                      {{ category_display|default:t.category }}
+                  {% endif %}
+                </td>
                 <td>
                     <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
                         {{ t.type|title }}     
                     </span>
                 </td>
                 <td>
-                    <a href="{% url 'transaction_detail' t.id %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% endfor %}

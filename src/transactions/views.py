@@ -3,7 +3,7 @@ from .forms import UserRegistrationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import Transaction
+from .models import Transaction, Category
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -88,7 +88,7 @@ def transactions_user_dashboard(request):
 
 # user's list of Transactions (all)
 @login_required
-def transactions_list_page(request, transaction_id):
+def transactions_list_page(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     
     context = {
@@ -97,18 +97,22 @@ def transactions_list_page(request, transaction_id):
         'total_income': sum(t.amount for t in transactions if t.type == 'income'),
         'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
     }
-    return render(request, "transactions/transactions_list.html", context)
+    return render(request, "transactions/list_transaction.html", context)
 
 # Shows one transacrion e.g(Most recent in detail !READ-Only!)
 def transactions_detail_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
     
+    # Getting human-readable category
+    category_display = dict(Category.DEFAULT_CATEGORIES).get(transaction.category) # if error -- try: Category.category
+    
     context = {
         'transaction': transaction,
+        'category_display': category_display,
         'similar_transactions': Transaction.objects.filter(
             user = request.user,
             category = transaction.category
         ).exclude(id = transaction_id).order_by('-date')[:3] # Suggests related items
     } 
-    return render(request, "transactions/transaction_detail.html", context)
+    return render(request, "transactions/detail_transaction.html", context)
     

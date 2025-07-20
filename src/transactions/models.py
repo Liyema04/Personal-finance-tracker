@@ -5,32 +5,36 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     DEFAULT_CATEGORIES = [
         # Income
-        ("income", "Work/Salary"),
-        ("income", "Side Hustle"),
-        ("income", "Scholarship/Bursary"),
-        ("income", "Family Support"),
-        ("income", "Student Loan"),
-        ("income", "Grant"),
-        ("income", "Student Loan"),
+        ("SALARY", "Work/Salary"),
+        ("SIDE_HUSTLE", "Side Hustle"),
+        ("BUSARY", "Scholarship/Bursary"),
+        ("ALLOWANCE", "Family Support"),
+        ("STUDENT_LOAN", "Student Loan"),
+        ("GRANT", "Grant"),
+        ("GIFT", "Gift"),
         # Expense
-        ("expense", "Groceries"),
-        ("expense", "Rent/Accommodation"),
-        ("expense", "Transport"),
-        ("expense", "Data/Airtime"),
-        ("expense", "Gym/Fitness"),
-        ("expense", "Insurance"),
-        ("expense", "Debt Repayment"),
-        ("expense", "Entertainment"),
-        ("expense", "Eating Out"),
-        ("expense", "Education"),
-        ("expense", "Health/Medical"),
-        ("expense", "Clothing"),
-        ("expense", "Savings/Investments"),
-        ("expense", "Subscriptions"),
+        ("GROCERIES", "Groceries"),
+        ("RENT", "Rent/Accommodation"),
+        ("TRANSPORT", "Transport"),
+        ("DATA", "Data/Airtime"),
+        ("GYM", "Gym/Fitness"),
+        ("INSURANCE", "Insurance"),
+        ("DEBT", "Debt Repayment"),
+        ("ENTERTAINMENT", "Entertainment"),
+        ("DINING", "Eating Out"),
+        ("EDUCATION", "Education"),
+        ("HEALTH", "Health/Medical"),
+        ("CLOTHING", "Clothing"),
+        ("SAVINGS", "Savings/Investments"),
+        ("SUBSCRIPTIONS", "Subscriptions"),
     ]
     name = models.CharField(max_length=120,) # max_length = required  
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories')
-
+    category = models.CharField(
+        max_length=50,
+        choices=DEFAULT_CATEGORIES,
+        default='SALARY'
+    )
     def __str__(self):
         return self.name
 
@@ -41,7 +45,7 @@ class Transaction(models.Model):
     ) 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.CharField(max_length=22, choices=Category.DEFAULT_CATEGORIES)
+    category = models.CharField(max_length=22, choices=Category.DEFAULT_CATEGORIES) # preset categories in form
     date = models.DateField()
     type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)
     description = models.CharField(max_length=255, blank=True)

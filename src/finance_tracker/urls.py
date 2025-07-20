@@ -45,7 +45,7 @@ urlpatterns = [
     path('register/', transactions_register_page, name='register'),
     
     # Transaction CRUD (grouped under /transactions)
-    path('transactions/', transactions_list_page, name='list_transaction'), # Read: list all
+    path('transactions/list/', transactions_list_page, name='list_transaction'), # Read: list all
     path('transactions/<int:transaction_id>/', transactions_detail_page, name='detail_transaction'), #Read: detail
     path('transactions/add/', transactions_add_transaction_page, name='add_transaction'), # Create/ Add - (new)
     path('transactions/<int:transaction_id>/edit/', transactions_edit_transaction_page, name='edit_transaction'), # Update
