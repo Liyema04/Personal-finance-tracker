@@ -59,7 +59,7 @@ def transactions_edit_transaction_page(request, transaction_id):
             transaction.user = request.user
             form.save()
             messages.success(request, 'Transaction updated successfuly!')
-            return redirect ("dashboard")
+            return redirect ("list_transaction")
     else:
         form = TransactionForm(instance=transaction) # Pre-update
         return render(request, "transactions/edit_transaction.html", {"form": form, "transaction": transaction})

@@ -3,62 +3,137 @@
 {% load static %}
 
 {% block content %}
-<div class="tracker-main-content p-4 flex-grow-1">
-  <div class="row">
-    <div class="rounded mb-3">
-      <h1>{{ transaction.description }}</h1> <!--Description-->
-    </div>
-    <div class="col-md-8">
-      <div class="card shadow">
-        <div class="card-header">
-          <h5>Details</h5>
-        </div>
-        <div class="card-body">
-          <dl class="row">
-            <dt class="col-sm-3">Date</dt>
-            <dd class="col-sm-9">{{ transaction.date|date:"M d, Y"}}</dd>
+<div class="d-flex">
+  <!-- Sidebar(altering...) -->
+  <nav class="tracker-sidebar bg-white p-3 border-end border-secondary-emphasis border-3" style="width: 220px;">
+    <ul class="nav flex-column">
+      <!-- Main Navigation-->
 
-            <dt class="col-sm-3">Amount</dt>
-            <dd class="col-sm-9">R{{ transaction.amount }}</dd>
-            
-            <dt class="col-sm-3">Type</dt>
-            <dd class="col-sm-9">
-              <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                {{ transaction.type|title }}
-              </span>
-            </dd>
+      <!--Dashboard (link)-->
+      <li class="nav-item">
+        <a class="nav-link py-3 px-3 mb-1 rounded" href="{% url 'dashboard' %}" data-bs-toggle="tooltip" title="Dashboard" alt="dashboard">
+          <i class="bi bi-emoji-smile me-3 fs-5"></i>
+          <span class="fw-medium">Senti Moves</span>
+        </a>
+      </li>
 
-            <dt class="col-sm-3">Category</dt>
-            <dd class="col-sm-9">
-              <!-- {{ category_display|default:transaction.category }} -->
-              {% if transaction.category == 'SALARY' %}
-                <i class="bi bi-briefcase me-1"></i> Work/Salary
-              {% elif transaction.category == 'SIDE_HUSTLE' %}
-                <i class="bi bi-laptop me-1"></i> Side Hustle 
-              {% else %}
-                {{ category_display|default:transaction.category }}
-              {% endif %}      
-            </dd>
-            <!-- Additional fields -->
-          </dl>
-        </div>
+      <!--List Transaction & FinHabit tracker-->
+      <li class="nav-item">
+        <a class="nav-link active py-3 px-3 mb-1 rounded" href="{% url 'list_transaction' %}" data-bs-toggle="tooltip" title="Track your income and spending">
+          <i class="bi bi-currency-exchange me-3 fs-5"></i>
+          <span class="fw-medium">Rand Journey</span>
+          <span class="badge bg-primary rounded-pill float-end">New</span>
+        </a>
+      </li>
+      
+      <!--Quick Actions-->
+      <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Quick Actions</li>
+
+      <!--Add New Transaction-->
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 mb-1 rounded" href="{% url 'add_transaction' %}" data-bs-toggle="tooltip" title="Add transactions" alt="add transactions">
+          <i class="bi bi-plus-circle me-3"></i>Log Move
+        </a>
+      </li> 
+
+      <!-- More menu items -->
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+          <i class="text-muted bi bi-piggy-bank me-3"></i>
+          <span class="text-muted">Savings Goals</span>
+          <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+        </a> 
+      </li> 
+
+      <!--Insights-->
+      <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Insights</li>
+
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+          <i class="text-muted bi bi-graph-up me-3"></i>
+          <span class="text-muted">Trends</span>
+          <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+        </a> 
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+          <i class="text-muted bi bi-exclamation-triangle me-3"></i>
+          <span class="text-muted">Stress Alerts</span>
+          <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+        </a> 
+      </li>
+    </ul>
+    <br>
+    <!--User Footer-->
+    <div class="sidebar-footer mt-auto pt-4 border-top">
+      <div class="d-flex align-items-center px-2">
+        <img src="{% static 'images/luyolo.jpg' %}" width="36" class="rounded-circle me-2">
       </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card shadow">
-        <div class="card-header">
-          <h5>Similar</h5>
+        <div>
+          <div class="fw-medium">Luyolo</div>
+          <small class="text-muted">Freemium</small>
         </div>
-        <div class="card-body">
-          {% for t in similar_transactions %}
-          <div class="py-2 border-bottom">
-            {{ t.date|date:"M d" }}: R{{ t.amount }}
+    </div>
+  </nav>
+  <!--Main Content-->
+  <main class="tracker-main-content p-4 flex-grow-1">
+    <div class="row">
+      <div class="rounded mb-3">
+        <h1>{{ transaction.description }}</h1> <!--Description-->
+      </div>
+      <div class="col-md-8">
+        <div class="card shadow">
+          <div class="card-header">
+            <h5>Details</h5>
           </div>
-          {% endfor %}
+          <div class="card-body">
+            <dl class="row">
+              <dt class="col-sm-3">Date</dt>
+              <dd class="col-sm-9">{{ transaction.date|date:"M d, Y"}}</dd>
+
+              <dt class="col-sm-3">Amount</dt>
+              <dd class="col-sm-9">R{{ transaction.amount }}</dd>
+              
+              <dt class="col-sm-3">Type</dt>
+              <dd class="col-sm-9">
+                <span class="badge {% if transaction.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                  {{ transaction.type|title }}
+                </span>
+              </dd>
+
+              <dt class="col-sm-3">Category</dt>
+              <dd class="col-sm-9">
+                <!-- {{ category_display|default:transaction.category }} -->
+                {% if transaction.category == 'SALARY' %}
+                  <i class="bi bi-briefcase me-1"></i> Work/Salary
+                {% elif transaction.category == 'SIDE_HUSTLE' %}
+                  <i class="bi bi-laptop me-1"></i> Side Hustle 
+                {% else %}
+                  {{ category_display|default:transaction.category }}
+                {% endif %}      
+              </dd>
+              <!-- Additional fields -->
+            </dl>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card shadow">
+          <div class="card-header">
+            <h5>Similar</h5>
+          </div>
+          <div class="card-body">
+            {% for t in similar_transactions %}
+            <div class="py-2 border-bottom">
+              {{ t.date|date:"M d" }}: R{{ t.amount }}
+            </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </main>
+</div>  
 {% endblock %}

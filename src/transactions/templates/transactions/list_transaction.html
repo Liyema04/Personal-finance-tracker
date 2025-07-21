@@ -3,49 +3,173 @@
 {% load static %}
 
 {% block content %}
-<div class="card shadow">
-    <div class="card-header d-flex justify-content-between">
-        <h5>All Transactions</h5>
-        <span class="badge bg-primary">{{ total_count }} total</span>
-    </div>
-</div>
+<div class="d-flex">
+    <!-- Sidebar(altering...) -->
+    <nav class="tracker-sidebar bg-white p-3 border-end border-secondary-emphasis border-3" style="width: 220px;">
+        <ul class="nav flex-column">
+        <!-- Main Navigation-->
 
-<div class="card-body">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Category</th>
-                <th>Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in transactions %}
-            <tr>
-                <td>{{ t.date|date:"M d, Y" }}</td>
-                <td>R{{ t.amount }}</td>
-                <td>
-                  {% if t.category == 'SALARY' %}
-                      <i class="bi bi-briefcase me-1"></i> Work/Salary
-                    {% elif t.category == 'SIDE_HUSTLE' %}
-                      <i class="bi bi-laptop me-1"></i> Side Hustle 
-                    {% else %}
-                      {{ category_display|default:t.category }}
-                  {% endif %}
-                </td>
-                <td>
-                    <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                        {{ t.type|title }}     
-                    </span>
-                </td>
-                <td>
-                    <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        <!--Dashboard (link)-->
+        <li class="nav-item">
+            <a class="nav-link py-3 px-3 mb-1 rounded" href="{% url 'dashboard' %}" data-bs-toggle="tooltip" title="Dashboard" alt="dashboard">
+            <i class="bi bi-emoji-smile me-3 fs-5"></i>
+            <span class="fw-medium">Senti Moves</span>
+            </a>
+        </li>
+
+        <!--List Transaction & FinHabit tracker-->
+        <li class="nav-item">
+            <a class="nav-link active py-3 px-3 mb-1 rounded" href="{% url 'list_transaction' %}" data-bs-toggle="tooltip" title="Track your income and spending">
+            <i class="bi bi-currency-exchange me-3 fs-5"></i>
+            <span class="fw-medium">Rand Journey</span>
+            <span class="badge bg-primary rounded-pill float-end">New</span>
+            </a>
+        </li>
+        
+        <!--Quick Actions-->
+        <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Quick Actions</li>
+
+        <!--Add New Transaction-->
+        <li class="nav-item">
+            <a class="nav-link py-2 px-3 mb-1 rounded" href="{% url 'add_transaction' %}" data-bs-toggle="tooltip" title="Add transactions" alt="add transactions">
+            <i class="bi bi-plus-circle me-3"></i>Log Move
+            </a>
+        </li> 
+
+        <!-- More menu items -->
+        <li class="nav-item">
+            <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+            <i class="text-muted bi bi-piggy-bank me-3"></i>
+            <span class="text-muted">Savings Goals</span>
+            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+            </a> 
+        </li> 
+
+        <!--Insights-->
+        <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Insights</li>
+
+        <li class="nav-item">
+            <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+            <i class="text-muted bi bi-graph-up me-3"></i>
+            <span class="text-muted">Trends</span>
+            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+            </a> 
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
+            <i class="text-muted bi bi-exclamation-triangle me-3"></i>
+            <span class="text-muted">Stress Alerts</span>
+            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
+            </a> 
+        </li>
+        </ul>
+        <br>
+        <!--User Footer-->
+        <div class="sidebar-footer mt-auto pt-4 border-top">
+        <div class="d-flex align-items-center px-2">
+            <img src="{% static 'images/luyolo.jpg' %}" width="36" class="rounded-circle me-2">
+        </div>
+            <div>
+            <div class="fw-medium">Luyolo</div>
+            <small class="text-muted">Freemium</small>
+            </div>
+        </div>
+    </nav>
+    <!--Main Content-->
+    <main class="tracker-main-content p-4 flex-grow-1">
+        <div class="rounded mb-3 text-primary">
+            <h1><i class="bi bi-bar-chart-line me-3 fs-5"></i>
+                Journey
+            </h1>
+        </div>
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between">
+                <h5>All Transactions</h5>
+                <span class="badge bg-primary">{{ total_count }} total</span>
+            </div>
+        
+
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td>{{ t.date|date:"M d, Y" }}</td>
+                            <td>R{{ t.amount }}</td>
+                            <td>
+                            {% if t.category == 'SALARY' %}
+                                <i class="bi bi-briefcase me-1"></i> Work/Salary
+                                {% elif t.category == 'SIDE_HUSTLE' %}
+                                <i class="bi bi-laptop me-1"></i> Side Hustle 
+                                {% elif t.category == 'GYM' %}
+                                <i class="bi bi-heart-pulse-fill"></i> Gym/Fitness
+                                {% else %}
+                                {{ category_display|default:t.category }}
+                            {% endif %}
+                            </td>
+
+                            <td>{{ t.description }}</td>
+
+                            <td>
+                                <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ t.type|title }}     
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Transaction List Table -->
+            <div class="mb-4 p-2 m-2">
+                <div class="card-body">
+                    <h5  class="card-title text-primary mb-4">
+                        <i  class="bi bi-list-ul me-2"></i>Manage Transactions
+                    </h5>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in transactions %}
+                            <tr>
+                                <td>{{ transaction.date }}</td>
+                                <td>{{ transaction.description }}</td>
+                                <td>R {{ transaction.amount }}</td>
+                                <td>
+                                    <a href="{% url 'edit_transaction' transaction.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="{% url 'delete_transaction' transaction.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No transactions found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>    
+                </div>   
+            </div>
+        </div>    
+    </main>
+</div>    
 {% endblock %}
