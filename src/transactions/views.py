@@ -31,11 +31,16 @@ def transactions_register_page(request):
         if form.is_valid():
             form.save() # Creates a new user
             user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user) 
+            messages.success(request, 'Account was created for ' + user) # Alert displayed on register temp
             return redirect("login") # Redirects to login 
     else:
         form = UserRegistrationForm()
     return render(request, "accounts/register.html",{"form": form})
+
+# User -> logging out 
+def transactions_logout_user(request):
+    logout(request)
+    return redirect('login')
 
 # Transaction CRUD Views
 @login_required
@@ -46,7 +51,8 @@ def transactions_add_transaction_page(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
-            return redirect("dashboard")  # Use your URL pattern name here
+            messages.success(request, "New Move added!")
+            return redirect("list_transaction")  # Use your URL pattern name here
     else:
         form = TransactionForm()
     return render(request, "transactions/add_transaction.html", {"form": form})
@@ -58,7 +64,7 @@ def transactions_edit_transaction_page(request, transaction_id):
         if form.is_valid():
             transaction.user = request.user
             form.save()
-            messages.success(request, 'Transaction updated successfuly!')
+            messages.success(request, 'Move updated.') # Display on list temp 
             return redirect ("list_transaction")
     else:
         form = TransactionForm(instance=transaction) # Pre-update
@@ -69,8 +75,8 @@ def transactions_delete_transaction_page(request, transaction_id):
     if request.method == "POST":
         transaction.user = request.user
         transaction.delete()
-        messages.success(request, 'Transaction deleted!')
-        return redirect ("dashboard")
+        messages.info(request, 'Move deleted.') # Display on list temp
+        return redirect ("list_transaction") # list temp not dashboard
     return render(request, "transactions/confirm_delete.html", {"transaction": transaction})
     
                 

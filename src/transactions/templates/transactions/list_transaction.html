@@ -71,13 +71,23 @@
             <img src="{% static 'images/luyolo.jpg' %}" width="36" class="rounded-circle me-2">
         </div>
             <div>
-            <div class="fw-medium">Luyolo</div>
+            <div class="fw-medium">{{ request.user }}</div>
             <small class="text-muted">Freemium</small>
             </div>
         </div>
     </nav>
     <!--Main Content-->
     <main class="tracker-main-content p-4 flex-grow-1">
+        {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+            {% endfor %}    
+        </div>
+        {% endif %}
         <div class="rounded mb-3 text-primary">
             <h1><i class="bi bi-bar-chart-line me-3 fs-5"></i>
                 Journey
@@ -106,7 +116,7 @@
                         {% for t in transactions %}
                         <tr>
                             <td>{{ t.date|date:"M d, Y" }}</td>
-                            <td>R{{ t.amount }}</td>
+                            <td>R {{ t.amount }}</td>
                             <td>
                             {% if t.category == 'SALARY' %}
                                 <i class="bi bi-briefcase me-1"></i> Work/Salary

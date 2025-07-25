@@ -18,7 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from landing_page.views import landing_page_welcome, default, landing_page_about, landing_page_contact
 from transactions.views import (
-    transactions_login_page, 
+    transactions_login_page,
+    transactions_logout_user, 
     transactions_register_page,
     # CRUD - views.py
     transactions_add_transaction_page,
@@ -42,6 +43,7 @@ urlpatterns = [
     
     # transactions(component) - urls
     path('login/', transactions_login_page, name='login'),
+    path('logout', transactions_logout_user, name='logout'),
     path('register/', transactions_register_page, name='register'),
     
     # Transaction CRUD (grouped under /transactions)

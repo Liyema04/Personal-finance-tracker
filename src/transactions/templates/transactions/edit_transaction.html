@@ -75,13 +75,18 @@
           <img src="{% static 'images/luyolo.jpg' %}" width="36" class="rounded-circle me-2">
       </div>
           <div>
-          <div class="fw-medium">Luyolo</div>
+          <div class="fw-medium">{{ request.user }}</div>
           <small class="text-muted">Freemium</small>
           </div>
       </div>
   </nav>
   <!--Main Content-->
   <main class="tracker-main-content p-4 flex-grow-1">
+    <div id="back-block">
+        <h5><a class="back-redirect fw-medium" href="{% url 'list_transaction' %}">
+          <i class="bi bi-arrow-left-circle me-3"></i>Back</a>
+        </h5>
+    </div>
     <div class="container-fluid">
       <div class="row">
         <!-- Form Block -->
