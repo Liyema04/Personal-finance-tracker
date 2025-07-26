@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # third-party 
     'crispy_forms', # Added in enviroment
     'crispy_bootstrap5',
+    'bootstrap_datepicker_plus',
     
     # Own
     'transactions',
