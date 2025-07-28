@@ -5,6 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Transaction, Category
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum, Q
+from django.db.models.functions import TruncMonth
+import json
 
 # Create your views here.
 """
@@ -63,6 +66,7 @@ def transactions_add_transaction_page(request):
     else:
         form = TransactionForm()
     return render(request, "transactions/add_transaction.html", {"form": form})
+
 @login_required(login_url='login')
 def transactions_edit_transaction_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # (transaction.user = request.user)
@@ -76,6 +80,7 @@ def transactions_edit_transaction_page(request, transaction_id):
     else:
         form = TransactionForm(instance=transaction) # Pre-update
         return render(request, "transactions/edit_transaction.html", {"form": form, "transaction": transaction})
+
 @login_required(login_url='login')
 def transactions_delete_transaction_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # same as update
@@ -89,11 +94,27 @@ def transactions_delete_transaction_page(request, transaction_id):
                 
 @login_required(login_url='login')
 def transactions_user_dashboard(request):
-    form = TransactionForm()
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    #form = TransactionForm()
+    
+    transactions = Transaction.objects.filter(user=request.user)
+    
+    # Monthly totals for line chart     
+    monthly_totals = transactions.annotate(
+        month = TruncMonth('date')).values('month').annotate(
+            income = Sum('amount', filter=Q(type = 'income')),
+            expense = Sum('amount', filter=Q(type = 'expense'))
+        ).order_by('month')
+        
+    # Category breakdown for  pie/donut chart
+    categories = transactions.values('category').annotate(
+        total = Sum('amount')
+    ).exclude(type='income') # Only expenses
+
     context = {
-        'form': form,
-        'transactions': transactions,
+        #'form': form,
+        'monthly_data': list(monthly_totals), # Convert to list for json
+        'category_data' : list(categories),
+        'transactions': transactions.order_by('-date')[:5], # Recent 5 
         'total_income': sum(t.amount for t in transactions if t.type == 'income'),
         'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
     }
