@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import UserRegistrationForm, TransactionForm
+from transactions.forms import UserRegistrationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -7,6 +7,8 @@ from .models import Transaction, Category
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
+from datetime import datetime
+from django.core.serializers.json import DjangoJSONEncoder
 import json
 
 # Create your views here.
@@ -91,29 +93,45 @@ def transactions_delete_transaction_page(request, transaction_id):
         return redirect ("list_transaction") # list temp not dashboard
     return render(request, "transactions/confirm_delete.html", {"transaction": transaction})
     
-                
+# Each users dashboard view(templates)                 
 @login_required(login_url='login')
 def transactions_user_dashboard(request):
     #form = TransactionForm()
     
     transactions = Transaction.objects.filter(user=request.user)
     
-    # Monthly totals for line chart     
+    # Monthly totals for line chart  - ensure None values are converted to 0   
     monthly_totals = transactions.annotate(
         month = TruncMonth('date')).values('month').annotate(
-            income = Sum('amount', filter=Q(type = 'income')),
-            expense = Sum('amount', filter=Q(type = 'expense'))
+            income = Sum('amount', filter=Q(type = 'income')) or 0,
+            expense = Sum('amount', filter=Q(type = 'expense')) or 0
         ).order_by('month')
         
+    # Convert to list of dictionaries with formatted dates
+    monthly_data = []
+    for m in monthly_totals:
+        month_date = m['month']
+        monthly_data.append({
+            'month': month_date.strftime('%b %Y'),  # "Jul 2025" format
+            'month_sort': month_date.strftime('%Y-%m'),  # For correct ordering
+            'income': float(m['income'] or 0),
+            'expense': float(m['expense'] or 0)
+        })
+        
+    monthly_data.sort(key=lambda x: x['month_sort'])        
+        
     # Category breakdown for  pie/donut chart
-    categories = transactions.values('category').annotate(
+    categories = list(transactions.values('category').annotate(
         total = Sum('amount')
-    ).exclude(type='income') # Only expenses
+    ).exclude(type='income').order_by('-total')) # Only expenses
+    
+    for cat in categories:
+        cat['total'] = float(cat['total'] or 0)
 
     context = {
         #'form': form,
-        'monthly_data': list(monthly_totals), # Convert to list for json
-        'category_data' : list(categories),
+        'monthly_data': json.dumps(monthly_data, cls=DjangoJSONEncoder), # Converted to list for json
+        'category_data' : json.dumps(categories, cls=DjangoJSONEncoder),
         'transactions': transactions.order_by('-date')[:5], # Recent 5 
         'total_income': sum(t.amount for t in transactions if t.type == 'income'),
         'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
