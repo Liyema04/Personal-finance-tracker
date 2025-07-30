@@ -100,6 +100,30 @@ def transactions_user_dashboard(request):
     
     transactions = Transaction.objects.filter(user=request.user)
     
+    # Calc totals using Django's aggregate() for better performance
+    totals = transactions.aggregate(
+        total_income = Sum('amount', filter=Q(type='income')),
+        total_expenses = Sum('amount', filter=Q(type='expense')),
+        
+        current_month_income = Sum('amount', filter=Q(
+            type = 'income',
+            date__month = datetime.now().month,
+            date__year = datetime.now().year
+        )),
+        current_month_expenses = Sum('amount', filter=Q(
+            type = 'expense',
+            date__month = datetime.now().month,
+            date__year = datetime.now().year
+        ))
+    ) 
+    
+    #Handling values from aggregation
+    total_income = totals['total_income'] or 0
+    total_expenses = totals['total_expenses'] or 0
+    current_month_income = totals['current_month_income'] or 0
+    current_month_expenses = totals['current_month_expenses'] or 0
+    
+    
     # Monthly totals for line chart  - ensure None values are converted to 0   
     monthly_totals = transactions.annotate(
         month = TruncMonth('date')).values('month').annotate(
@@ -133,8 +157,10 @@ def transactions_user_dashboard(request):
         'monthly_data': json.dumps(monthly_data, cls=DjangoJSONEncoder), # Converted to list for json
         'category_data' : json.dumps(categories, cls=DjangoJSONEncoder),
         'transactions': transactions.order_by('-date')[:5], # Recent 5 
-        'total_income': sum(t.amount for t in transactions if t.type == 'income'),
-        'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
+        'total_income': float(total_income),
+        'total_expenses': float(total_expenses),
+        'current_month_net': float(current_month_income - current_month_expenses),
+        'balance': float(total_income - total_expenses)
     }
     return render(request, "transactions/dashboard.html", context)
 
