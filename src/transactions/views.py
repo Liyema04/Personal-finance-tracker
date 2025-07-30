@@ -10,6 +10,8 @@ from django.db.models.functions import TruncMonth
 from datetime import datetime
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 
 # Create your views here.
 """
@@ -95,8 +97,13 @@ def transactions_delete_transaction_page(request, transaction_id):
     
 # Each users dashboard view(templates)                 
 @login_required(login_url='login')
+@cache_page(60*15)
 def transactions_user_dashboard(request):
-    #form = TransactionForm()
+    cache_key = f"dashboard_{request.user.id}"
+    cached_data = cache.get(cache_key)
+    
+    if cached_data:
+        return cached_data
     
     transactions = Transaction.objects.filter(user=request.user)
     
@@ -153,7 +160,6 @@ def transactions_user_dashboard(request):
         cat['total'] = float(cat['total'] or 0)
 
     context = {
-        #'form': form,
         'monthly_data': json.dumps(monthly_data, cls=DjangoJSONEncoder), # Converted to list for json
         'category_data' : json.dumps(categories, cls=DjangoJSONEncoder),
         'transactions': transactions.order_by('-date')[:5], # Recent 5 
@@ -162,7 +168,10 @@ def transactions_user_dashboard(request):
         'current_month_net': float(current_month_income - current_month_expenses),
         'balance': float(total_income - total_expenses)
     }
-    return render(request, "transactions/dashboard.html", context)
+    
+    response = render(request, "transactions/dashboard.html", context)
+    cache.set(cache_key, response, 60 * 15)
+    return response
 
 # user's list of Transactions (all)
 @login_required(login_url='login')
