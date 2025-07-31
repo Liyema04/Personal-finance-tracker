@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'bootstrap_datepicker_plus',
     
     # Own
-    'transactions',
+    'transactions.apps.TransactionsConfig',
     'landing_page',
 ]
 
@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'transactions.context_processors.sidebar_context',
             ],
         },
     },

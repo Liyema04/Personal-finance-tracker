@@ -12,8 +12,27 @@
     {% block style_sheet %}
     <style>
         /* Base Styles */
+
+        /* Dropdown items */
+        .dropdowwn-item.active {
+            background-color: rgba(78, 115, 223, 0.1);
+            color: #4e73df;
+            font-weight: 500;
+        }
+
         .nav-section-header {
+            position: relative;
             letter-spacing: 0.5px;
+        }
+
+        .nav-section-header::after {
+            content: "";
+            position: absolute;
+            left: 15px;
+            right: 15px;
+            bottom: -5px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
         }
 
         .sidebar-brand {
@@ -31,8 +50,10 @@
         }
 
         .nav-link.active {
-            background-color: rgba(78, 115, 223, 0.15);
+            background-color: rgba(78, 115, 223, 0.15) !important;
             color: #4e73df !important;
+            border-left: 3px solid #4e73df;
+            font-weight: 500;
         }
 
         .sidebar-footer {
@@ -95,13 +116,36 @@
         }
 
         /* Sidebar Responsive Behavior */
+        .tracker-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
         .tracker-sidebar {
+            flex-shrink: 0;
+            width: 220px;
+            max-height: 100%;
             transition: transform 0.3s ease;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border: 2px solid red !important; /* Temporary debug */
+        }
+
+        .tracker-main-content {
+            flex: 1;
+            padding: 1rem;
+            /* Remove the fixed margin-left */
+            margin-left: 0 !important;
+            width: auto !important;
+
+            border: 2px solid blue !important; /* Temporary debug */
         }
 
         /* Mobile Styles */
         @media (max-width: 992px) {
+            .tracker-container {
+                display: block; /* Reset flexbox on mobile */
+            }
+
             .sidebar-toggle {
                 display: block;
             }
@@ -147,8 +191,13 @@
 
         /* Desktop Styles */
         @media (min-width: 993px) {
+            .tracker-container {
+                display: flex;
+            }
+            
             .tracker-main-content {
-                margin-left: 220px;
+                flex: 1;
+                margin-left: 0 !important;
             }
         }
     </style>
@@ -173,17 +222,23 @@
             <div class="d-flex align-items-center">
                 <!-- Navbar Dropdown -->
                 <li class="nav-item dropdown list-unstyled me-3">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center"
+                    <a class="nav-link dropdown-toggle d-flex align-items-center {% if current_module == 'transactions' %}active{% endif %}"
                     href="#" id="finDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-wallet2 me-2"></i>My Money
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="finDropdown">
-                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">
+
+                        <li><a class="dropdown-item {% if active_links.dashboard %}active{% endif %}" 
+                            href="{% url 'dashboard' %}">
                             <i class="bi bi-cash-stack me-2"></i> Senti Moves</a></li>
-                        <li><a class="dropdown-item" href="{% url 'list_transaction' %}">
+
+                        <li><a class="dropdown-item {% if active_links.transactions %}active{% endif %}" 
+                            href="{% url 'list_transaction' %}">
                             <i class="bi bi-currency-exchange me-2"></i> Rand Journey</a></li>
-                        <li><a class="dropdown-item" href="{% url 'add_transaction' %}">
+
+                        <li><a class="dropdown-item {% if active_links.quick_add %}active{% endif %}" 
+                            href="{% url 'add_transaction' %}">
                             <i class="bi bi-speedometer2 me-2"></i> Quick Move</a></li>
                     </ul> 
                 </li>
@@ -211,8 +266,8 @@
                 <ul class="nav flex-column">
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <a class="nav-link active py-3 px-3 mb-1 rounded" href="{% url 'dashboard' %}" 
-                           data-bs-toggle="tooltip" title="Dashboard">
+                        <a class="nav-link py-3 px-3 mb-1 rounded {% if active_links.dashboard %}active{% endif %}" 
+                            href="{% url 'dashboard' %}" data-bs-toggle="tooltip" title="Dashboard">
                             <i class="bi bi-emoji-smile me-3 fs-5"></i>
                             <span class="fw-medium">Senti Moves</span>
                         </a>
@@ -220,11 +275,13 @@
 
                     <!-- Transactions -->
                     <li class="nav-item">
-                        <a class="nav-link py-3 px-3 mb-1 rounded" href="{% url 'list_transaction' %}" 
-                           data-bs-toggle="tooltip" title="Track your income and spending">
+                        <a class="nav-link py-3 px-3 mb-1 rounded {% if active_links.transactions %}active{% endif %}" 
+                            href="{% url 'list_transaction' %}" data-bs-toggle="tooltip" title="Track your income and spending">
                             <i class="bi bi-currency-exchange me-3 fs-5"></i>
                             <span class="fw-medium">Rand Journey</span>
+                            {% if active_links.transactions %}
                             <span class="badge bg-primary rounded-pill float-end">New</span>
+                            {% endif %}
                         </a>
                     </li>
                     
@@ -234,8 +291,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link py-2 px-3 mb-1 rounded" href="{% url 'add_transaction' %}" 
-                           data-bs-toggle="tooltip" title="Add transactions">
+                        <a class="nav-link py-2 px-3 mb-1 rounded {% if active_links.quick_add %}active{% endif %}" 
+                            href="{% url 'add_transaction' %}" data-bs-toggle="tooltip" title="Add transactions">
                             <i class="bi bi-plus-circle me-3"></i>Log Move
                         </a>
                     </li> 
