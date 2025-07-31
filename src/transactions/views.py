@@ -97,7 +97,7 @@ def transactions_delete_transaction_page(request, transaction_id):
     
 # Each users dashboard view(templates)                 
 @login_required(login_url='login')
-@cache_page(60*15)
+@cache_page(60*1)
 def transactions_user_dashboard(request):
     cache_key = f"dashboard_{request.user.id}"
     cached_data = cache.get(cache_key)
@@ -170,7 +170,7 @@ def transactions_user_dashboard(request):
     }
     
     response = render(request, "transactions/dashboard.html", context)
-    cache.set(cache_key, response, 60 * 15)
+    cache.set(cache_key, response, 60*1)
     return response
 
 # user's list of Transactions (all)

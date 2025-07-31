@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
-{% block content %}
+{% block main_content %}
 <style>
   .chart-container-line, 
   .chart-container-donut {
@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 450px;  /* Fixed height for consistency */
+    height: 450px;
     width: 100%;
     margin: 0 auto;
   }
@@ -18,7 +18,7 @@
   @media (max-width: 768px) {
     .chart-container-line,
     .chart-container-donut {
-      height: 250px;  /* Slightly smaller on mobile */
+      height: 250px;
     }
   }
 
@@ -32,208 +32,134 @@
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
   }
 </style>
+
 <div class="tracker-container">
-  <!-- Main Content -->
-  <div class="d-flex">
-    <!-- Sidebar(altering...) -->
-    <nav class="tracker-sidebar bg-white p-3 border-end border-secondary-emphasis border-3" style="width: 220px;">
-      <ul class="nav flex-column">
-        <!-- Main Navigation-->
-
-        <!--Dashboard (link)-->
-        <li class="nav-item">
-          <a class="nav-link active py-3 px-3 mb-1 rounded" href="{% url 'dashboard' %}" data-bs-toggle="tooltip" title="Dashboard" alt="dashboard">
-            <i class="bi bi-emoji-smile me-3 fs-5"></i>
-            <span class="fw-medium">Senti Moves</span>
-          </a>
-        </li>
-
-        <!--List Transaction & FinHabit tracker-->
-        <li class="nav-item">
-          <a class="nav-link py-3 px-3 mb-1 rounded" href="{% url 'list_transaction' %}" data-bs-toggle="tooltip" title="Track your income and spending">
-            <i class="bi bi-currency-exchange me-3 fs-5"></i>
-            <span class="fw-medium">Rand Journey</span>
-            <span class="badge bg-primary rounded-pill float-end">New</span>
-          </a>
-        </li>
-        
-        <!--Quick Actions-->
-        <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Quick Actions</li>
-
-        <!--Add New Transaction-->
-        <li class="nav-item">
-          <a class="nav-link py-2 px-3 mb-1 rounded" href="{% url 'add_transaction' %}" data-bs-toggle="tooltip" title="Add transactions" alt="add transactions">
-            <i class="bi bi-plus-circle me-3"></i>Log Move
-          </a>
-        </li> 
-
-        <!-- More menu items -->
-        <li class="nav-item">
-          <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
-            <i class="text-muted bi bi-piggy-bank me-3"></i>
-            <span class="text-muted">Savings Goals</span>
-            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
-          </a> 
-        </li> 
-
-        <!--Insights-->
-        <li class="nav-section-header mt-4 mb-4 px-3 text-uppercase small text-muted fw-bold">Insights</li>
-
-        <li class="nav-item">
-          <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
-            <i class="text-muted bi bi-graph-up me-3"></i>
-            <span class="text-muted">Trends</span>
-            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
-          </a> 
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link py-2 px-3 mb-1 rounded" href="#">
-            <i class="text-muted bi bi-exclamation-triangle me-3"></i>
-            <span class="text-muted">Stress Alerts</span>
-            <span class="badge bg-secondary rounded-pill float-end">Soon</span>
-          </a> 
-        </li>
-      </ul>
-      <br>
-      <!--User Footer-->
-      <div class="sidebar-footer mt-auto pt-4 border-top">
-        <div class="d-flex align-items-center px-2">
-          <img src="{% static 'images/luyolo.jpg' %}" width="36" class="rounded-circle me-2">
-        </div>
-          <div>
-            <div class="fw-medium">{{ request.user }}</div>
-            <small class="text-muted">Freemium</small>
-          </div>
-      </div>
-    </nav>
-
-    <!-- Dashboard Content -->
-    <main class="tracker-main-content p-4 flex-grow-1">
-      <!-- Replace the entire row div containing charts with this: -->
-      <div class="row g-3 mb-4">  <!-- g-3 adds gutter spacing between columns -->
-        <!-- Chart Cards - Now side by side -->
-        <div class="col-xl-6 col-lg-12">
-          <div class="card shadow-sm h-100">  <!-- h-100 makes cards equal height -->
-            <div class="card-body p-3">
-              <h5 class="card-title text-primary">
-                <i class="bi bi-graph-up me-2"></i>Monthly Cash Flow
-              </h5>
-              <div class="chart-container-line">
-                <canvas id="monthlyChart"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-xl-6 col-lg-12">
-          <div class="card shadow-sm h-100">
-            <div class="card-body p-3">
-              <h5 class="card-title text-primary">
-                <i class="bi bi-pie-chart me-2"></i>Spending Categories
-              </h5>
-              <div class="chart-container-donut">
-                <canvas id="categoryChart"></canvas>
-              </div>
+  <!-- REMOVE THE DUPLICATE SIDEBAR - Use the one from base template -->
+  <!-- Dashboard Content -->
+  <main class="tracker-main-content p-4 flex-grow-1">
+    <!-- Charts Row -->
+    <div class="row g-3 mb-4">
+      <!-- Monthly Cash Flow Chart -->
+      <div class="col-xl-6 col-lg-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body p-3">
+            <h5 class="card-title text-primary">
+              <i class="bi bi-graph-up me-2"></i>Monthly Cash Flow
+            </h5>
+            <div class="chart-container-line">
+              <canvas id="monthlyChart"></canvas>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Activity and Summary Cards - Full width on mobile, side by side on larger screens -->
-      <div class="row g-3">
-        <div class="col-lg-8 col-md-12">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title text-primary mb-3">
-                <i class="bi bi-clock-history me-2"></i>Recent Activity
-              </h5>
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <!-- Your existing table content -->
-                  <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Category</th>
-                        <th>Type</th>
-                        <th>Actions</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for t in transactions %}
-                      <tr>
-                          <td>{{ t.date|date:"M d, Y" }}</td>
-                          <td>R {{ t.amount }}</td>
-                          <td>
-                            {% if t.category == 'SALARY' %}
-                                <i class="bi bi-briefcase me-1"></i> Work/Salary
-                              {% elif t.category == 'SIDE_HUSTLE' %}
-                                <i class="bi bi-laptop me-1"></i> Side Hustle
-                              {% elif t.category == 'GYM' %}
-                                <i class="bi bi-heart-pulse-fill"></i> Gym/Fitness
-                              {% else %}
-                                {{ category_display|default:t.category }}
-                            {% endif %}
-                          </td>
-                          <td>
-                              <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
-                                  {{ t.type|title }}     
-                              </span>
-                          </td>
-                          <td>
-                              <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                  </tbody> 
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="col-lg-4 col-md-12">
-          <div class="card border-1 shadow-sm h-100">
-            <div class="card-body"> 
-              <h5 class="card-title text-primary mb-4">
-                <i class="bi bi-graph-up me-2"></i>Summary
-              </h5>
-              <div class="d-flex justify-content-between mb-3">
-                <span class="text-muted">Total Balance:</span>
-                <span class="fw-bold">R {{ balance|floatformat:2 }}</span>
-              </div>
-              <hr>
-              <div class="d-flex justify-content-between mb-3">
-                <span class="text-muted">Total Income:</span>
-                <span class="text-success">R {{ total_income|floatformat:2 }}</span>
-              </div>
-              <div class="d-flex justify-content-between mb-3">
-                <span class="text-muted">Total Expenses:</span>
-                <span class="text-danger">R {{ total_expenses|floatformat:2 }}</span>
-              </div>
-              <hr>
-              <div class="d-flex justify-content-between mb-3">
-                <span class="text-muted"> Current Net Worth:</span>
-                <span class="{% if current_month_net >= 0 %}text-success{% else %}text-danger{% endif %}">
-                  R {{ current_month_net|floatformat:2 }}
-                </span>
-              </div>
+      
+      <!-- Spending Categories Chart -->
+      <div class="col-xl-6 col-lg-12">
+        <div class="card shadow-sm h-100">
+          <div class="card-body p-3">
+            <h5 class="card-title text-primary">
+              <i class="bi bi-pie-chart me-2"></i>Spending Categories
+            </h5>
+            <div class="chart-container-donut">
+              <canvas id="categoryChart"></canvas>
             </div>
           </div>
         </div>
       </div>
-    </main>
-  </div>
+    </div>
+
+    <!-- Activity and Summary Row -->
+    <div class="row g-3">
+      <!-- Recent Activity Table -->
+      <div class="col-lg-8 col-md-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-primary mb-3">
+              <i class="bi bi-clock-history me-2"></i>Recent Activity
+            </h5>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for t in transactions %}
+                  <tr>
+                    <td>{{ t.date|date:"M d, Y" }}</td>
+                    <td>R {{ t.amount }}</td>
+                    <td>
+                      {% if t.category == 'SALARY' %}
+                        <i class="bi bi-briefcase me-1"></i> Work/Salary
+                      {% elif t.category == 'SIDE_HUSTLE' %}
+                        <i class="bi bi-laptop me-1"></i> Side Hustle
+                      {% elif t.category == 'GYM' %}
+                        <i class="bi bi-heart-pulse-fill"></i> Gym/Fitness
+                      {% else %}
+                        {{ category_display|default:t.category }}
+                      {% endif %}
+                    </td>
+                    <td>
+                      <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ t.type|title }}     
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody> 
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Summary Card -->
+      <div class="col-lg-4 col-md-12">
+        <div class="card border-1 shadow-sm h-100">
+          <div class="card-body"> 
+            <h5 class="card-title text-primary mb-4">
+              <i class="bi bi-graph-up me-2"></i>Summary
+            </h5>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="text-muted">Total Balance:</span>
+              <span class="fw-bold">R {{ balance|floatformat:2 }}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="text-muted">Total Income:</span>
+              <span class="text-success">R {{ total_income|floatformat:2 }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="text-muted">Total Expenses:</span>
+              <span class="text-danger">R {{ total_expenses|floatformat:2 }}</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="text-muted">Current Net Worth:</span>
+              <span class="{% if current_month_net >= 0 %}text-success{% else %}text-danger{% endif %}">
+                R {{ current_month_net|floatformat:2 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
-<!-- <script src="/src/static/js/userCharts.js"></script> -->
-<!-- Chart.js -->
+
+<!-- Chart.js Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 <script>
-  // Formatting dates for display
+  // Monthly Chart
   const monthlyData = JSON.parse('{{ monthly_data|escapejs }}');
-  
-  // Extract just the formatted month labels
   const monthLabels = monthlyData.map(item => item.month);
   
   new Chart(document.getElementById("monthlyChart"), {
@@ -265,9 +191,7 @@
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: 'top',
-        },
+        legend: { position: 'top' },
         tooltip: {
           callbacks: {
             label: (ctx) => `R ${ctx.raw.toFixed(2)}`
@@ -277,23 +201,13 @@
       scales: {
         x: {
           display: true,
-          title: {
-            display: true,
-            text: 'Month'
-          },
-          grid: {
-            display: false
-          }
+          title: { display: true, text: 'Month' },
+          grid: { display: false }
         },
         y: {
           beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Amount (R)'
-          },
-          ticks: {
-            callback: (value) => `R ${value}`
-          }
+          title: { display: true, text: 'Amount (R)' },
+          ticks: { callback: (value) => `R ${value}` }
         }
       }
     }
@@ -306,7 +220,6 @@
     type: 'doughnut',
     data: {
       labels: categoryData.map(item => {
-        // Convert category keys to readable names
         const categories = {
           'GYM': 'Gym/Fitness',
           'FOOD': 'Food',
