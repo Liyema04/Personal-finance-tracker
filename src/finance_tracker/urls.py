@@ -29,7 +29,8 @@ from transactions.views import (
     transactions_edit_transaction_page,
     transactions_delete_transaction_page,
     # dash - views.py
-    transactions_user_dashboard     
+    transactions_user_dashboard,
+    user_accounts_profile     
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -45,6 +46,7 @@ urlpatterns = [
     path('login/', transactions_login_page, name='login'),
     path('logout', transactions_logout_user, name='logout'),
     path('register/', transactions_register_page, name='register'),
+    path('accounts/profile', user_accounts_profile, name ='accounts_profile'),
     
     # Transaction CRUD (grouped under /transactions)
     path('transactions/list/', transactions_list_page, name='list_transaction'), # Read: list all

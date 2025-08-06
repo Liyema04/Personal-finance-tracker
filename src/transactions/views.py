@@ -51,6 +51,10 @@ def transactions_register_page(request):
                 
     return render(request, "accounts/register.html",{"form": form})
 
+@login_required(login_url='login')
+def user_accounts_profile(request):
+    return render(request, "accounts/account_profile.html")
+
 # User -> logging out 
 def transactions_logout_user(request):
     logout(request)
