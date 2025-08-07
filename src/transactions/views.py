@@ -7,7 +7,7 @@ from .models import Transaction, Category
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.core.cache import cache
@@ -51,9 +51,30 @@ def transactions_register_page(request):
                 
     return render(request, "accounts/register.html",{"form": form})
 
+# User-specific profile view 
 @login_required(login_url='login')
 def user_accounts_profile(request):
-    return render(request, "accounts/account_profile.html")
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    lifetime_totals = transactions.aggregate(
+        total_income = Sum('amount', filter=Q(type='income')),
+        total_expenses = Sum('amount', filter=Q(type='expense'))
+    )
+    
+    lifetime_income = lifetime_totals['total_income'] or 0
+    lifetime_expenses = lifetime_totals['total_expenses'] or 0
+    lifetime_balance = lifetime_income - lifetime_expenses
+    
+    
+    context = {
+        'transactions': transactions,
+        'lifetime_moves': transactions.count(),
+        'lifetime_income': float(lifetime_income),
+        'lifetime_expenses': float(lifetime_expenses),
+        'lifetime_balance': float(lifetime_balance),
+    }
+    
+    return render(request, "accounts/account_profile.html", context)
 
 # User -> logging out 
 def transactions_logout_user(request):
@@ -109,6 +130,11 @@ def transactions_user_dashboard(request):
     if cached_data:
         return cached_data
     
+    # Get date ranges
+    today = datetime.now().date()
+    thirty_days_ago = today - timedelta(days=30)
+    current_month_start = today.replace(day=1)
+    
     transactions = Transaction.objects.filter(user=request.user)
     
     # Calc totals using Django's aggregate() for better performance
@@ -116,6 +142,17 @@ def transactions_user_dashboard(request):
         total_income = Sum('amount', filter=Q(type='income')),
         total_expenses = Sum('amount', filter=Q(type='expense')),
         
+        # Last 30 days totals (for summary)
+        last_30_days_income = Sum('amount', filter=Q(
+            type = 'income',
+            date__gte=thirty_days_ago
+        )),
+        last_30_days_expenses = Sum('amount', filter=Q(
+            type = 'expense',
+            date__gte=thirty_days_ago
+        )),
+        
+        # Current month totals 
         current_month_income = Sum('amount', filter=Q(
             type = 'income',
             date__month = datetime.now().month,
@@ -128,9 +165,15 @@ def transactions_user_dashboard(request):
         ))
     ) 
     
-    #Handling values from aggregation
+    # Handling values from aggregation - Lifetime (for charts)
     total_income = totals['total_income'] or 0
     total_expenses = totals['total_expenses'] or 0
+    
+    # Last 30 days (for summary block)
+    last_30_days_income = totals['last_30_days_income'] or 0
+    last_30_days_expenses = totals['last_30_days_expenses'] or 0
+    
+    # Current month
     current_month_income = totals['current_month_income'] or 0
     current_month_expenses = totals['current_month_expenses'] or 0
     
@@ -156,8 +199,10 @@ def transactions_user_dashboard(request):
     monthly_data.sort(key=lambda x: x['month_sort'])        
         
     # Category breakdown for  pie/donut chart
-    categories = list(transactions.values('category').annotate(
-        total = Sum('amount')
+    categories = list(transactions.filter(
+            date__gte=thirty_days_ago
+        ).values('category').annotate(
+            total = Sum('amount')
     ).exclude(type='income').order_by('-total')) # Only expenses
     
     for cat in categories:
@@ -167,10 +212,13 @@ def transactions_user_dashboard(request):
         'monthly_data': json.dumps(monthly_data, cls=DjangoJSONEncoder), # Converted to list for json
         'category_data' : json.dumps(categories, cls=DjangoJSONEncoder),
         'transactions': transactions.order_by('-date')[:5], # Recent 5 
-        'total_income': float(total_income),
-        'total_expenses': float(total_expenses),
+        'total_income': float(total_income), # Lifetime for Charts
+        'total_expenses': float(total_expenses), # Lifetime for charts
+        'last_30_days_income': float(last_30_days_income), # Last 30 days for summary
+        'last_30_days_expenses': float(last_30_days_expenses), # Last 30 days for summary
+        'last_30_days_balance': float(last_30_days_income - last_30_days_expenses), # Last 30 days balance
         'current_month_net': float(current_month_income - current_month_expenses),
-        'balance': float(total_income - total_expenses)
+        'balance': float(total_income - total_expenses) # Lifetime balance
     }
     
     response = render(request, "transactions/dashboard.html", context)

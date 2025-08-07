@@ -17,6 +17,39 @@
     overflow: hidden;
   }
 
+  /* Lifetime Content & item styling */
+  .liftime-content {
+    width: 100%;
+    text-align: center;
+  }
+
+  .liftime-sub_blocks {
+    width: 100%;
+    padding: 24px;
+  }
+
+  .lifetime-item {
+    margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .lifetime-item:last-child {
+    border-bottom: none;
+  } 
+
+  .life-type {
+    display: block;
+    font-weight: 600;
+    /*color: #6c757d !important; */
+    margin-bottom: 3px;
+  }
+
+  .life-value {
+    display: block;
+    color: #212529;
+  }
+
   .account-details {
     display: flex;
     justify-content: flex-start; /* Changed from center */
@@ -72,12 +105,15 @@
         width: 180px;
     }
 
-    /* Liftime & Account */
+    /* Liftime */
     .lifetime-moves {
         height: auto;
         min-height: 250px;
+        padding: 15px;
     }
 
+
+    /* Account */
     .account-details {
         height: auto;
         min-height: 250px;
@@ -137,6 +173,38 @@
     box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.1) !important;
   }
 
+  /* Enhanced styling for the financial stats */
+  .financial-stat {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .financial-stat.income {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 3px solid #28a745;
+  }
+
+  .financial-stat.expense {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 3px solid #dc3545;
+  }
+
+  .financial-stat.balance {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-left: 3px solid #17a2b8;
+  }
+
+  .financial-stat.balance.positive {
+    background-color: rgb(40, 163, 167,0.15);
+    border-left-color: #28a3a7;
+  }
+
+  .financial-stat.balance.negative {
+    background-color: rgba(220, 53, 69, 0.15);
+    border-left-color: #dc3545;
+  }
 
 </style>
 
@@ -153,6 +221,15 @@
                 </div>
                 <small class="sub-type fs-6 fw-medium text-muted">Freemium</small>
             </div>
+
+            <div class="user-edit-block">
+                 <div class="user-edit-btn d-grid gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-lg">Edit
+                        <i class="bi bi-pencil"></i>
+                    </button> 
+                 </div>
+            </div>
+
         </div> 
         <!--Info Blocks-->
         <div class="col-xl-6 col-lg-12">
@@ -162,6 +239,52 @@
                         <i class="bi bi-piggy-bank-fill me-2"></i> Lifetime Moves
                     </h5>
                     <div class="lifetime-moves">
+                        <div class="liftime-content">
+                            <div class="life-item">
+                                <small class="life-type fs-1 fw-medium text-success">Moves</small>
+                                <h1 class="life-value fw-bolder">{{ lifetime_moves|default:"0"|floatformat:2 }}</h1>
+                            </div>
+                            <div class="liftime-sub-content">    
+                                <div class="life-item">
+                                        <small class="life-type fs-1 fw-medium text-warning">Stats</small>
+                                    <div class="liftime-sub_blocks">
+                                        <!--Lifetime Income-->
+                                        <div class="life-item">
+                                            <div class="financial-stat income">
+                                                <div class="d-flex justify-content-between mb-3">
+                                                    <span class="life-value text-muted">Total Income:</span>
+                                                    <span class="text-success">R {{ lifetime_income|default:"0.00"|floatformat:2 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Lifetime Expenses-->
+                                        <div class="life-item">
+                                            <div class="financial-stat expense">
+                                                <div class="d-flex justify-content-between mb-3">
+                                                    <span class="life-value text-muted">Total Expenses:</span>
+                                                    <span class="text-danger">R {{ lifetime_expenses|default:"0.00"|floatformat:2 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Lifetime Net Worth-->
+
+                                        <!--Lifetime Balance-->
+                                        <div class="life-item">
+                                            <div class="financial-stat balance {% if lifetime_balance >= 0 %}positive{% else %}negative{% endif %}">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="life-value {% if lifetime_balance >= 0 %}text-secondary{% else %}text-warning{% endif %} fw-medium">Lifetime Balance:</span>
+                                                    <span class="{% if lifetime_balance >= 0 %}text-primary{% else %}text-danger{% endif %} fw-bold">
+                                                        R {{ lifetime_balance|default:"0.00"|floatformat:2 }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -183,7 +306,6 @@
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Surname:</small>
                                 <span class="item-value">{{ request.user.second_name|default:"Not provided" }}</span>
-
                             </div>
 
                             <div class="detail-item">
@@ -197,29 +319,73 @@
                             </div>
 
                             <div class="detail-item">
-                                <small class="item-type fs-6 fw-medium text-secondary">Number:</small>
-                                <span class="item-value">{{ request.user.number|default:"Not provided" }}</span>
+                                <small class="item-type fs-6 fw-medium text-secondary">Date Joined:</small>
+                                <span class="item-value">{{ request.user.date_joined|date:"M d, Y" }}</span>
                             </div>
 
+                            <div class="detail-item">
+                                <small class="item-type fs-6 fw-medium text-secondary">Last Login:</small>
+                                <span class="item-value">
+                                    {% if request.user.last_login %}
+                                        {{ request.user.last_login|date:"M d, Y - H:i" }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}    
+                                </span>
+                            </div>
+
+                            <div class="detail-item">
+                                <small class="item-type fs-6 fw-medium text-secondary">Account Status:</small>
+                                <span class="item-value">
+                                    {% if request.user.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactive</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div class="detail-item">
+                                <small class="item-type fs-6 fw-medium text-secondary">Account Type:</small>
+                                <span class="item-value">
+                                    <span class="badge bg-secondary">Freemium</span>
+                                </span>
+                            </div>
+
+                            {% if request.user.number %}
+                            <div class="detail-item">
+                                <small class="item-type fs-6 fw-medium text-secondary">Number:</small>
+                                <span class="item-value">{{ request.user.number }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if request.user.gender %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Gender:</small>
-                                <span class="item-value">{{ request.user.gender|default:"Not provided" }}</span>
+                                <span class="item-value">{{ request.user.gender }}</span>
                             </div>
+                            {% endif %}
 
+                            {% if request.user.address %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Address:</small>
-                                <span class="item-value">{{ request.user.address|default:"Not provided" }}</span>
+                                <span class="item-value">{{ request.user.address }}</span>
                             </div>
+                            {% endif %}
 
+                            {% if request.user.id_number %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Passport/ID number:</small>
-                                <span class="item-value">{{ request.user.id_number|default:"Not provided" }}</span>
+                                <span class="item-value">{{ request.user.id_number }}</span>
                             </div>
+                            {% endif %}
 
+                            {% if request.user.country %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Country:</small>
-                                <span class="item-value">{{ request.user.country|default:"Not provided" }}</span>
+                                <span class="item-value">{{ request.user.country }}</span>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
