@@ -82,6 +82,8 @@ def transactions_logout_user(request):
     return redirect('login')
 
 # Transaction CRUD Views
+
+# Add transaction
 @login_required(login_url='login')
 def transactions_add_transaction_page(request):
     if request.method == "POST":
@@ -96,6 +98,7 @@ def transactions_add_transaction_page(request):
         form = TransactionForm()
     return render(request, "transactions/add_transaction.html", {"form": form})
 
+# Edit transaction
 @login_required(login_url='login')
 def transactions_edit_transaction_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # (transaction.user = request.user)
@@ -110,6 +113,7 @@ def transactions_edit_transaction_page(request, transaction_id):
         form = TransactionForm(instance=transaction) # Pre-update
         return render(request, "transactions/edit_transaction.html", {"form": form, "transaction": transaction})
 
+# Delete Transaction
 @login_required(login_url='login')
 def transactions_delete_transaction_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user) # same as update
@@ -136,6 +140,12 @@ def transactions_user_dashboard(request):
     current_month_start = today.replace(day=1)
     
     transactions = Transaction.objects.filter(user=request.user)
+    
+    # Current Month Moves
+    current_month_transactions = transactions.filter(
+        date__month = datetime.now().month,
+        date__year = datetime.now().year
+    ).count()
     
     # Calc totals using Django's aggregate() for better performance
     totals = transactions.aggregate(
@@ -177,7 +187,6 @@ def transactions_user_dashboard(request):
     current_month_income = totals['current_month_income'] or 0
     current_month_expenses = totals['current_month_expenses'] or 0
     
-    
     # Monthly totals for line chart  - ensure None values are converted to 0   
     monthly_totals = transactions.annotate(
         month = TruncMonth('date')).values('month').annotate(
@@ -218,6 +227,7 @@ def transactions_user_dashboard(request):
         'last_30_days_expenses': float(last_30_days_expenses), # Last 30 days for summary
         'last_30_days_balance': float(last_30_days_income - last_30_days_expenses), # Last 30 days balance
         'current_month_net': float(current_month_income - current_month_expenses),
+        'current_month_moves': current_month_transactions,
         'balance': float(total_income - total_expenses) # Lifetime balance
     }
     

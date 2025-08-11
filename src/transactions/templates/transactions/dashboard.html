@@ -18,6 +18,14 @@
     overflow: hidden;
   }
 
+  .user-message-block {
+    display: flex;
+    justify-content: flex-start;
+    align-items: start;
+    padding: 10px 0;
+    margin: 10px 0;
+  }
+
   @media (max-width: 768px) {
     .chart-container-line,
     .chart-container-donut {
@@ -51,6 +59,12 @@
   <!-- REMOVE THE DUPLICATE SIDEBAR - Use the one from base template -->
 <!-- Dashboard Content -->
 <main class="tracker-main-content p-4 flex-grow-1">
+  <section class="user-message-block">
+    <div class="message-items">
+      <h1 class="welcome-title text-primary">Welcome back, {{ request.user }}!<i>👋</i></h1>
+      <span class="welcome-text fs-5 fw-medium text-secondary">You've made {{ current_month_moves }} moves this month. Keep up the Wise motion!</span>
+    </div>
+  </section>
   <!-- Charts Row -->
   <div class="row g-3 mb-4">
     <!-- Monthly Cash Flow Chart -->
