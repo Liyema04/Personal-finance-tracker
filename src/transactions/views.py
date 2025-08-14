@@ -240,11 +240,22 @@ def transactions_user_dashboard(request):
 def transactions_list_page(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     
+    net_totals = transactions.aggregate(
+        net_income = Sum('amount', filter=Q(type='income')),
+        net_expenses = Sum('amount', filter=Q(type='expense'))
+    )
+    
+    # Handling values from aggrigation
+    net_income = net_totals['net_income'] or 0
+    net_expenses = net_totals['net_expenses'] or 0
+    net_balance = net_income - net_expenses
+    
     context = {
         'transactions': transactions,
         'total_count': transactions.count(),
-        'total_income': sum(t.amount for t in transactions if t.type == 'income'),
-        'total_expences': sum(t.amount for t in transactions if t.type == 'expense'),
+        'total_income': float(net_income),
+        'total_expenses': float(net_expenses),
+        'net_balance': float(net_balance) # Net Balance
     }
     return render(request, "transactions/list_transaction.html", context)
 

@@ -280,7 +280,7 @@
                                             <div class="financial-stat income">
                                                 <div class="d-flex justify-content-between mb-3">
                                                     <span class="life-value text-muted">Total Income:</span>
-                                                    <span class="text-success">R {{ lifetime_income|default:"0.00"|floatformat:2 }}</span>
+                                                    <span class="text-success">R {{ lifetime_income|default:"0.00"|floatformat:0 }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -290,7 +290,7 @@
                                             <div class="financial-stat expense">
                                                 <div class="d-flex justify-content-between mb-3">
                                                     <span class="life-value text-muted">Total Expenses:</span>
-                                                    <span class="text-danger">R {{ lifetime_expenses|default:"0.00"|floatformat:2 }}</span>
+                                                    <span class="text-danger">R {{ lifetime_expenses|default:"0.00"|floatformat:0 }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -303,7 +303,7 @@
                                                 <div class="d-flex justify-content-between">
                                                     <span class="life-value {% if lifetime_balance >= 0 %}text-secondary{% else %}text-warning{% endif %} fw-medium">Lifetime Balance:</span>
                                                     <span class="{% if lifetime_balance >= 0 %}text-primary{% else %}text-danger{% endif %} fw-bold">
-                                                        R {{ lifetime_balance|default:"0.00"|floatformat:2 }}
+                                                        R {{ lifetime_balance|default:"0.00"|floatformat:0 }}
                                                     </span>
                                                 </div>
                                             </div>
