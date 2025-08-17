@@ -12,6 +12,12 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
+# Lazyload & Pagination
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.views.decorators.http import require_http_methods
+import json
 
 # Create your views here.
 """
@@ -236,9 +242,27 @@ def transactions_user_dashboard(request):
     return response
 
 # user's list of Transactions (all)
+# Adding pagination support
+
+
 @login_required(login_url='login')
 def transactions_list_page(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    # Adding pagination support:
+    
+    # Pagination parameters
+    page = request.GET.get('page', 1)
+    page_size = int(request.GET.get('page_size', 15)) # Initial load: 15, subsequent: 5
+    
+    # handling AJAX requests for lazy loading 
+    if request.headers.get('X-Reequest-With') == 'XMLHttpRequest':
+        return handle_ajax_transactions(request, transactions, page, page_size)
+    
+    # For each initial page load, get first 15 transactions
+    paginator = Paginator(transactions, 15)
+    initial_transactions = paginator.get_page(1) 
+    
     
     net_totals = transactions.aggregate(
         net_income = Sum('amount', filter=Q(type='income')),
@@ -251,13 +275,43 @@ def transactions_list_page(request):
     net_balance = net_income - net_expenses
     
     context = {
-        'transactions': transactions,
+        'transactions': initial_transactions,
         'total_count': transactions.count(),
         'total_income': float(net_income),
         'total_expenses': float(net_expenses),
-        'net_balance': float(net_balance) # Net Balance
+        'net_balance': float(net_balance), # Net Balance
+        'has_more': initial_transactions.has_next(),
+        'current_page': 1,
     }
     return render(request, "transactions/list_transaction.html", context)
+
+# AJAX handler for lazy loading
+def handle_ajax_transactions(request, transactions, page, page_size):
+    try:
+        paginator = Paginator(transactions, page_size)
+        transactions_page = paginator.get_page(page)
+        
+        # Render transaction rows as HTML
+        html = render_to_string('transactions/transaction_rows.html', {
+            'transactions': transactions_page,
+        })
+        
+        return JsonResponse({
+            'success': True,
+            'html': html,
+            'has_more': transactions_page.has_next(),
+            'current_page': transactions_page.number,
+            'total_pages': paginator.num_pages,
+            'count': len(transactions_page), 
+        })
+    
+    except (EmptyPage, PageNotAnInteger):
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid pafge number',
+            'html': '',
+            'has_more': False,
+        })    
 
 # Shows one transacrion e.g(Most recent in detail !READ-Only!)
 @login_required(login_url='login')
