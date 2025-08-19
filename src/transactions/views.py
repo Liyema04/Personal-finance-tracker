@@ -12,6 +12,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
+# Lazyload & Pagination
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 # Create your views here.
 """
@@ -236,9 +240,27 @@ def transactions_user_dashboard(request):
     return response
 
 # user's list of Transactions (all)
+# Adding pagination support
+
+
 @login_required(login_url='login')
 def transactions_list_page(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    # Adding pagination support:
+    
+    # Pagination parameters
+    page = request.GET.get('page', 1)
+    page_size = int(request.GET.get('page_size', 15)) # Initial load: 15, subsequent: 5
+    
+    # handling AJAX requests for lazy loading 
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return handle_ajax_transactions(request, transactions)
+    
+    # For each initial page load, get first 15 transactions
+    paginator = Paginator(transactions, 15)
+    initial_transactions = paginator.get_page(1) 
+    
     
     net_totals = transactions.aggregate(
         net_income = Sum('amount', filter=Q(type='income')),
@@ -251,13 +273,66 @@ def transactions_list_page(request):
     net_balance = net_income - net_expenses
     
     context = {
-        'transactions': transactions,
+        'transactions': initial_transactions,
         'total_count': transactions.count(),
+        'initial_load_count': len(initial_transactions),
         'total_income': float(net_income),
         'total_expenses': float(net_expenses),
-        'net_balance': float(net_balance) # Net Balance
+        'net_balance': float(net_balance), # Net Balance
+        'has_more': initial_transactions.has_next(),
+        'current_page': 1,
     }
     return render(request, "transactions/list_transaction.html", context)
+
+# AJAX handler for lazy loading
+def handle_ajax_transactions(request, transactions_qs):
+    try:
+        # prefer offset/limit (client-side uses offset), fall back to page/page_size
+        try:
+            offset = int(request.GET.get('offset')) if request.GET.get('offset') is not None else None
+        except ValueError:
+            offset = None
+
+        try:
+            limit = int(request.GET.get('limit')) if request.GET.get('limit') is not None else None
+        except ValueError:
+            limit = None
+
+        if offset is None or limit is None:
+            # fallback to page/page_size (1-based page)
+            page = int(request.GET.get('page', 1))
+            page_size = int(request.GET.get('page_size', 15))
+            offset = (page - 1) * page_size
+            limit = page_size
+
+        # ensure same ordering as initial page
+        transactions_qs = transactions_qs.order_by('-date')
+
+        start = offset
+        end = offset + limit
+        page_items = list(transactions_qs[start:end])  # force evaluation
+
+        # Pass request to render_to_string to ensure context processors (e.g. url, static) work
+        html = render_to_string('transactions/transaction_rows.html', {'transactions': page_items}, request=request)
+
+        return JsonResponse({
+            'success': True,
+            'html': html,
+            'count': len(page_items),
+            'has_more': transactions_qs.count() > end,
+            'current_page': (offset // limit) + 1,
+            # debug fields to inspect in Network response
+            'requested_offset': offset,
+            'requested_limit': limit,
+            'returned_html_length': len(html)
+        })
+    except Exception as e:
+        # Temporary: return error details for debugging (remove/limit in production)
+        import traceback, sys
+        tb = traceback.format_exc()
+        # Log to server console
+        print('AJAX handler error:', tb, file=sys.stderr)
+        return JsonResponse({'success': False, 'error': str(e), 'trace': tb}, status=500)
 
 # Shows one transacrion e.g(Most recent in detail !READ-Only!)
 @login_required(login_url='login')
@@ -276,4 +351,3 @@ def transactions_detail_page(request, transaction_id):
         ).exclude(id = transaction_id).order_by('-date')[:3] # Suggests related items
     } 
     return render(request, "transactions/detail_transaction.html", context)
-    

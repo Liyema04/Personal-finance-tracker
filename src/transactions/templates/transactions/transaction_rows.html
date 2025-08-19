@@ -1,0 +1,53 @@
+{% for t in transactions %}
+<tr>
+    <!-- Date -->
+    <td data-label="Date">
+        <div class="d-flex flex-column">
+            <span class="fw-medium">{{ t.date|date:"M d" }}</span>
+            <small class="text-muted">{{ t.date|date:"Y" }}</small>
+        </div>
+    </td>
+
+    <!-- Amount -->
+    <td data-label="Amount">
+        <span class="fw-bold {% if t.type == 'income' %}text-success{% else %}text-danger{% endif %}">
+            {% if t.type == 'income' %}+{% else %}-{% endif %}R{{ t.amount }}
+        </span>
+    </td>
+
+    <!-- Category -->
+    <td data-label="Category">
+        <div class="category-icon-text">
+            {{ t.get_category_display|default:t.category }}
+        </div>
+    </td>
+
+    <!-- Description -->
+    <td data-label="Description" class="d-none d-md-table-cell">
+        <span class="text-muted">{{ t.description|truncatechars:50 }}</span>
+    </td>
+
+    <!-- Type -->
+    <td data-label="Type">
+        <span class="badge {% if t.type == 'income' %}bg-success{% else %}bg-danger{% endif %}">
+            <i class="bi {% if t.type == 'income' %}bi-arrow-up-circle{% else %}bi-arrow-down-circle{% endif %} me-1"></i>
+            {{ t.type|title }}
+        </span>
+    </td>
+
+    <!-- Actions -->
+    <td data-label="Actions" class="actions">
+        <div class="d-none d-md-block">
+            <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info" title="View Details">
+                <i class="bi bi-eye"></i>
+            </a>
+            <a href="{% url 'edit_transaction' t.id %}" class="btn btn-sm btn-outline-primary" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+            <a href="{% url 'delete_transaction' t.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
+                <i class="bi bi-x-circle"></i>
+            </a>
+        </div>
+    </td>
+</tr>
+{% endfor %}
