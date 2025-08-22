@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_forms', # Added in enviroment
     'crispy_bootstrap5',
     'bootstrap_datepicker_plus',
+    'django_filters',
     
     # Own
     'transactions.apps.TransactionsConfig',

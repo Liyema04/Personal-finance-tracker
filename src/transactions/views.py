@@ -16,6 +16,9 @@ from django.views.decorators.cache import cache_page
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+# Filtering
+from transactions.filters import TransactionFilter
+
 
 # Create your views here.
 """
