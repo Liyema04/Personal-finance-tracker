@@ -8,9 +8,13 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 """
 
 import os
-
+import sys
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finance_tracker.settings')
+# ensure 'src' is on sys.path so imports like "from transactions..." work
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # .../Personal-finance-tracker/src
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finance_tracker.settings')
 application = get_wsgi_application()

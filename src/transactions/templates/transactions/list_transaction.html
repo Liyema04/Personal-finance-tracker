@@ -318,15 +318,29 @@
                     <!-- <span class="badge bg-primary">{{ total_count }} total</span> -->
                     {% if total_count > 0 %}
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" id="filterDropdownBtn" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-funnel me-1"></i>Filter
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-up-circle me-2 text-success"></i>Income Only</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-down-circle me-2 text-danger"></i>Expenses Only</a></li>
+
+                        <ul class="dropdown-menu dropdown-menu-end filter-dropdown-menu" aria-labelledby="filterDropdownBtn">
+                            <!--Fallback href for non-JS users-->
+                            <li><a class="dropdown-item filter-dropdown-item" href="?transaction_type=income" data-type="income">
+                                <i class="bi bi-arrow-up-circle me-2 text-success"></i>Income Only</a>
+                            </li>
+
+                            <li><a class="dropdown-item filter-dropdown-item" href="?transaction_type=expense" data-type="expense">
+                                <i class="bi bi-arrow-down-circle me-2 text-danger"></i>Expenses Only</a>
+                            </li>
+                            
                             <li><hr class="dropdown-divider"></li>
+                            
+
                             <li><a class="dropdown-item" href="#"><i class="bi bi-calendar me-2"></i>This Month</a></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-calendar3 me-2"></i>Last Month</a></li>
+                            
+                            <li><a class="dropdown-item filter-dropdown-item" href="?" data-type="">
+                                <i class="fa-solid fa-broom me-2"></i> Clear Filter</a>
+                            </li>
                         </ul>
                     </div>
                     {% endif %}
@@ -533,6 +547,63 @@
         </a>
     </div>
 </main>
+
+<script id="userJsEnabled">
+document.addEventListener('DOMContentLoaded', function () {
+    // Build URL preserving other GET params and removing page cursor
+    function buildUrlWithTransactionType(typeValue) {
+    const url = new URL(window.location.href);
+    // remove server-side pagination / ajax-specific params when changing filter
+    url.searchParams.delete('page');
+    url.searchParams.delete('offset');
+    url.searchParams.delete('limit');
+
+    if (!typeValue) {
+        url.searchParams.delete('transaction_type');
+    } else {
+        url.searchParams.set('transaction_type', typeValue);
+    }
+    const qs = url.searchParams.toString();
+    return url.pathname + (qs ? ('?' + qs) : '');
+}
+
+    document.querySelectorAll('.filter-dropdown-item').forEach(item => {
+        item.addEventListener('click', function (e) {
+            // If user has JS enabled, intercept and preserve other params
+            if (window && window.location) {
+                e.preventDefault();
+
+                const type = this.dataset.type || '';
+                const target = buildUrlWithTransactionType(type || null);
+
+                console.log('Filter clicked', { type, current: window.location.pathname + window.location.search, target });
+
+                // Defensive: disconnect observer and reset loader state to avoid stale offsets/duplicates
+                try {
+                    if (window.transactionLoader) {
+                        try { window.transactionLoader.intersectionObserver?.disconnect(); } catch (er) { /* ignore */ }
+                        window.transactionLoader.reset();
+                    }
+                } catch (err) {
+                    console.warn('Error resetting loader before navigation', err);
+                }
+
+                // If the computed target equals current location, force a reload with a cache-buster
+                const currentFull = window.location.pathname + (window.location.search || '');
+                let finalTarget = target;
+                if (finalTarget === currentFull) {
+                    const sep = finalTarget.includes('?') ? '&' : '?';
+                    finalTarget = `${finalTarget}${sep}_=${Date.now()}`;
+                    console.log('Forcing reload (cache-buster) to target', finalTarget);
+                }
+
+                // Force navigation (use assign to keep history)
+                window.location.assign(finalTarget);
+            }
+        });
+    });
+});
+</script>
 
 <script id="pagination-config" type="application/json">
 {

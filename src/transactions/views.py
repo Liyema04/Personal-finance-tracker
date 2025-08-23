@@ -3,7 +3,7 @@ from transactions.forms import UserRegistrationForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .models import Transaction, Category
+from transactions.models import Transaction, Category
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Q
 from django.db.models.functions import TruncMonth
@@ -248,7 +248,33 @@ def transactions_user_dashboard(request):
 
 @login_required(login_url='login')
 def transactions_list_page(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    #transactions = Transaction.objects.filter(user=request.user).order_by('-date')
+    
+    # Debug : display filter parameters
+    print(f"DEBUG: GET parameters: {dict(request.GET)}")
+    
+    
+    # Build filter 
+    transaction_filter = TransactionFilter(
+        request.GET,
+        queryset = Transaction.objects.filter(user=request.user).order_by('-date')
+    )
+    
+    # Debug: Check what's being filtered
+    print(f"DEBUG: Filter form is_valid: {transaction_filter.form.is_valid()}")
+    print(f"DEBUG: Filter form data: {transaction_filter.form.data}")
+    print(f"DEBUG: Filter form cleaned_data: {getattr(transaction_filter.form, 'cleaned_data', 'No cleaned_data')}")
+    
+    # FilterSet's queryset for pagination/aggregation/AJAX
+    filtered_qs = transaction_filter.qs
+    
+    # Debug: Check the actual SQL query
+    print(f"DEBUG: SQL Query: {str(filtered_qs.query)}")
+    print(f"DEBUG: Filtered count: {filtered_qs.count()}")
+    
+    # Sample a few results to verify
+    sample_transactions = list(filtered_qs[:5])
+    print(f"DEBUG: Sample transaction types: {[t.type for t in sample_transactions]}") 
     
     # Adding pagination support:
     
@@ -258,14 +284,14 @@ def transactions_list_page(request):
     
     # handling AJAX requests for lazy loading 
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return handle_ajax_transactions(request, transactions)
+        return handle_ajax_transactions(request, filtered_qs)
     
     # For each initial page load, get first 15 transactions
-    paginator = Paginator(transactions, 15)
+    paginator = Paginator(filtered_qs, 15)
     initial_transactions = paginator.get_page(1) 
     
     
-    net_totals = transactions.aggregate(
+    net_totals = filtered_qs.aggregate(
         net_income = Sum('amount', filter=Q(type='income')),
         net_expenses = Sum('amount', filter=Q(type='expense'))
     )
@@ -277,13 +303,16 @@ def transactions_list_page(request):
     
     context = {
         'transactions': initial_transactions,
-        'total_count': transactions.count(),
+        'total_count': filtered_qs.count(),
         'initial_load_count': len(initial_transactions),
         'total_income': float(net_income),
         'total_expenses': float(net_expenses),
         'net_balance': float(net_balance), # Net Balance
         'has_more': initial_transactions.has_next(),
         'current_page': 1,
+        # context for debugging
+        'filter': transaction_filter,
+        'current_filter_type': request.GET.get('transaction_type', 'all')
     }
     return render(request, "transactions/list_transaction.html", context)
 
