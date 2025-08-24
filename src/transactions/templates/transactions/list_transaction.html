@@ -782,9 +782,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // New: fetch by offset/limit
         async fetchTransactionsOffset(offset, limit) {
+            // Build URL preserving current filter/quey params (transaction_type etc.)
             const url = new URL(this.config.apiUrl, window.location.origin);
-            url.searchParams.set('offset', offset);
-            url.searchParams.set('limit', limit);
+            const params = new URLSearchParams(window.location.search);
+            // remove any pagination-specific params we don't want to carry
+            params.delete('page');
+            params.delete('offset');
+            params.delete('limit');
+            // add/override offset & limit for the AJAX call
+            params.set('offset', offset);
+            params.set('limit', limit);
+            url.search = params.toString(); 
 
             console.log('fetchTransactions -> URL', url.toString());
 
@@ -1119,14 +1127,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         reset() {
+            try {
+                if (this.intersectionObserver) {
+                    this.intersectionObserver.disconnect();
+                    this.intersectionObserver = null;
+                }
+            } catch (e) { /* ignore */ }
+
+            // sync loaded count from DOM (if present)
+            this.loadedTransactions = this.tableBody ? this.tableBody.querySelectorAll('tr').length : 0;
             this.currentPage = 1;
-            this.loadedTransactions = 0;
-            this.hasMore = true;
-            if (this.tableBody) {
-                this.tableBody.innerHTML = '';
+            this.isLoading = false;
+            this.hasMore = this.loadedTransactions < (this.config.totalTransactions || 0);
+
+            // clear short-term cache/dedupe if used
+            if (this.cache && typeof this.cache.clear === 'function') {
+                this.cache.clear();
             }
-            this.updateCounters();
-            this.updateLoadMoreButton();
+
+            this.updateCounters && this.updateCounters();
+            this.updateLoadButton && this.updateLoadButton();
+
+            // re-create observer if auto-load enabled
+            if (this.config.autoLoad) {
+                this.setupIntersectionObserver();
+            }
         }
     }
 
