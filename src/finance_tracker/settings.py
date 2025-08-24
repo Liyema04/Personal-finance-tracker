@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import mimetypes
+
+# MIME TYPE for SentiWise (.SVG-logo)
+mimetypes.add_type("image/svg+xml", ".svg", True) 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

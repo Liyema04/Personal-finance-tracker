@@ -18,6 +18,10 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 # Filtering
 from transactions.filters import TransactionFilter
+# SVG Logo Handling
+from django.http import HttpResponse
+from django.contrib.staticfiles import finders
+
 
 
 # Create your views here.
@@ -59,6 +63,22 @@ def transactions_register_page(request):
     return render(request, "accounts/register.html",{"form": form})
 
 # User-specific profile view 
+
+def logo_svg(request):
+    # Adjust this relative path to where your SVG actually lives under your static/ directory
+    static_relative = 'images/media/svg/g-13-test(3).svg'   # <- change to the real filename if different
+    svg_path = finders.find(static_relative)
+    if not svg_path:
+        # helpful server-side diagnostic
+        import sys
+        print(f"logo_svg: static file not found at {static_relative} (finders.find returned None)", file=sys.stderr)
+        return HttpResponse(status=404)
+    with open(svg_path, 'rb') as f:
+        data = f.read()
+    response = HttpResponse(data, content_type='image/svg+xml')
+    response['Cache-Control'] = 'public, max-age=31536000'
+    return response    
+
 @login_required(login_url='login')
 def user_accounts_profile(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')

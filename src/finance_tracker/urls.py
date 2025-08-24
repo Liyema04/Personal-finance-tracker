@@ -30,7 +30,8 @@ from transactions.views import (
     transactions_delete_transaction_page,
     # dash - views.py
     transactions_user_dashboard,
-    user_accounts_profile     
+    user_accounts_profile,
+    logo_svg,     
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -43,9 +44,16 @@ urlpatterns = [
     path('contact/', landing_page_contact, name='contact'),
     
     # transactions(component) - urls
+    
+    # Register & Login/Logout 
     path('login/', transactions_login_page, name='login'),
     path('logout', transactions_logout_user, name='logout'),
     path('register/', transactions_register_page, name='register'),
+    
+    # Rendering logo
+    path('logo.svg', logo_svg, name='logo_svg'),
+    
+    # User Account
     path('accounts/profile', user_accounts_profile, name ='accounts_profile'),
     
     # Transaction CRUD (grouped under /transactions)
@@ -56,7 +64,9 @@ urlpatterns = [
     path('transactions/<int:transaction_id>/delete', transactions_delete_transaction_page, name='delete_transaction'), # Delete
     
     # visualise spending data
-    path('dashboard', transactions_user_dashboard, name='dashboard'), 
+    path('dashboard', transactions_user_dashboard, name='dashboard'),
+    
+     
     
     # admin 
     path('admin/', admin.site.urls),

@@ -27,6 +27,7 @@ class Category(models.Model):
         ("CLOTHING", "Clothing"),
         ("SAVINGS", "Savings/Investments"),
         ("SUBSCRIPTIONS", "Subscriptions"),
+        ("PERSONAL_GROOMING", "Beauty/Grooming"),
     ]
     name = models.CharField(max_length=120,) # max_length = required  
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='categories')

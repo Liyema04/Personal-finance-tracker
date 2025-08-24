@@ -446,7 +446,10 @@
                                     <i class="bi bi-piggy-bank"></i> Savings/Invenstments 
                                     
                                     {% elif t.category == 'SUBSCRIPTIONS' %}
-                                    <i class="bi bi-person-vcard"></i> Subscriptions  
+                                    <i class="bi bi-person-vcard"></i> Subscriptions
+                                    
+                                    {% elif t.category == 'PERSONAL_GROOMING' %}
+                                    <i class="bi bi-scissors"></i> Beauty/Grooming
                                     
                                     {% else %}
                                     {{ category_display|default:t.category }}

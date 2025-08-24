@@ -8,11 +8,62 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <script src="https://kit.fontawesome.com/34fa937ae1.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!--Font Loading - Fixed Order & Fallbacks -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Local Font Preload with Error Handling -->
+    <link rel="preload" href="{% static 'fonts/WorkSans-Variable.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    
     {% block title %}<title>Dashboard</title>{% endblock %}
 
     {% block style_sheet %}
     <style>
         /* Base Styles */
+
+        /*Fonts - with proper fallbacks*/
+
+        /*Logo font - fixed font-face declaration */
+        @font-face {
+            font-family: "Work Sans Variable";
+            src: url("{% static 'fonts/WorkSans-Variable.woff2' %}") format("woff2");
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* Robust font stack with multiple fallbacks */
+        body {
+            font-family: "Work Sans Variable", "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-feature-settings: "kern" 1;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* SVG font handling - ensure Work Sans loads in SVG */
+
+        svg, svg * {
+            font-family: "Work Sans Variable", "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Logo specific styling */
+        .logo-container {
+            font-family: "Work Sans Variable", "Work Sans", system-ui, sans-serif;
+            font-weight: 600;
+
+        }
+
+        .logo-svg {
+            font-family: "Work Sans Variable", "Work Sans", sans-serif;
+            font-weight: 600;
+        }
+
+        /* Force font loading for critical elements */
+        .sidebar-brand {
+            font-family: "Work Sans Variable", "Work Sans", sans-serif;
+            font-weight: 700;
+        }
 
         /* Dropdown items */
         .dropdowwn-item.active {
@@ -218,8 +269,7 @@
                     <span></span>
                     <span></span>
                 </button>
-                <!-- <h1 class="m-0 fs-4 text-primary">Senti<span class="text-secondary">Wise</span></h1> -->
-                <img src="{% static 'images/media/g13.svg' %}" class="image-fluid" width="175px" height="65px"> 
+                <img src="{% static 'images/media/svg/g-13-test(3).svg' %}" class="img-fluid logo-svg" width="175" height="65" alt="SentiWise Logo" style="font-family: 'Work Sans Variable', 'Work Sans', sans-serif; font-weight: 600;" /> 
             </div>
             <div class="d-flex align-items-center">
                 <!-- Navbar Dropdown -->
@@ -367,6 +417,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Logo interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force font loading for SVG content
+            const logoImg = document.querySelector('.logo-svg');
+            
+            if (logoImg && logoImg.src.includes('.svg')) {
+                // Create a style element to inject into SVG
+                const svgFontStyle = `
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+                        * { 
+                            font-family: 'Work Sans', system-ui, sans-serif !important; 
+                            font-weight: 600 !important;
+                        }
+                    </style>
+                `;
+                
+                // If the SVG fails to load Work Sans, this will help
+                logoImg.addEventListener('load', function() {
+                    console.log('SVG logo loaded successfully');
+                });
+                
+                logoImg.addEventListener('error', function() {
+                    console.warn('SVG logo failed to load, check file path and font embedding');
+                });
+            }
+            
+            // Font loading detection
+            if ('fonts' in document) {
+                document.fonts.ready.then(function() {
+                    console.log('All fonts loaded successfully');
+                    // Force repaint of logo
+                    if (logoImg) {
+                        logoImg.style.fontFamily = "'Work Sans Variable', 'Work Sans', sans-serif";
+                    }
+                });
+            }
+        });
+
         // Enhanced sidebar toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('sidebarToggle');
