@@ -121,30 +121,33 @@ Use a virtual environment to keep project dependencies isolated.
   ```
 
 - Windows (PowerShell)
-# create venv
-python -m venv venv
+    ```bash
+    # create venv
+    python -m venv venv
 
-# activate (PowerShell)
-.\venv\Scripts\Activate.ps1
+    # activate (PowerShell)
+    .\venv\Scripts\Activate.ps1
 
-# upgrade pip and install requirements
-python -m pip install --upgrade pip
-pip install -r src/new_requirements.txt
+    # upgrade pip and install requirements
+    python -m pip install --upgrade pip
+    pip install -r src/new_requirements.txt
 
 - Windows (cmd.exe)
-# create venv
-python -m venv venv
+    ```bash
+    # create venv
+    python -m venv venv
 
-# activate (cmd)
-.\venv\Scripts\activate
+    # activate (cmd)
+    .\venv\Scripts\activate
 
-# upgrade pip and install requirements
-python -m pip install --upgrade pip
-pip install -r src/new_requirements.txt
+    # upgrade pip and install requirements
+    python -m pip install --upgrade pip
+    pip install -r src/new_requirements.txt
 
-# To stop using virtual enviroment
-deactivate
+    # To stop using virtual enviroment
+    deactivate
 
-# Rest of project setup:
-python manage.py migrate
-python manage.py runserver
+- Rest of project setup:
+    ```bash
+    python manage.py migrate
+    python manage.py runserver
