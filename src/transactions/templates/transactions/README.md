@@ -1,11 +1,11 @@
-# Transactions list — README (Beginner, KISS)
+# Transactions list — Guide for Beginners using KISS method
 
-Purpose
-- Explain how the list template and view work.
-- Describe the two new features: Filtering and Lazy Load (on demand).
-- Give quick steps to test and debug.
+## This guide to the transaction list template fully:
+- Explains how the list template and view work.
+- Describes the two new features: Filtering and Lazy Load (on demand).
+- Gives quick steps to test and debug.
 
-Files involved (main)
+## Files involved (main)
 - templates/transactions/list_transaction.html
   - UI for showing transactions, filter dropdown and "Load more" button.
   - Small JS blocks: filter click handler, pagination-config JSON, and the client-side DjangoLazyTransactionsLoader class.
@@ -17,7 +17,7 @@ Files involved (main)
 - static JS (optional)
   - You may move inline JS from the template to a static file (recommended for production).
 
-Feature overview (KISS)
+## Feature overview (KISS)
 - Filtering
   - UI: dropdown items with data-type and fallback href for non-JS users.
   - Client: when a filter is clicked the JS builds a URL that preserves non-pagination query params and removes page/offset/limit, then navigates to it.
@@ -31,20 +31,20 @@ Feature overview (KISS)
     - success: true, html: "rendered rows", count, has_more, current_page, debug fields
   - Client inserts returned rows into <tbody> (supports returned HTML or JSON rows) and updates counters.
 
-How filtering + lazy load interact
+## How filtering + lazy load interact
 - When changing a filter we must reset pagination state:
   - Client removes offset/limit/page query params before navigating.
   - Client resets transactionLoader (disconnect observer & re-sync DOM count).
 - Server always filters based on current GET params; AJAX calls include those params (except pagination ones which the client overrides).
 
-Quick configuration points
+## Quick configuration points
 - control sizes in template pagination-config JSON:
   - initial_page_size: number shown on first render (server uses paginator(15) by default)
   - load_more_size: how many are requested per "Load more" click (client & server)
 - API URL is configured to the same view URL ({% url 'list_transaction' %}) — handle_ajax_transactions detects AJAX via X-Requested-With.
 - CSRF: AJAX GETs typically don't need CSRF, but header X-CSRFToken is set by the loader if provided.
 
-Testing steps (fast)
+## Testing steps (fast)
 1. Load page, open DevTools → Network → Fetch/XHR.
 2. Click Filter:
    - Confirm new page navigation URL contains transaction_type and does NOT include offset/limit/page.
@@ -56,7 +56,7 @@ Testing steps (fast)
    - Initial page (server-rendered): curl -I http://127.0.0.1:8000/dashboard
    - AJAX test (example): curl -G "http://127.0.0.1:8000/transactions/?offset=5&limit=5" -H "X-Requested-With: XMLHttpRequest"
 
-Common problems & fixes
+## Common problems & fixes
 - No rows appended / duplicates:
   - Client kept stale offset/limit in query when switching filters — fix: remove pagination params when building filter URL.
 - No AJAX request on filter click:
@@ -69,19 +69,14 @@ Common problems & fixes
 - Fonts in external SVG:
   - External SVG loaded as <img> may not inherit page fonts and may load its own font. If you see different font render, inline the SVG or convert text to paths.
 
-Debugging tips
+## Debugging tips
 - Use console logs already added by the client JS (it logs filter clicks, fetch URLs, and response data).
 - Inspect Network → request URL & response JSON. Compare 'requested_offset' and 'returned_html_length' fields in JSON.
 - Server-side: view has debug prints. Watch runserver console for DEBUG lines and stack traces.
 - If template include fails: TemplateDoesNotExist means the included path is not in template search paths — move file to templates/transactions/svg/ or use {% static %}.
 
-Minimal checklist to get working
+## Minimal checklist to get working
 - Ensure transaction_rows.html exists and matches server render expectations.
 - Confirm transactions_list_page is included in urls.py and that handle_ajax_transactions is reachable (X-Requested-With header triggers it).
 - Confirm initial template renders table rows and pagination-config values match server-side Paginator.
 - Hard-refresh (Ctrl+F5) after template/JS changes.
-
-If you want, I can:
-- produce the exact minimal transaction_rows.html partial,
-- create a static JS file for the loader and move inline script into it,
-- or give exact curl output expectations for your current debug logs.
