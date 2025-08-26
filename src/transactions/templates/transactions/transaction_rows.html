@@ -36,7 +36,23 @@
     </td>
 
     <!-- Actions -->
-    <td data-label="Actions" class="actions">
+    <td class="actions">
+        <!-- Mobile: stacked full-width buttons -->
+        <div class="d-block d-md-none mb-2">
+            <div class="d-grid gap-2">
+                <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info w-100">
+                    <i class="bi bi-eye me-1"></i> View
+                </a>
+                <a href="{% url 'edit_transaction' t.id %}" class="btn btn-sm btn-outline-primary w-100">
+                    <i class="bi bi-pencil-square me-1"></i> Edit
+                </a>
+                <a href="{% url 'delete_transaction' t.id %}" class="btn btn-sm btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <!-- Desktop: compact icon buttons -->
         <div class="d-none d-md-block">
             <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info" title="View Details">
                 <i class="bi bi-eye"></i>
@@ -45,7 +61,7 @@
                 <i class="bi bi-pencil-square"></i>
             </a>
             <a href="{% url 'delete_transaction' t.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
-                <i class="bi bi-x-circle"></i>
+                <i class="bi bi-trash"></i>
             </a>
         </div>
     </td>

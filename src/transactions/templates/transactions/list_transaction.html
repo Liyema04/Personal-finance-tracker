@@ -89,6 +89,11 @@
             padding: 0.5rem 0.375rem;
         }
 
+        /* allow wrapped content inside actions on small screens */
+        .actions .d-grid a { 
+            white-space: normal; 
+        }
+
         .actions .btn {
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
@@ -131,6 +136,11 @@
             display: block;
         }
 
+        .table-responsive { 
+            /* allow dynamically inserted content room instead of clipping */
+            overflow: visible !important;
+        }
+
         .table thead tr {
             position: absolute;
             top: -9999px;
@@ -143,6 +153,7 @@
             margin-bottom: 1rem;
             padding: 0.5rem;
             background: white;
+            overflow: visible; /* ensure children are visible */
         }
 
         .table td {
@@ -163,8 +174,32 @@
             text-align: left;
         }
 
-        .actions {
+        /* Ensure actions cell uses a vertical layout and is not clipped */
+        .table td.actions {
             padding-left: 0.5rem !important;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+            overflow: visible;
+        }
+
+        /* Make sure the mobile-only actions block is visible */
+        .table td.actions .d-block.d-md-none {
+            display: block !important;
+        }
+
+        /* Hide desktop compact buttons on xs devices explicitly */
+        .table td.actions .d-none.d-md-block {
+            display: none !important;
+        }
+
+        /* Force action buttons to be full width on xs */
+        .table td.actions .btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
         }
 
         .actions .btn {
@@ -230,6 +265,13 @@
         border-top: 1px solid #e3e6f0;
         margin-top: 1rem;
     }
+
+    /* Small safeguard: ensure actions cell doesn't clip stacked buttons on small widths */
+    .actions { 
+        padding: .5rem !important; 
+    }
+
+
 </style>
 <!--Main Content-->
 <main class="tracker-main-content p-4 flex-grow-1">
@@ -490,7 +532,7 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <a href="{% url 'delete_transaction' t.id %}" class="btn btn-sm btn-outline-danger" title="Delete">
-                                        <i class="bi bi-x-circle"></i>
+                                        <i class="bi bi-trash"></i>
                                     </a>
                                 </div>    
                             </td>
@@ -878,7 +920,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         createTransactionRow(transaction) {
-            const row = document.createElement('tr');
+            const tr = document.createElement('tr');
             
             // Format date
             const date = new Date(transaction.date);
@@ -898,46 +940,46 @@ document.addEventListener('DOMContentLoaded', function() {
             // Get category icon and name
             const categoryInfo = this.getCategoryInfo(transaction.category);
 
-            row.innerHTML = `
+            // Build inner HTML for columns (Date, Amount, Category, Type, Actions)
+            tr.innerHTML = `
                 <td data-label="Date">
-                    <div class="d-flex flex-column">
-                        <span class="fw-medium">${formattedDate}</span>
-                        <small class="text-muted">${year}</small>
-                    </div>
+                    <div class="small text-muted">${transaction.date_display || ''}</div>
                 </td>
+
                 <td data-label="Amount">
-                    <span class="fw-bold ${amountClass}">
-                        ${amountPrefix}R${parseFloat(transaction.amount).toFixed(2)}
-                    </span>
+                    <div class="fw-bold ${transaction.amount < 0 ? 'text-danger' : 'text-success'}">
+                        ${transaction.amount_display || transaction.amount}
+                    </div>
                 </td>
+
                 <td data-label="Category">
-                    <div class="category-icon-text">
-                        <i class="bi bi-${categoryInfo.icon} me-1"></i>
-                        ${categoryInfo.name}
-                    </div>
+                    ${transaction.category_name || ''}
                 </td>
-                <td data-label="Description" class="d-none d-md-table-cell">
-                    <span class="text-muted">${this.truncateText(transaction.description, 50)}</span>
-                </td>
+
                 <td data-label="Type">
-                    <span class="badge ${badgeClass}">
-                        <i class="bi ${arrowIcon} me-1"></i>
-                        ${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                    <span class="badge ${transaction.type === 'Expense' ? 'bg-danger' : 'bg-success'}">
+                        ${transaction.type || ''}
                     </span>
                 </td>
-                <td data-label="Actions" class="actions">
-                    <div class="btn-group-vertical btn-group-sm d-md-none">
-                        <a href="/transactions/${transaction.id}/" class="btn btn-sm btn-info">
-                            <i class="bi bi-eye me-1"></i>View
-                        </a>
-                        <a href="/transactions/${transaction.id}/edit/" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
-                        <a href="/transactions/${transaction.id}/delete/" class="btn btn-sm btn-outline-danger">
-                            <i class="bi bi-x-circle"></i> Delete
-                        </a>
+
+                <td data-label="Actions" class="actions align-middle">
+                    <!-- Mobile: stacked full-width buttons -->
+                    <div class="d-block d-md-none mb-2">
+                        <div class="d-grid gap-2">
+                            <a href="/transactions/${transaction.id}/" class="btn btn-sm btn-info w-100">
+                                <i class="bi bi-eye me-1"></i> View
+                            </a>
+                            <a href="/transactions/${transaction.id}/edit/" class="btn btn-sm btn-outline-primary w-100">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
+                            <a href="/transactions/${transaction.id}/delete/" class="btn btn-sm btn-outline-danger w-100">
+                                <i class="bi bi-x-circle me-1"></i> Delete
+                            </a>
+                        </div>
                     </div>
-                    <div class="d-none d-md-block">
+
+                    <!-- Desktop: compact icon buttons -->
+                    <div class="d-none d-md-flex align-items-center gap-2">
                         <a href="/transactions/${transaction.id}/" class="btn btn-sm btn-info" title="View Details">
                             <i class="bi bi-eye"></i>
                         </a>
@@ -945,13 +987,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a href="/transactions/${transaction.id}/delete/" class="btn btn-sm btn-outline-danger" title="Delete">
-                            <i class="bi bi-x-circle"></i>
+                            <i class="bi bi-trash"></i>
                         </a>
                     </div>
                 </td>
             `;
 
-            return row;
+            return tr;
         }
 
         getCategoryInfo(categoryCode) {
@@ -1173,6 +1215,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });
+
+    /* Example usage: when loader returns rows array */
+    function appendTransactions(transactions) {
+        const tbody = document.querySelector('#transactions-table tbody'); // adjust selector to your table
+        transactions.forEach(tx => {
+            const row = createTransactionRow(tx);
+            tbody.appendChild(row);
+        });
+    }
 </script>
 
 {% endblock %}

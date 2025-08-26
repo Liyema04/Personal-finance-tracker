@@ -192,7 +192,21 @@
             /*border: 2px solid blue !important;  Temporary debug */
         }
 
-        /* Mobile Styles */
+        /* Mobile Styles: */
+
+        /*...navigation*/
+        @media (max-width: 767.98px) {
+            .nav-link-icon {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+
+            .logo-svg {
+                max-width: 125px;
+                max-height: 45px;
+            }
+        }
+
         @media (max-width: 992px) {
             .tracker-container {
                 display: block; /* Reset flexbox on mobile */
@@ -274,10 +288,13 @@
             <div class="d-flex align-items-center">
                 <!-- Navbar Dropdown -->
                 <li class="nav-item dropdown list-unstyled me-3">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center {% if current_module == 'transactions' %}active{% endif %}"
-                    href="#" id="finDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-wallet2 me-2"></i>My Money
+                    <a class="nav-link dropdown-toggle d-flex align-items-center {% if current_module == 'transactions' %}active{% endif %} nav-link-icon"
+                        href="#" id="finDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" aria-label="My Money">
+                        <!-- Icon keeps a right hand margin only on md+ where text is visible -->
+                        <i class="bi bi-wallet2 me-md-2"></i>
+                        <!--Text hidden on all small devices, only visible from md and up-->
+                        <span class="d-none d-md-inline">My Money</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="finDropdown">
 
