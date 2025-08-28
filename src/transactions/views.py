@@ -64,6 +64,9 @@ def transactions_register_page(request):
 
 # User-specific profile view 
 
+def testing_new_index(request):
+    return render(request, "transactions/testing-new-sidebar/index-2.html")
+
 def logo_svg(request):
     # Adjust this relative path to where your SVG actually lives under your static/ directory
     static_relative = 'images/media/svg/g-13-test(3).svg'   # <- change to the real filename if different

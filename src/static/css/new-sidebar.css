@@ -1,0 +1,41 @@
+/* Google font import */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*Fonts - with proper fallbacks*/
+
+/*Logo font - fixed font-face declaration */
+*{
+    font-family: "Work Sans Variable";
+    src: url("{% static 'fonts/WorkSans-Variable.woff2' %}") format("woff2");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Robust font stack with multiple fallbacks */
+body {
+    font-family: "Work Sans Variable", "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+}
+
+
+:root {
+    /*==== Colors ====*/
+    --body-color: #E4E9F7;
+    --sidebar-color: #FFF;
+    --senti-primary-color: #3771C8FF;
+    --senti-green-color: #67ff00; 
+    --primary-color-light: #F6F5FF;
+    --toggle-color: #DDD;
+    --text-color: #707070;
+
+    /*==== Transition ====*/
+    --tran-03: ;
+    --tran-03: ;
+    --tran-04: ;
+    --tran-05: ;
+}

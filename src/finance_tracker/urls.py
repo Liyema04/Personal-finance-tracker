@@ -23,7 +23,7 @@ from transactions.views import (
     transactions_register_page,
     # CRUD - views.py
     transactions_add_transaction_page,
-    # not implemented
+    # implemented
     transactions_list_page,
     transactions_detail_page,
     transactions_edit_transaction_page,
@@ -31,7 +31,8 @@ from transactions.views import (
     # dash - views.py
     transactions_user_dashboard,
     user_accounts_profile,
-    logo_svg,     
+    logo_svg,
+    testing_new_index,     
 )
 from django.conf import settings
 from django.conf.urls.static import static
@@ -65,6 +66,9 @@ urlpatterns = [
     
     # visualise spending data
     path('dashboard', transactions_user_dashboard, name='dashboard'),
+    
+    # testing new dashboard sidebar
+    path('testing', testing_new_index, name='new_index'),
     
      
     
