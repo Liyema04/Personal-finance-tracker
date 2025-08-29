@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1409.5762"
+   height="213.66937"
+   viewBox="0 0 372.95035 56.533356"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient189">
+      <stop
+         style="stop-color:#3771c8;stop-opacity:1;"
+         offset="0.26002303"
+         id="stop188" />
+      <stop
+         style="stop-color:#67ff00;stop-opacity:0.10196079;"
+         offset="1"
+         id="stop189" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient189"
+       id="linearGradient10"
+       x1="1225.4308"
+       y1="138.98015"
+       x2="1471.3187"
+       y2="327.40515"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-89.231179,-1.7245046)" />
+  </defs>
+  <g
+     id="g180"
+     transform="translate(-1051.3968,-111.5845)">
+    <g
+       id="g183"
+       transform="translate(0.94494046,0.94494046)">
+      <text
+         xml:space="preserve"
+         style="font-size:77.7628px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:url(#linearGradient10);fill-opacity:1;stroke:none;stroke-width:3.44461;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+         x="1047.7302"
+         y="166.39542"
+         id="text10"><tspan
+           id="tspan10"
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Work Sans';-inkscape-font-specification:'Work Sans Medium';fill:url(#linearGradient10);fill-opacity:1;stroke:none;stroke-width:3.44461;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+           x="1047.7302"
+           y="166.39542">SentiWise</tspan></text>
+    </g>
+  </g>
+</svg>
