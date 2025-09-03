@@ -36,7 +36,8 @@
 
     /*FOR HOVER STATE*/
     --senti-hover-light-bg: #3771c8ff;
-    --senti-hover-close-icon: var(--senti-text-bg); 
+    --senti-hover-close-icon: var(--senti-text-bg);
+    --senti-hover-close-link: var(--primary-color-light); 
     --senti-hover-white-text: #F9F6EE; /*bone white*/
 
     /*Other*/
@@ -58,6 +59,7 @@ body {
     /*Content*/
     height: 100vh;
     background: var(--body-color);
+    transition: var(--tran-05);
 }
 
 body.dark {
@@ -75,7 +77,8 @@ body.dark {
 
     /*FOR HOVER STATE*/
     --senti-hover-light-bg: #3771c8ff;
-    --senti-hover-close-icon: var(--senti-text-bg); 
+    --senti-hover-close-icon: var(--senti-text-bg);
+    --senti-hover-close-link: var(--senti-green-color); 
     --senti-hover-white-text: var(--senti-green-color); 
     
     /*Other*/
@@ -90,6 +93,9 @@ body.dark {
     font-size: 16px;
     font-weight: 500;
     color: var(--text-color);
+    transition: var(--tran-04);
+    white-space: nowrap;
+    opacity: 1;
 }
 
 .sidebar .image {
@@ -107,13 +113,24 @@ body.dark {
    width: 250px;
    padding: 10px 14px;
    background: var(--sidebar-color);
+   transition: var(--tran-03);
 }
 
 /* Navigation Links*/
 .sidebar .nav-link {
     border-radius: 6px;
     margin-bottom: 8px;
+    transition: var(--tran-03);
 }
+
+/* For smooth open and close */
+.sidebar .nav-link a, 
+.sidebar .nav-link .icon,
+.sidebar .nav-link .text,
+.sidebar .nav-sect-header {
+    transition: var(--tran-03);
+}
+
 
 .sidebar li {
     height: 50px;
@@ -140,7 +157,7 @@ body.dark {
 .sidebar .bottom-content li {
     border-radius: 6px;
     background: var(--primary-color-light);
-    margin-bottom: 8px; /* Consistent spacing */
+    margin-bottom: 8px ; /* Consistent spacing */
 }
 
 /* Logout link specific styling */
@@ -164,11 +181,6 @@ body.dark {
     background: var(--senti-hover-light-bg);
 } */
 
-.sidebar.close .nav-link a:hover .icon, 
-.sidebar.close .logout a:hover .icon {
-    color: var(--senti-hover-close-icon);
-}
-
 .sidebar .nav-link a:hover .icon,
 .sidebar .nav-link a:hover .text,
 .sidebar .bottom-content li:not(.mode) a:hover,
@@ -176,16 +188,63 @@ body.dark {
     color: var(--senti-hover-white-text);
 }
 
+/* Sidebar closed state */
 .sidebar.close {
     width: 88px;
+    transition: var(--tran-03);
 }
 
+.sidebar.close .nav-link {
+    /*background: var(--primary-color-light); */
+    /*border: 2px solid red; Debugging*/
+    margin-bottom: 8px;
+    border-radius: 6px;
+    justify-content: center; /*Center the entire link content */
+}
+
+.sidebar.close .nav-link a {
+    background: transparent;
+    justify-content: center;
+    width: 100%;
+}
+
+.sidebar.close .nav-link .icon {
+    min-width: auto; /*fixed width constraint*/
+    width: auto;
+    justify-content: center;
+    margin: 0 auto; /* Center the icon */
+}
+
+/*Hide text completely in closed state*/
 .sidebar.close .text {
-    opacity: 0;
+    display: none;
 }
 
-.sidebar.close li a:hover {
-    background: none;
+/*Hide Section headers*/
+.sidebar.close .nav-sect-header {
+    display: none;
+}
+
+.sidebar.close .image {
+    transition: var(--tran-05);
+}
+
+/* Hover for Sidebar closed state */
+
+/*.sidebar.close .nav-link a:hover  {
+    background-color: var(--senti-hover-light-bg);
+} */
+
+
+
+.sidebar.close .nav-link:hover, 
+.sidebar.close .logout:hover {
+    color: var(--senti-hover-close-link);
+    background: var(--senti-hover-light-bg);
+}
+
+.sidebar.close .nav-link:hover .icon {
+    color: var(--senti-hover-close-link);
 }
 
 /* ---- HEADER - Single definition with proper spacing ---- */
@@ -212,8 +271,8 @@ body.dark {
 }
 
 .sidebar .menu-links {
-    margin-top: 0; 
-    padding-top: 0; 
+    margin-top: 12px; 
+    padding-top: 10px; 
     padding: 0; /* Remove any left padding from ul */
 }
 
@@ -253,11 +312,13 @@ body.dark {
 .sidebar .image img {
     width: 45px;
     border-radius: 6px;
+    transition: var(--tran-04);
 }
 
 .sidebar header .image-text {
     display: flex;
     align-items: center;
+    transition: var(--tran-04);
 }
 
 header .image-text .header-text {
@@ -322,6 +383,7 @@ header .image-text .header-text {
 }
 
 .menu-bar .mode {
+    position: relative;
     border-radius: 6px;
     background: var(--primary-color-light);
 }
@@ -342,6 +404,8 @@ header .image-text .header-text {
 }    
 
 .menu-bar .mode .toggle-switch {
+    position: relative;
+    right: 0;
     display: flex;
     align-items: center;
     justify-content: center;
