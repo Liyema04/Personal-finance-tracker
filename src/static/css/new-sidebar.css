@@ -1,9 +1,12 @@
 /* Google font import */
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
+
+/*SentiWise-Logo text.svg version */
+
 /*Fonts - with proper fallbacks*/
 
-/*Logo font - fixed font-face declaration */
+/*Logo font - fixed font-face declaration */ 
 *{
     font-family: "Work Sans Variable", "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     margin: 0;
@@ -11,14 +14,32 @@
     box-sizing: border-box;
 }
 
+/*==== Hide Cursor globally ====*/
+* {
+    caret-color: transparent;
+
+}
 :root {
     /*==== Colors ====*/
     --body-color: #E4E9F7;
     --sidebar-color: #FFF;
+    /*Senti Colors*/
+    --logo-primary-color: #3771C8FF;
+    --logo-green-color: #66ff0098;
     --senti-primary-color: #3771C8FF;
     --senti-green-color: #66ff0098;
-    --senti-text-bg: #b3b3b3; 
+
+    --senti-text-bg: #b3b3b3; /*section titles*/
     --primary-color-light: #F6F5FF;
+    --senti-green-light-bg: #67ff001a;
+    --sibebar-toggle: var(--senti-primary-color);
+
+    /*FOR HOVER STATE*/
+    --senti-hover-light-bg: #3771c8ff;
+    --senti-hover-close-icon: var(--senti-text-bg); 
+    --senti-hover-white-text: #F9F6EE; /*bone white*/
+
+    /*Other*/
     --toggle-color: #DDD;
     --text-color: #707070;
 
@@ -37,6 +58,30 @@ body {
     /*Content*/
     height: 100vh;
     background: var(--body-color);
+}
+
+body.dark {
+    --body-color: #18191A;
+    --sidebar-color: #242526;
+
+    /*Senti Colors*/
+    --senti-primary-color: #c0c0c0; /*bone white*/ 
+    --senti-green-color: #66ff0098;
+
+    --senti-text-bg: #3771C8FF; 
+    --primary-color-light: #3A3B3C;
+    --senti-green-light-bg: #67ff001a;
+    --sibebar-toggle: var(--senti-primary-color);
+
+    /*FOR HOVER STATE*/
+    --senti-hover-light-bg: #3771c8ff;
+    --senti-hover-close-icon: var(--senti-text-bg); 
+    --senti-hover-white-text: var(--senti-green-color); 
+    
+    /*Other*/
+    --toggle-color: #FFF;
+    --text-color: #4b4b4b;
+
 }
 
 /* ---- Reusable CSS ---- */
@@ -64,6 +109,85 @@ body {
    background: var(--sidebar-color);
 }
 
+/* Navigation Links*/
+.sidebar .nav-link {
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.sidebar li {
+    height: 50px;
+    margin-top: 3px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure section headers don't get the background */
+.sidebar .nav-sect-header {
+    background: transparent !important; /* Override the nav-link background for headers */
+    border-radius: 0;
+    margin-bottom: 12px; /* More space after section headers */
+    margin-top: 16px; /* Space before section headers */
+}
+
+/* First nav item after header should have no top margin */
+.sidebar .menu-links li:first-of-type {
+    margin-top: 0 !important;
+}
+
+/* ---- Bottom Content Styling ---- */
+.sidebar .bottom-content li {
+    border-radius: 6px;
+    background: var(--primary-color-light);
+    margin-bottom: 8px; /* Consistent spacing */
+}
+
+/* Logout link specific styling */
+.sidebar .bottom-content li:not(.mode) {
+    background: var(--primary-color-light);
+}
+
+/* Ensure all icons have consistent sizing and alignment */
+.sidebar .menu-links .icon,
+.sidebar .bottom-content .icon {
+    width: 60px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---- Hover States - Apply to all nav items consistently ---- */
+/*.sidebar .nav-link a:hover,
+.sidebar .bottom-content li:not(.mode) a:hover {
+    background: var(--senti-hover-light-bg);
+} */
+
+.sidebar.close .nav-link a:hover .icon, 
+.sidebar.close .logout a:hover .icon {
+    color: var(--senti-hover-close-icon);
+}
+
+.sidebar .nav-link a:hover .icon,
+.sidebar .nav-link a:hover .text,
+.sidebar .bottom-content li:not(.mode) a:hover,
+.sidebar .bottom-content li:not(.mode, .logut) a:hover .text {
+    color: var(--senti-hover-white-text);
+}
+
+.sidebar.close {
+    width: 88px;
+}
+
+.sidebar.close .text {
+    opacity: 0;
+}
+
+.sidebar.close li a:hover {
+    background: none;
+}
+
 /* ---- HEADER - Single definition with proper spacing ---- */
 .sidebar header {
     position: relative;
@@ -76,9 +200,10 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    /* !Not important!
     margin-top: 0; 
     padding-top: 0;
-    padding-bottom: 12px; 
+    padding-bottom: 16px;*/ 
 }
 
 .sidebar .menu {
@@ -89,17 +214,15 @@ body {
 .sidebar .menu-links {
     margin-top: 0; 
     padding-top: 0; 
-    padding-left: 0; /* Remove any left padding from ul */
+    padding: 0; /* Remove any left padding from ul */
 }
 
 /* ---- LIST ITEMS - Single definition with proper spacing ---- */
 .sidebar li {
-    height: 50px;
-    /*background: var(--senti-green-color);*/
-    margin-top: 3px; /* Minimal spacing between items */
-    list-style: none;
     display: flex;
     align-items: center;
+    height: 50px;
+    border-radius: 6px;
 }
 
 /* Remove margin from first menu item - CRITICAL FIX */
@@ -113,11 +236,13 @@ body {
 }
 
 .sidebar li .icon {
+    min-width: 60px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 60px;
     font-size: 20px;
+    color: var(--senti-primary-color);
 }
 
 .sidebar li .icon, .sidebar li .text {
@@ -141,7 +266,7 @@ header .image-text .header-text {
 }
 
 .header-text .name1 {
-    color: var(--senti-primary-color);
+    color: var(--logo-primary-color);
     font-weight: 400;
     font-size: 26px;
     text-shadow: 1px 0 1px var(--senti-text-bg);
@@ -149,12 +274,13 @@ header .image-text .header-text {
 
 .header-text .name2 {
     margin-top: -14px;
-    color: var(--senti-green-color);
+    color: var(--logo-green-color);
     font-weight: 400;
     font-size: 26px;
     text-shadow: 1px 0 1px var(--senti-text-bg);
 }
 
+/* Open-close sidebar toggle */
 .sidebar header .toggle {
     position: absolute;
     top: 50%;
@@ -162,7 +288,7 @@ header .image-text .header-text {
     transform: translateY(-50%);   
     height: 28px;
     width: 28px;
-    background: var(--senti-primary-color);
+    background: var(--sibebar-toggle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -172,24 +298,31 @@ header .image-text .header-text {
 }
 
 .sidebar li a {
+    flex: 1; /* takes remaining space */
     height: 100%;
-    width: 100%;
     display: flex;
     align-items: center;
     text-decoration: none;
     border-radius: 6px;
     transition: var(--tran-04);
+    color: var(--senti-primary-color);
 }
 
 .sidebar li a:hover {
-    background: var(--senti-primary-color);
+    background: var(--senti-hover-light-bg);
+    color: var(--senti-hover-white-text);
 }
 
 .sidebar li a:hover .icon, .sidebar li a:hover .text {
-    color: var(--sidebar-color);
+    color: var(--senti-hover-white-text);
+}
+
+.menu-bar .menu-links i.icon {
+    position: relative;
 }
 
 .menu-bar .mode {
+    border-radius: 6px;
     background: var(--primary-color-light);
 }
 
@@ -224,6 +357,7 @@ header .image-text .header-text {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom: 1px solid var(--senti-text-bg); /* Section splitter graphic */
 }
 
 .menu-bar .nav-sect-header .sect-header {
@@ -232,7 +366,7 @@ header .image-text .header-text {
     padding: auto;
     padding-right: 16px;
     margin-right: 16px;
-    border-bottom: 1px solid var(--senti-green-color);
+    opacity: 75%;
 }
 
 .menu-bar .nav-sect-header .head-text {
@@ -240,6 +374,7 @@ header .image-text .header-text {
     font-size: 16px;
     font-weight: 600;
     text-transform: uppercase;
+    opacity: 75%;
 }
 
 .toggle-switch .switch {
@@ -260,4 +395,9 @@ header .image-text .header-text {
     left: 5px;
     transform: translateY(-50%);
     background: var(--sidebar-color);
+    transition: var(--tran-03);
+}
+
+body.dark .switch::before {
+    left: 25px;
 }

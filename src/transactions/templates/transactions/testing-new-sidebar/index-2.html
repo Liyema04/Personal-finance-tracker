@@ -24,16 +24,15 @@
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> 
     {% block title %}<title>Dashboard Sidebar Menu | Dark-Light Mode </title>{% endblock %}
 
-    <!--Sidebar CSS & JS-->
+    <!--Sidebar CSS-->
     <link rel="stylesheet" href="{% static 'css/new-sidebar.css' %}?v=1.0">
-    <script src="{% static 'js/newSidebar.js' %}"></script>
 
 </head>
-<body>
+<body class="dark">
     <!-- Main Content Layout -->
     {% block content %}
         {% block sidebar %}
-            <nav class="sidebar">
+            <nav class="sidebar close">
                 <header>
                     <div class="image-text">
                         <span class="image">
@@ -41,7 +40,6 @@
                         </span> 
                         
                         <div class="text header-text">
-                            <!-- <span class="name"><img src="{% static 'images/media/svg/text12.svg' %}" alt="SentiWise text"></span> -->
                             <span class="name1">Senti</span>
                             <span class="name2">Wise</span>
                         </div>
@@ -53,66 +51,81 @@
                 <div class="menu-bar">
                     <div class="menu">
                         <ul class="menu-links">
+                            <!--New <li> structure-->
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-bolt icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-bolt"></i>
+                                    </div>
                                     <span class="text nav-text">Senti Moves</span>
                                 </a>
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-money-bills icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-money-bills"></i>
+                                    </div>
                                     <span class="text nav-text">Rand Journey</span>
                                 </a>
                             </li>
 
                             <!--Quick Actions-->
-                            <li class="nav-sect-header">
+                            <li class="text nav-sect-header">
                                 <span class="sect-header head-text">Quick Actions</span>    
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-circle-plus icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-circle-plus"></i>
+                                    </div>
                                     <span class="text nav-text">Log Move</span>
                                 </a>
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-piggy-bank icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-piggy-bank"></i>
+                                    </div>
                                     <span class="text nav-text">Savings Goals</span>
                                 </a>
                             </li>
 
                             <!--Insights-->
-                            <li class="nav-sect-header">
+                            <li class="text nav-sect-header">
                                 <span class="sect-header head-text">Insights</span>    
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-chart-line icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-chart-line"></i>
+                                    </div>
                                     <span class="text nav-text">Trends</span>
                                 </a>
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-triangle-exclamation icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                    </div>
                                     <span class="text nav-text">Stress Alerts</span>
                                 </a>
                             </li>
 
                             <!--Account-->
-                            <li class="nav-sect-header">
+                            <li class="text nav-sect-header">
                                 <span class="sect-header head-text">Account</span>    
                             </li>
 
                             <li class="nav-link">
                                 <a href="#">
-                                    <i class="fa-solid fa-gear icon"></i>
+                                    <div class="icon">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </div>
                                     <span class="text nav-text">Settings</span>
                                 </a>
                             </li>
@@ -120,9 +133,11 @@
                     </div>
 
                     <div class="bottom-content">
-                        <li class="">
+                        <li class="logout">
                             <a href="#">
-                                <i class="fa-solid fa-right-from-bracket icon"></i>
+                                <div class="icon">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </div>
                                 <span class="text nav-text">Logout</span>
                             </a>
                         </li>
@@ -142,8 +157,13 @@
                 </div>
             </nav>
         {% endblock %}
+         
+        <!-- Main content area -->
+        {% block main_content %}{% endblock %}
     {% endblock %}
-        
-    
+
+    {% block extra_scripts %}   
+        <script src="{% static 'js/newSidebar.js' %}"></script>
+    {% endblock %}            
 </body>
 </html>
