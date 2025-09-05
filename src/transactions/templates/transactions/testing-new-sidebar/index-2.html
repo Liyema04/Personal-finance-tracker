@@ -147,7 +147,7 @@
                                 <i class="fa-solid fa-moon icon moon"></i>
                                 <i class="fa-solid fa-sun icon sun"></i>
                             </div>
-                            <span class="mode-text text">Dark Mode</span>
+                            <span class="mode-text text">Light Mode</span>
 
                             <div class="toggle-switch">
                                 <span class="switch"></span>
@@ -157,9 +157,14 @@
                 </div>
             </nav>
         {% endblock %}
-         
+        
+
         <!-- Main content area -->
-        {% block main_content %}{% endblock %}
+        {% block main_content %}
+            <main class="home">
+                <div class="text">Testing... <i class="e-icon">🛠️</i></div>
+            </main>
+        {% endblock %}
     {% endblock %}
 
     {% block extra_scripts %}   
