@@ -546,6 +546,28 @@ body.dark .switch::before {
 }
 
 /* ---- MOBILE SPECIFIC ADJUSTMENTS ---- */
+@media screen and (max-width: 768px) {
+    .sidebar-open .home {
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 0; /*Insures it stays under*/ 
+    }
+
+    .sidebar {
+        z-index: 1; /* sidebar always above */
+    }
+
+    /*Optional: dim background when sidebar is open*/
+    body.sidebar-open .home::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3); /* semi-transparent overlay */
+        transition: var(--tran-03);
+    }
+}
+
+
 @media screen and (max-height: 600px) {
     .sidebar .menu {
         /* More aggressive scrolling on very small screens */

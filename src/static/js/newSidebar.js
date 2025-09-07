@@ -8,6 +8,18 @@ const body = document.querySelector("body"),
         // Sidebar (close) event handler
         toggle.addEventListener("click", () => {
                 sidebar.classList.toggle("close");
+                body.classList.toggle("sidebar-open"); // add/remove helper class
+        });
+
+        // Close sidebar when clicking on the overlay
+        document.addEventListener("click", (e) => {
+                if (body.classList.contains("sidebar-open")) {
+                        const clickedInsideSidebar = sidebar.contains(e.target) || toggle.contains(e.target);
+                        if (!clickedInsideSidebar) {
+                                sidebar.classList.add("close");
+                                body.classList.remove("sidebar-open");
+                        }
+                }
         });
         
         // Dark-Mode event handler
