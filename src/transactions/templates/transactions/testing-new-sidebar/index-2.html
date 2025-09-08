@@ -25,7 +25,7 @@
     {% block title %}<title>Dashboard Sidebar Menu | Dark-Light Mode </title>{% endblock %}
 
     <!--Sidebar CSS-->
-    <link rel="stylesheet" href="{% static 'css/new-sidebar.css' %}?v=1.0">
+    <link rel="stylesheet" href="{% static 'css/new-index.css' %}?v=1.0">
 
 </head>
 <body class="dark">
@@ -160,15 +160,49 @@
         
 
         <!-- Main content area -->
-        {% block main_content %}
-            <main class="home">
+        <!--Header Priority-->
+        <main class="home">
+            <header class="header-top-flex">
+                <div class="top-nav">
+                    <ul>
+                        <li class="head-item">
+                            <a class="head-link">
+                                <i class="fa-solid fa-upload"></i> <!--Icons-->
+                                <span class="head-text">Upload</span>
+                            </a>
+                        </li>
+                        <li class="head-item">
+                            <a class="head-link">
+                                <i class="fa-solid fa-gift"></i> <!--Icons-->
+                                <span class="head-text">Rewards</span>
+                            </a>
+                        </li>
+                        <li class="head-item">
+                            <a class="head-link">
+                                <i class="fa-solid fa-wallet"></i> <!--Icons-->
+                                <span class="head-text">Wallet</span>
+                            </a>
+                        </li>
+                        <li class="head-item">
+                            <a class="head-link">
+                                <i class="fa-solid fa-user-circle"></i> <!--Icons-->
+                                <span class="head-text">Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </header>
+
+            <section>
                 <div class="text">Testing... <i class="e-icon">🛠️</i></div>
-            </main>
+            </section>
+        </main> 
+        {% block main_content %}
         {% endblock %}
     {% endblock %}
 
     {% block extra_scripts %}   
-        <script src="{% static 'js/newSidebar.js' %}"></script>
+        <script src="{% static 'js/newIndex.js' %}"></script>
     {% endblock %}            
 </body>
 </html>

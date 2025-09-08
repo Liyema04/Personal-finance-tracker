@@ -565,6 +565,18 @@ body.dark .switch::before {
         background: rgba(0, 0, 0, 0.3); /* semi-transparent overlay */
         transition: var(--tran-03);
     }
+
+    .top-nav li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+        padding-right: 6px;
+    }
+
+    .top-nav a .head-text {
+        display: none;
+    }
 }
 
 
@@ -661,4 +673,60 @@ body.dark .switch::before {
     border-radius: 6px;
     padding: 6px;
     margin: auto;
-}    
+}
+
+/*New header inside .home class*/
+.header-top-flex {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 12px 24px;
+    padding-right: 10px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.header-top-flex .top-nav {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+.top-nav ul {
+    display: flex;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    margin-left: auto;
+}
+
+.top-nav a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: var(--senti-primary-color);
+    border-radius: 6px;
+    transition: var(--tran-02);
+}
+
+.top-nav a .head-text {
+    font-weight: 500;
+}
+
+.top-nav a:hover {
+    color: var(--senti-hover-white-text);
+    background: var(--senti-hover-light-bg);
+}
+
+.top-nav i {
+    color: var(--senti-primary-color);
+}
+
+.top-nav a:hover i {
+    color: var(--senti-hover-white-text);
+}
