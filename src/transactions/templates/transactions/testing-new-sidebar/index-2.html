@@ -27,6 +27,9 @@
     <!--Sidebar CSS-->
     <link rel="stylesheet" href="{% static 'css/new-index.css' %}?v=1.0">
 
+    <!--Lucide icons-->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
 </head>
 <body class="dark">
     <!-- Main Content Layout -->
@@ -165,6 +168,12 @@
             <header class="header-top-flex">
                 <div class="top-nav">
                     <ul>
+                        <li class="head-item">
+                            <a class="head-link toggle">
+                                <i data-lucide="panel-right-close"></i>
+                            </a>
+                        </li>
+
                         <li class="head-item">
                             <a class="head-link">
                                 <i class="fa-solid fa-upload"></i> <!--Icons-->
