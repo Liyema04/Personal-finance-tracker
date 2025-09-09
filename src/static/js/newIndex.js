@@ -10,6 +10,26 @@ function isMobile() {
     return window.innerWidth <= 768;
 }
 
+// Function to optimize layout on mobile
+function optimizeMobileLayout() {
+    if (!isMobile()) return;
+    
+    // Add a class to body when on very small screens
+    if (window.innerWidth <= 320) {
+        document.body.classList.add('very-small-screen');
+    } else {
+        document.body.classList.remove('very-small-screen');
+    }
+    
+    // Recalculate heights
+    setVhProperty();
+    setMobileSidebarHeight();
+}
+
+// Call this function on resize and initialization
+window.addEventListener('resize', optimizeMobileLayout);
+// document.addEventListener('DOMContentLoaded', optimizeMobileLayout);
+
 // Fuction to set proper height on mobile 
 function setMobileSidebarHeight() {
     if (!isMobile()) return;
@@ -143,6 +163,12 @@ window.addEventListener("resize", () => {
         body.classList.remove("sidebar-open");
         sidebar.style.transform = '';
         sidebar.style.height = ''; // Reset height
+
+        // On desktop, ensure sidebar is open by default
+        if (sidebar.classList.contains("close")) {
+            sidebar.classList.remove("close");
+        }
+
     }
 });
 
@@ -165,6 +191,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set initial sidebar height
     setMobileSidebarHeight();
     
+    // On desktop, ensure sidebar is open by default 
+    if (!isMobile && sidebar.classList.contains("close")) {
+        sidebar.classList.remove("close");
+    }
+
+    // Call optimaize layout
+    optimizeMobileLayout();
+
     console.log("Sidebar initialized with mobile height fix");
 });
 
@@ -174,5 +208,6 @@ window.addEventListener('orientationchange', function() {
         // Recalculate height after orientation change
         setTimeout(setVhProperty, 100);
         setTimeout(setMobileSidebarHeight, 150);
+        setTimeout(optimizeMobileLayout, 200);
     }
 });

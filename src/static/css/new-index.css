@@ -716,6 +716,7 @@ body.dark .switch::before {
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        padding-bottom: env(safe-area-inset-bottom, 8px);
     }
 
     /* Make sure the menu area can scroll properly */
@@ -724,23 +725,75 @@ body.dark .switch::before {
         overflow-y: auto;
         overflow-x: hidden;
         max-height: none !important;
+        padding-bottom: 8px;
+    }
+
+    /* FIX: Adjust sidebar content spacing for mobile */
+    .sidebar.mobile-open .menu-links {
+        padding: 0 8px;
+        margin-top: 8px !important;
+    }
+
+    /* FIX: Reduce item spacing on mobile */
+    .sidebar.mobile-open .nav-link {
+        margin-bottom: 6px !important;
+        height: 44px !important; /* Slightly smaller on mobile */
+    }
+
+    /* FIX: Adjust section header spacing */
+    .sidebar.mobile-open .nav-sect-header {
+        margin-top: 12px !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* FIX: Reduce header text size for mobile */
+    .sidebar.mobile-open .nav-sect-header .head-text {
+        font-size: 14px !important;
+        opacity: 0.9;
     }
 
     /* FIX: Ensure bottom content is visible and properly positioned */
     .sidebar.mobile-open .bottom-content {
-        margin-top: auto !important;
-        padding-top: 8px;
-        border-top: 1px solid var(--primary-color-light);
         flex-shrink: 0;
+        border-top: 1px solid var(--primary-color-light);
         position: relative;
         bottom: 0;
         width: 100%;
-        background: var(--sidebar-color);
+        /* padding: 8px 8px 16px 8px !important; */
+        margin-top: auto !important;
+    }
+
+    .sidebar .bottom-content .logout .icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+    }
+
+    .sidebar.mobile-open .icon {
+        min-width: 50px !important;
+        width: 50px !important;
+    }
+
+    /* FIX: Adjust text size for better mobile readability */
+    .sidebar.mobile-open .text.nav-text {
+        font-size: 15px !important;
     }
 
     /* FIX: Ensure bottom content items are visible */
     .sidebar.mobile-open .bottom-content li {
         margin-bottom: 12px;
+    }
+
+    /* FIX: Header adjustments for mobile */
+    .sidebar.mobile-open header {
+        padding: 12px 8px;
+    }
+
+    .sidebar.mobile-open .header-text .name1,
+    .sidebar.mobile-open .header-text .name2 {
+        font-size: 22px !important;
     }
 
 
@@ -756,8 +809,20 @@ body.dark .switch::before {
     @supports (-webkit-touch-callout: none) {
         .sidebar.mobile-open {
             height: -webkit-fill-available !important;
+            max-height: 100vh;
         }
-    }    
+        
+        .sidebar.mobile-open .menu-bar {
+            max-height: -webkit-fill-available;
+        }
+        
+        /* Prevent bounce effect on iOS */
+        .sidebar.mobile-open .menu {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+    }  
+
     /* Backdrop overlay when sidebar is open */
     body.sidebar-open::before {
         content: "";
@@ -883,6 +948,22 @@ body.dark .switch::before {
 
     .top-nav i {
         font-size: 16px;
+    }
+}
+
+/* Additional fix for very small screens */
+@media screen and (max-width: 320px) {
+    .sidebar.mobile-open {
+        width: 280px !important; /* Slightly wider on very small screens */
+    }
+    
+    .sidebar.mobile-open .text.nav-text {
+        font-size: 14px !important;
+    }
+    
+    .sidebar.mobile-open .icon {
+        min-width: 45px !important;
+        width: 45px !important;
     }
 }
 
