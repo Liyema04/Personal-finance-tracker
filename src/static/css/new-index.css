@@ -50,6 +50,10 @@
     --tran-03: all 0.3s ease ;
     --tran-04: all 0.4s ease ;
     --tran-05: all 0.5s ease ;
+
+    /*Custom viewport height(vh) for mobile sidebar*/
+    --vh: 1vh; /*This will be set by JavaScript*/
+
 }
 
 /* Robust font stack with multiple fallbacks */
@@ -581,7 +585,7 @@ body.dark .switch::before {
 
     .sidebar {
         transform: translateX(-100%) !important;
-        transition: var(--tran-03) !important;
+        transition: var(--tran-04) !important;
         z-index: 1000;
     }
 
@@ -692,13 +696,13 @@ body.dark .switch::before {
 
     /* Ensure sidebar is visible when mobile-open class is applied */
     .sidebar.mobile-open {
-        height: 100vh !important;
-        height: -webkit-fill-available !important; /* For mobile browsers */
+        height: calc(var(--vh, 1vh) * 100) !important;
+        height: -webkit-fill-available !important;
         transform: translateX(0) !important;
         visibility: visible !important;
         z-index: 999 !important;
-        visibility: visible !important;
-        display: block !important;
+        display: flex !important;
+        flex-direction: column;
     }
 
     /*Ensure the sidebar is fully visible*/
@@ -709,14 +713,40 @@ body.dark .switch::before {
     /* Ensure the menu bar fills the available space */
     .sidebar.mobile-open .menu-bar {
         height: 100% !important;
-        max-height: 100vh !important;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* Make sure the menu area can scroll properly */
+    .sidebar.mobile-open .menu {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: none !important;
+    }
+
+    /* FIX: Ensure bottom content is visible and properly positioned */
+    .sidebar.mobile-open .bottom-content {
+        margin-top: auto !important;
+        padding-top: 8px;
+        border-top: 1px solid var(--primary-color-light);
+        flex-shrink: 0;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        background: var(--sidebar-color);
+    }
+
+    /* FIX: Ensure bottom content items are visible */
+    .sidebar.mobile-open .bottom-content li {
+        margin-bottom: 12px;
     }
 
 
+    /* FIX: Prevent body scrolling when sidebar is open */
     body.sidebar-open {
-        overflow-y: hidden;
-        overflow-x: hidden;
-        max-height: max-content;
+        overflow: hidden !important;
         position: fixed !important;
         width: 100% !important;
         height: 100% !important;
@@ -747,10 +777,11 @@ body.dark .switch::before {
         overflow-y: auto;
     }
 
-    /* Adjust home content for mobile */
+   /* Adjust home content for mobile */
     .home {
         left: 0 !important;
         width: 100% !important;
+        padding-bottom: 80px; /* Space for bottom navigation */
     }
 
     /*Backdrop blur effect */
