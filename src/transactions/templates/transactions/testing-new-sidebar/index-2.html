@@ -208,6 +208,46 @@
         </main> 
         {% block main_content %}
         {% endblock %}
+
+        <!-- Add to your base template (index-2.html) -->
+        {% block footer_nav %}
+        <footer>
+            <div class="float-nav">
+                <ul>
+                    <li class="float-item">
+                        <a class="float-link toggle" aria-label="Toggle sidebar menu" role="button" tabindex="0">
+                            <i data-lucide="panel-right-close"></i>
+                            <span class="head-text">Menu</span>
+                        </a>
+                    </li>
+                    <li class="float-item">
+                        <a class="float-link" href="#" aria-label="Upload files">
+                            <i class="fa-solid fa-upload"></i>
+                            <span class="head-text">Upload</span>
+                        </a>
+                    </li>
+                    <li class="float-item">
+                        <a class="float-link" href="#}" aria-label="View rewards">
+                            <i class="fa-solid fa-gift"></i>
+                            <span class="head-text">Rewards</span>
+                        </a>
+                    </li>
+                    <li class="float-item">
+                        <a class="float-link" href="#" aria-label="Open wallet">
+                            <i class="fa-solid fa-wallet"></i>
+                            <span class="head-text">Wallet</span>
+                        </a>
+                    </li>
+                    <li class="float-item">
+                        <a class="float-link" href="#}" aria-label="View profile">
+                            <i class="fa-solid fa-user-circle"></i>
+                            <span class="head-text">Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </footer>
+        {% endblock %}
     {% endblock %}
 
     {% block extra_scripts %}   
