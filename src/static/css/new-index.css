@@ -33,6 +33,7 @@
     --primary-color-light: #F6F5FF;
     --senti-green-light-bg: #67ff001a;
     --sibebar-toggle: var(--senti-primary-color);
+    --sidebar-mobile-toggle-back: var(--senti-primary-color);/*#F9F6EE bone white*/
 
     /*FOR HOVER STATE*/
     --senti-hover-light-bg: #3771c8ff;
@@ -81,6 +82,8 @@ body.dark {
     --primary-color-light: #3A3B3C;
     --senti-green-light-bg: #67ff001a;
     --sibebar-toggle: var(--senti-primary-color);
+    --sidebar-mobile-toggle-back: var(--senti-primary-color); /*--senti-primary-color*/
+
 
     /*FOR HOVER STATE*/
     --senti-hover-light-bg: #3771c8ff;
@@ -578,6 +581,10 @@ body.dark .switch::before {
     .sidebar.mobile-open {
         transform: none !important;
     }
+
+    .sidebar .mobile-close-btn {
+        display: none !important;
+    }
 }
 
 /* ---- MOBILE SPECIFIC ADJUSTMENTS ---- */
@@ -619,8 +626,15 @@ body.dark .switch::before {
 
     body.sidebar-open footer {
         z-index: 0 !important;
+        display: none !important;
         pointer-events: none;
         opacity: 0.5;
+        transition: (--tran-03);
+    }
+
+    body.sidebar.close footer {
+        z-index: 0 !important;
+        transition: (--tran-05);
     }
 
     /*Optional: dim background when sidebar is open*/
@@ -679,6 +693,22 @@ body.dark .switch::before {
     .float-link.toggle:hover {
         background: var(--senti-hover-mobile-toggle-1);
     }
+
+    /* Show mobile close button only when sidebar is open on mobile */
+    .sidebar.mobile-open .mobile-close-btn {
+        display: flex !important;
+    }
+
+    /*Ensure it doesn't interfere with desktop toggle*/
+    .sidebar.mobile-open .toggle {
+        display: none !important;
+    }
+
+    /*Ensure image-text has enough space & doesn't overlap with close btn*/
+    .sidebar.mobile-open .image-text {
+        max-width: calc(100% - 50px); /*Leave space for close button*/
+    }
+
 
     /* Show mobile toggle */
     .header-top-flex .head-link.toggle {
@@ -1329,3 +1359,38 @@ body.dark .float-nav {
    background: var(--senti-hover-mobile-toggle-1);
    color: var(--senti-hover-mobile-toggle);
 }
+
+/* Mobile close button */
+.sidebar .mobile-close-btn {
+    position: absolute;
+    top: 50%;
+    right: -46px;
+    transform: translate(-50%);
+    background: var(--sidebar-color);
+    width: 32px;
+    height: 32px;
+    border-radius: 25%;
+    display: none; /*Hidden by default*/
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--tran-03);
+    z-index: 10;
+
+    color: var(--sidebar-mobile-toggle-back);
+}
+
+.sidebar .mobile-close-btn i {
+    font-size: 16px;
+    transition: var(--tran-03);
+}
+
+/*.sidebar .mobile-close-btn:hover {
+    color: var(--senti-hover-mobile-toggle);
+    background: var(--senti-hover-mobile-toggle-1);
+    transform: translateY(-50%) scale(1.05);
+} */
+
+/*.sidebar .mobile-close-btn:active {
+    transform: translate(-50%) scale(0.95);
+}*/

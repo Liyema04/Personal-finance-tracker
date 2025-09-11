@@ -7,6 +7,9 @@ const body = document.querySelector("body"),
 // Get ALL mobile toggles (header and footer)
 let mobileToggles = [];
 
+// Mobile close button reference
+let mobileCloseBtn = null;
+
 // Check if we're on mobile 
 function isMobile() {
     return window.innerWidth <= 768;
@@ -129,6 +132,12 @@ function updateMobileIcon(isOpen) {
     }
 }
 
+// Function to get mobile close button 
+function getMobileCloseButton() {
+    mobileCloseBtn = document.querySelector('.sidebar .mobile-close-btn');
+    return mobileCloseBtn;
+}
+
 // Set up toggle event listeners
 function setupToggles() {
     // Desktop toggle
@@ -152,6 +161,18 @@ function setupToggles() {
             console.log(`Mobile toggle ${index + 1} setup:`, toggle); // Debug log
         }
     });
+
+    // Mobile close button in sidebar header 
+    const closeBtn = getMobileCloseButton();
+    if (closeBtn) {
+        closeBtn.removeEventListener("click", handleToggle);
+        closeBtn.removeEventListener("touchstart", handleToggle);
+
+        closeBtn.addEventListener("click", handleToggle);
+        closeBtn.addEventListener("touchstart", handleToggle, { passive: false });
+
+        console.log('Mobile close button setup:', closeBtn);
+    }
 }
 
 // Close sidebar when clicking on the overlay
@@ -159,13 +180,14 @@ document.addEventListener("click", (e) => {
     if (body.classList.contains("sidebar-open")) {
         const clickedInsideSidebar = sidebar.contains(e.target);
         const clickedDesktopToggle = desktopToggle?.contains(e.target);
+        const clickedMobileCloseBtn = mobileCloseBtn?.contains(e.target);
         
         // Check if clicked on any mobile toggle
         const clickedMobileToggle = getMobileToggles().some(toggle => 
             toggle?.contains(e.target)
         );
         
-        if (!clickedInsideSidebar && !clickedDesktopToggle && !clickedMobileToggle) {
+        if (!clickedInsideSidebar && !clickedDesktopToggle && !clickedMobileToggle && !clickedMobileCloseBtn) {
             if (isMobile()) {
                 sidebar.classList.remove("mobile-open");
                 updateMobileIcon(false);
@@ -271,6 +293,10 @@ const observer = new MutationObserver(function(mutations) {
             // Check if footer navigation was added/changed
             const footerAdded = Array.from(mutation.addedNodes).some(node => 
                 node.nodeType === 1 && (node.tagName === 'FOOTER' || node.querySelector && node.querySelector('.float-link.toggle'))
+            );
+
+            const closeBtnAdded = Array.from(mutation.addedNodes).some(node =>
+                node.nodeType === 1 && (node.classList && node.classList.contains('mobile-close-btn'))
             );
             
             if (footerAdded) {
