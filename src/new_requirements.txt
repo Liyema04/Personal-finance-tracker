@@ -9,6 +9,7 @@ django-bootstrap-datepicker-plus==5.0.5
 django-crispy-forms==2.4
 django-filter==25.1
 idna==3.10
+nodeenv==1.9.1
 pydantic==2.11.7
 pydantic_core==2.33.2
 requests==2.32.4

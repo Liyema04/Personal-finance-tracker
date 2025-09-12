@@ -1,0 +1,66 @@
+/* colors.scss */
+
+/* Light mode */
+:root {
+  --body-color: #E4E9F7;
+  --sidebar-color: #FFF;
+
+  /* Senti Colors */
+  --logo-primary-color: #3771C8FF;
+  --logo-green-color: #66ff0098;
+  --senti-primary-color: #3771C8FF;
+  --senti-green-color: #66ff0098;
+
+  --senti-text-bg: #b3b3b3;
+  --primary-color-light: #F6F5FF;
+  --senti-green-light-bg: #67ff001a;
+  --sibebar-toggle: var(--senti-primary-color);
+  --sidebar-mobile-toggle-back: var(--senti-primary-color);
+
+  /* Hover states */
+  --senti-hover-light-bg: #3771c8ff;
+  --senti-hover-close-icon: var(--senti-text-bg);
+  --senti-hover-close-link: var(--primary-color-light);
+  --senti-hover-white-text: #F9F6EE;
+  --senti-hover-light-primary-bg: rgba(55, 113, 200, 0.800);
+  --senti-hover-mobile-toggle: #7d7d7d;
+  --senti-hover-mobile-toggle-1: #E4E9F7;
+
+  /* Other */
+  --toggle-color: #DDD;
+  --text-color: #707070;
+
+  /* Transitions */
+  --tran-02: all 0.2s ease;
+  --tran-03: all 0.3s ease;
+  --tran-04: all 0.4s ease;
+  --tran-05: all 0.5s ease;
+
+  --vh: 1vh;
+}
+
+/* Dark mode overrides */
+body.dark {
+  --body-color: #18191A;
+  --sidebar-color: #242526;
+
+  --senti-primary-color: #c0c0c0; 
+  --senti-green-color: #66ff0098;
+
+  --senti-text-bg: #3771C8FF;
+  --primary-color-light: #3A3B3C;
+  --senti-green-light-bg: #67ff001a;
+  --sibebar-toggle: var(--senti-primary-color);
+  --sidebar-mobile-toggle-back: var(--senti-primary-color);
+
+  --senti-hover-light-bg: #3771c8ff;
+  --senti-hover-close-icon: var(--senti-text-bg);
+  --senti-hover-close-link: var(--senti-green-color);
+  --senti-hover-white-text: var(--senti-green-color);
+  --senti-hover-light-primary-bg: rgba(55, 113, 200, 0.800);
+  --senti-hover-mobile-toggle: #3771c8ff;
+  --senti-hover-mobile-toggle-1: #E4E9F7;
+
+  --toggle-color: #FFF;
+  --text-color: #4b4b4b;
+}
