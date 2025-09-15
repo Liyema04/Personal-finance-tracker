@@ -1,6 +1,7 @@
-{% extends 'transactions/index.html' %}
+{% extends 'transactions/testing-new-sidebar/index-2.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+{% load sass_tags %}
 
 {% block title %}<title>Senti Moves</title>{% endblock %}
 
@@ -53,6 +54,7 @@
     font-weight: 500;
     margin-left: 0.5rem;
   }
+  
 </style>
 
 <!-- <div class="tracker-container"> -->
@@ -62,14 +64,14 @@
   <section class="user-message-block">
     <div class="message-items">
       <h1 class="welcome-title text-primary">Welcome back, {{ request.user }}!<i>👋</i></h1>
-      <span class="welcome-text fs-5 fw-medium text-secondary">You've made {{ current_month_moves }} moves this month. Keep up the Wise motion!</span>
+      <span class="welcome-text fs-5 fw-medium text-secondary">You've made {{ current_month_moves }} moves this month. {% if current_month_moves > 0 %} Sharp-sharp! You're moving smart with your money. {% else %} Let's go! Kick off your rand journey now.{% endif %}</span>
     </div>
   </section>
   <!-- Charts Row -->
   <div class="row g-3 mb-4">
     <!-- Monthly Cash Flow Chart -->
     <div class="col-xl-6 col-lg-12">
-      <div class="card shadow-sm h-100">
+      <div class="card bg-card-color shadow-sm h-100">
         <div class="card-body p-3">
           <h5 class="card-title text-primary">
             <i class="bi bi-graph-up me-2"></i>Monthly Cash Flow
@@ -83,7 +85,7 @@
     
     <!-- Spending Categories Chart -->
     <div class="col-xl-6 col-lg-12">
-      <div class="card shadow-sm h-100">
+      <div class="card bg-card-color shadow-sm h-100">
         <div class="card-body p-3">
           <h5 class="card-title text-primary">
             <i class="bi bi-pie-chart me-2"></i>Spending Categories
@@ -101,7 +103,7 @@
   <div class="row g-3">
     <!-- Recent Activity Table -->
     <div class="col-lg-8 col-md-12">
-      <div class="card shadow-sm">
+      <div class="card bg-card-color shadow-sm">
         <div class="card-body">
           <h5 class="card-title text-primary mb-3">
             <i class="bi bi-clock-history me-2"></i>Recent Activity
@@ -117,7 +119,7 @@
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="tbody-text-dark">
                 {% for t in transactions %}
                 <tr>
                   <td>{{ t.date|date:"M d, Y" }}</td>
@@ -201,7 +203,7 @@
                     </span>
                   </td>
                   <td>
-                    <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'detail_transaction' t.id %}" class="btn btn-sm btn-outline-info">View</a>
                   </td>
                 </tr>
                 {% endfor %}
@@ -214,38 +216,44 @@
     
     <!-- Summary Card -->
     <div class="col-lg-4 col-md-12">
-      <div class="card border-1 shadow-sm h-100">
+      <div class="card bg-card-color border-1 shadow-sm h-100">
         <div class="card-body"> 
           <h5 class="card-title text-primary mb-4">
             <i class="bi bi-graph-up me-2"></i>30-Day Summary
             <span class="summary-period-badge">Recent</span>
           </h5>
+
           <div class="d-flex justify-content-between mb-3">
-            <span class="text-muted">30-Day Balance:</span>
-            <span class="fw-bold {% if last_30_days_balance >= 0%}text-success{% else %}text-danger{% endif %}">
+            <span class="card-text">30-Day Balance:</span>
+            <span class="fw-bold {% if last_30_days_balance > 0 %}text-success{% else %}text-danger{% endif %}">
               R {{ last_30_days_balance|floatformat:2 }}</span>
           </div>
+
           <hr>
+          
           <div class="d-flex justify-content-between mb-3">
-            <span class="text-muted">Income (30d):</span> <!--30 day period-->
+            <span class="card-text">Income (30d):</span> <!--30 day period-->
             <span class="text-success">R {{ last_30_days_income|floatformat:2 }}</span> <!--Updated-->
           </div>
+          
           <div class="d-flex justify-content-between mb-3">
-            <span class="text-muted">Expenses (30d):</span> <!--30 day period-->
-            <span class="text-danger">R {{ last_30_days_expenses|floatformat:2 }}</span> <!--Updated--->
+            <span class="card-text">Expenses (30d):</span> <!--30 day period-->
+            <span class="text-danger fw-bold">R {{ last_30_days_expenses|floatformat:2 }}</span> <!--Updated--->
           </div>
+          
           <hr>
+          
           <div class="d-flex justify-content-between mb-3">
-            <span class="text-muted">This Month Net:</span>
-            <span class="{% if current_month_net >= 0 %}text-success{% else %}text-danger{% endif %}">
+            <span class="card-text">This Month Net:</span>
+            <span class="{% if current_month_net == 0 %}text-secondary{% elif current_month_net > 0 %}text-success{% else %}text-danger{% endif %}">
               R {{ current_month_net|floatformat:2 }}
             </span>
           </div>
 
           <div class="mt-4 pt-3 border-top">
-            <small class="text-muted d-flex justify-content-between">
-              <span>Lifetime Balance:</span>
-              <span class="{% if balance >= 0 %}text-success{% else %}text-danger{% endif %}">
+            <small class="card-text d-flex justify-content-between">
+              <span class="lb-item p-1">Lifetime Balance</span>
+              <span class="{% if balance >= 0 %}text-info{% else %}text-danger{% endif %} fw-bold">
                 R {{ balance|floatformat:2 }}
               </span>
             </small>

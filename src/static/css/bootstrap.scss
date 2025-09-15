@@ -1,0 +1,11 @@
+/* Apply changes: */
+/* command -> sass bootstrap.scss bootstrap.css */
+
+$primary: #3771C8;
+$success: #66ff00;
+$secondary: #b3b3b3;
+$body-bg: #FFF;
+$body-color: #707070;
+
+/* @import "colors"; */
+@import "node_modules/bootstrap/scss/bootstrap";

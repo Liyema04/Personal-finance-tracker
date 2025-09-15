@@ -1,0 +1,200 @@
+// bootstrap-custom.scss
+
+//1. Import your variables here
+@use "./variables";
+
+// 2. Import Bootstrap
+@use "node_modules/bootstrap/scss/bootstrap" with (
+  // 3. Override Bootstrap's default variables with your Sass variables
+  $primary: #3771C8, // Senit -> Blue
+  $success: #66ff00, // Senti -> Green
+  $secondary: #b3b3b3, // Senti -> Grey
+  $body-bg: #FFF, // Senti -> White
+  $body-color: #707070, // Senti -> Darker Grey
+  $danger: #dc2f02, // Senti -> Red/danger
+  $info: #669bbc, // Senti -> Info
+);
+
+// 4. Add your custom utilities that use CSS custom properties
+.bg-senti-primary {
+  background-color: var(--senti-primary-color) !important;
+}
+
+body .bg-card-color {
+  background-color: #FFF !important;
+}
+
+body .card-text {
+  color: var(--text-color);
+}
+
+body .card-text .lb-item {
+  background: linear-gradient(135deg, #3771c8ff 0%, #67ff00 100%);
+  border-radius: 6px !important;
+  color: #fff;
+} 
+
+.text-senti-primary {
+  color: var(--senti-primary-color) !important;
+}
+
+.border-senti-primary {
+  border-color: var(--senti-primary-color) !important;
+}
+
+.btn-senti-primary {
+  background-color: var(--senti-primary-color);
+  border-color: var(--senti-primary-color);
+  color: white;
+  
+  &:hover {
+    background-color: var(--senti-hover-light-bg);
+    border-color: var(--senti-hover-light-bg);
+    color: var(--senti-hover-white-text);
+  }
+}
+
+// Light mode table styles (default)
+.table {
+  --bs-table-bg: var(--sidebar-color);
+  --bs-table-color: var(--text-color);
+  --bs-table-border-color: #dee2e6;
+  --bs-table-striped-bg: #f8f9fa;
+  --bs-table-hover-bg: rgba(55, 113, 200, 0.1);
+
+  th {
+    background-color: var(--primary-color-light);
+    color: var(--senti-primary-color);
+    border-bottom: 2px solid rgba(55, 113, 200, 0.2);
+    font-weight: 600;
+  }
+
+  td {
+    color: var(--text-color);
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  // Table hover effect for light mode
+  .table-hover tbody tr:hover {
+    --bs-table-hover-bg: rgba(55, 113, 200, 0.2);
+  }
+
+  td {
+    color: var(--text-color);
+  }
+}
+
+
+// Dark mode specific utilities
+body.dark {
+  .btn-primary {
+    background-color: var(--senti-primary-color);
+    border-color: var(--senti-primary-color);
+  }
+  
+  .text-primary {
+    color: var(--senti-primary-color) !important;
+  }
+  
+  .bg-primary {
+    background-color: var(--senti-primary-color) !important;
+  }
+
+  .bg-card-color {
+    background-color: #242526 !important;
+  }
+
+  .card-text {
+    color: #e4e6ea;
+  }
+
+  .card-text .lb-item {
+    background: linear-gradient(135deg, #3771c8ff 0%, #707070 100%);
+    border-radius: 6px !important;
+    color: #fff;
+  }
+
+  // Dark mode table styles
+  .table {
+    --bs-table-bg: var(--sidebar-color);
+    --bs-table-color: #e4e6ea;
+    --bs-table-border-color: #3a3b3c;
+    --bs-table-striped-bg: #2c2d2e;
+    --bs-table-hover-bg: var(--primary-color-light);
+    
+    background-color: var(--sidebar-color);
+    color: #e4e6ea;
+    
+    th {
+      background-color: var(--primary-color-light);
+      color: var(--senti-primary-color);
+      border-bottom: 2px solid var(--senti-text-bg);
+      font-weight: 600;
+    }
+    
+    td {
+      color: #e4e6ea;
+      border-bottom: 1px solid #3a3b3c;
+    }
+  }
+  
+  // Dark mode table hover effects
+  .table-hover tbody tr:hover {
+    --bs-table-hover-bg: var(--primary-color-light);
+    background-color: var(--primary-color-light);
+    
+    td {
+      color: #ffffff;
+    }
+  }
+  
+  // Badge styling for dark mode
+  .badge {
+    &.bg-success {
+      background-color: #198754 !important;
+      color: #ffffff;
+    }
+    
+    &.bg-danger {
+      background-color: #dc3545 !important;
+      color: #ffffff;
+    }
+  }
+  
+  //Button styling for dark mode
+  .btn-outline-info {
+    border-color: var(--senti-text-bg);
+    color: var(--senti-text-bg);
+
+    &:hover {
+      background-color: var(--senti-text-bg);
+      color: #ffffff;
+      border-color: var(--senti-text-bg);
+    }
+  }
+
+  // Table responsive wrapper
+  .table-responsive {
+    border: 1px solid var(--primary-color-light);
+    border-radius: 0.5rem;
+    
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--primary-color-light);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--senti-text-bg);
+      border-radius: 4px;
+      
+      &:hover {
+        background: var(--senti-primary-color);
+      }
+    }
+  }  
+}

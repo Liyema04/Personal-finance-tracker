@@ -1,4 +1,7 @@
 {% load static %}
+{% load sass_tags %}
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +10,13 @@
 
     <!--Bootstrap-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!--<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">-->
+    
+
+    <!--Custom Bootstrap-->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-custom.css' %}">
+    <link href="{% static 'css/bootstrap-custom.scss' %}" rel="stylesheet">
+
     
     <!--FontAwesome-->
     <script src="https://kit.fontawesome.com/34fa937ae1.js" crossorigin="anonymous"></script>
@@ -21,7 +30,8 @@
     <!-- Local Font Preload with Error Handling -->
     <link rel="preload" href="{% static 'fonts/WorkSans-Variable.woff2' %}" as="font" type="font/woff2" crossorigin>
     
-    <link rel="stylesheet" href="{% static 'css/fonts.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
     {% block title %}<title>Dashboard Sidebar Menu | Dark-Light Mode </title>{% endblock %}
 
     <!--Sidebar CSS-->
@@ -206,14 +216,14 @@
                         </li>
                     </ul>
                 </div>
-            </header>
+            </header> 
 
-            <section>
-                <div class="text">Testing... <i class="e-icon">🛠️</i></div>
-            </section>
+            {% block main_content %}
+                    <section>
+                        <div class="text">Testing... <i class="e-icon">🛠️</i></div>
+                    </section>
+            {% endblock %}
         </main> 
-        {% block main_content %}
-        {% endblock %}
 
         <!-- Add to your base template (index-2.html) -->
         {% block footer_nav %}

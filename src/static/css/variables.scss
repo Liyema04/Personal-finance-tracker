@@ -1,0 +1,87 @@
+// variables.scss
+// Define your colors as Sass variables first
+$senti-primary: #3771C8;
+$senti-green: #66ff00;
+$senti-text-bg: #b3b3b3;
+$body-bg-light: #FFF;
+$sidebar-bg-light: #FFF;
+$primary-light: #F6F5FF;
+
+/*Content holders*/
+$card-body-light: #FFF;
+
+// Dark mode colors
+$body-bg-dark: #18191A;
+$sidebar-bg-dark: #242526;
+$senti-primary-dark: #c0c0c0;
+$primary-light-dark: #3A3B3C;
+$text-color-dark: #4b4b4b;
+
+/*Content holders - Dark mode*/
+$card-body-dark: #242526; 
+
+// Bootstrap variable overrides
+$primary: $senti-primary;
+$success: $senti-green;
+$body-bg: $body-bg-light;
+$sidebar-bg: $sidebar-bg-light;
+
+// Define CSS custom properties for runtime switching
+:root {
+  // Light mode (default)
+  --body-color: #{$body-bg-light};
+  --sidebar-color: #{$sidebar-bg-light};
+  --logo-primary-color: #{$senti-primary};
+  --logo-green-color: #{rgba($senti-green, 0.6)};
+  --senti-primary-color: #{$senti-primary};
+  --senti-green-color: #{rgba($senti-green, 0.6)};
+  --senti-text-bg: #{$senti-text-bg};
+  --primary-color-light: #{$primary-light};
+  --senti-green-light-bg: #{rgba($senti-green, 0.1)};
+  --sibebar-toggle: var(--senti-primary-color);
+  --sidebar-mobile-toggle-back: var(--senti-primary-color);
+  --senti-card-body-light: var($card-body-light);
+  
+  // Hover states
+  --senti-hover-light-bg: #{$senti-primary};
+  --senti-hover-close-icon: var(--senti-text-bg);
+  --senti-hover-close-link: var(--primary-color-light);
+  --senti-hover-white-text: #F9F6EE;
+  --senti-hover-light-primary-bg: #{rgba($senti-primary, 0.8)};
+  --senti-hover-mobile-toggle: #7d7d7d;
+  --senti-hover-mobile-toggle-1: #{$body-bg-light};
+  
+  // Other
+  --toggle-color: #DDD;
+  --text-color: #707070;
+  
+  // Transitions
+  --tran-02: all 0.2s ease;
+  --tran-03: all 0.3s ease;
+  --tran-04: all 0.4s ease;
+  --tran-05: all 0.5s ease;
+  --vh: 1vh;
+}
+
+// Dark mode overrides
+body.dark {
+  --body-color: #{$body-bg-dark};
+  --sidebar-color: #{$sidebar-bg-dark};
+  --senti-primary-color: #{$senti-primary-dark};
+  --senti-green-color: #{rgba($senti-green, 0.6)};
+  --senti-text-bg: #{$senti-primary};
+  --primary-color-light: #{$primary-light-dark};
+  --senti-green-light-bg: #{rgba($senti-green, 0.1)};
+  --sibebar-toggle: var(--senti-primary-color);
+  --sidebar-mobile-toggle-back: var(--senti-primary-color);
+  --senti-hover-light-bg: #{$senti-primary};
+  --senti-hover-close-icon: var(--senti-text-bg);
+  --senti-hover-close-link: var(--senti-green-color);
+  --senti-hover-white-text: var(--senti-green-color);
+  --senti-hover-light-primary-bg: #{rgba($senti-primary, 0.8)};
+  --senti-hover-mobile-toggle: #{$senti-primary};
+  --senti-hover-mobile-toggle-1: #{$body-bg-light};
+  --toggle-color: #FFF; 
+  --text-color: #{$text-color-dark};
+  --senti-card-body-dark: var($card-body-dark);
+}
