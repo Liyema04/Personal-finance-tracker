@@ -585,6 +585,14 @@ body.dark .switch::before {
     .sidebar .mobile-close-btn {
         display: none !important;
     }
+
+    .mobile-scroll-blur, 
+    .mobile-scroll-blur-subtle {
+        animation: none;
+        filter: none;
+        opacity: 1;
+        transform: none;
+    }
 }
 
 /* ---- MOBILE SPECIFIC ADJUSTMENTS ---- */
@@ -863,7 +871,18 @@ body.dark .switch::before {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
-    }  
+    }
+    
+    /* Fallback for browsers that don't support scroll timeline */
+    @supports not (animation-timeline: view()) {
+        .mobile-scroll-blur,
+        .mobile-scroll-blur-subtle {
+            animation: none;
+            filter: none;
+            opacity: 1;
+            transform: none;
+        }
+    }
 
     /* Backdrop overlay when sidebar is open */
     body.sidebar-open::before {
@@ -901,6 +920,82 @@ body.dark .switch::before {
     
     .header-top-flex .top-nav {
         display: none !important; /* Hide desktop header nav */
+    }
+
+    /* On scroll blur animation - mobile only */
+    .mobile-scroll-blur {
+        animation: mobileBlurAnimation both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+    }
+
+    .mobile-scroll-blur-subtle {
+        animation: subtleMobileblurAnimation both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+    }
+
+    /* For (.card)'s holding tables  */
+    .mobile-scroll-fade {
+        animation: mobileFadeAnimation both;
+        animation-timeline: view();
+        animation-range: entry 0% exit 100%;
+    }
+
+    @keyframes mobileBlurAnimation {
+        0% {
+            filter: blur(4px);
+            opacity: 0.7;
+            transform: translateY(8px);
+
+        }
+        
+        45%,
+        55% {
+            filter: blur(0px);
+            opacity: 1;
+            transform: translateY(0px);
+        }
+
+        100% {
+            filter: blur(4px);
+            opacity: 0.7;
+            transform: translateY(-8px);
+        }
+    }
+
+    @keyframes subtleMobileblurAnimation {
+        0% {
+            filter: blur(2px);
+            opacity: 0.85;
+        }
+
+        45%, 55% {
+            filter: blur(0px);
+            opacity: 1;
+        }
+
+        100% {
+            filter: blur(2px);
+            opacity: (0.85);
+        }
+    }
+
+    @keyframes mobileFadeAnimation {
+        0% {
+            opacity: 0.7;
+            transform: translateY(5px);
+        }
+
+        45%, 55% {
+            opacity: 1;
+            transform: translateY(0px);
+        }
+
+        100% {
+            opacity: (0.7);
+            transform: translateY(-5px);
+        }
     }
 }
 

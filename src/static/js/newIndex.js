@@ -43,6 +43,24 @@ function optimizeMobileLayout() {
     setMobileSidebarHeight();
 }
 
+function manageScrollAnimations() {
+    const cards = document.querySelectorAll('.card');
+
+    if (isMobile()) {
+        // Adding mobile scroll animation class
+        cards.forEach(card => {
+            if (!card.classList.contains('mobile-scroll-blur-subtle')) {
+                card.classList.add('mobile-scroll-blur');
+            }
+        });
+    }else{
+        // Removing mobile scroll animation if on desktop
+        cards.forEach(card => {
+            card.classList.remove('mobile-scroll-blur-subtle');
+        });
+    }
+}
+
 // Call this function on resize and initialization
 window.addEventListener('resize', optimizeMobileLayout);
 
@@ -223,6 +241,8 @@ window.addEventListener("resize", () => {
         body.classList.remove("sidebar-open");
         updateMobileIcon(false);
         setMobileSidebarHeight(); // Reset height
+
+        manageScrollAnimations(); // scroll animations
         
         // Re-setup toggles after resize
         setTimeout(setupToggles, 100);
@@ -232,6 +252,8 @@ window.addEventListener("resize", () => {
         body.classList.remove("sidebar-open");
         sidebar.style.transform = '';
         sidebar.style.height = ''; // Reset height
+
+        manageScrollAnimations(); // remove scroll animations
 
         // On desktop, ensure sidebar is open by default
         if (sidebar.classList.contains("close")) {
@@ -257,6 +279,9 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Set initial sidebar height
     setMobileSidebarHeight();
+
+    // Initializing scroll animations
+    manageScrollAnimations();
     
     // On desktop, ensure sidebar is open by default 
     if (!isMobile() && sidebar.classList.contains("close")) {
