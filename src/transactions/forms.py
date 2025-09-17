@@ -10,7 +10,15 @@ class UserRegistrationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = ("first_name", "last_name","username", "email", "password1", "password2")
+        labels = {
+            "first_name": "Name", 
+            "last_name": "Surname", 
+            "username": "Username", 
+            "email": "Email", 
+            "password1": "Password", 
+            "password2": "Confirm Password",
+        }
         
 # Transaction Form (ModelForm for the Transaction model)
 class TransactionForm(forms.ModelForm):
