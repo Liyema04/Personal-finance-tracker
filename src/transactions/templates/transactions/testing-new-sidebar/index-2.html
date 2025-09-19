@@ -255,7 +255,7 @@
                         </a>
                     </li>
                     <li class="float-item">
-                        <a class="float-link" href="{% url 'accounts_profile' %}" aria-label="View profile">
+                        <a class="float-link {% if active_links.accounts %}active{% endif %}" href="{% url 'accounts_profile' %}" aria-label="View profile">
                             <i class="fa-solid fa-user-circle"></i>
                             <span class="head-text">Profile</span>
                         </a>

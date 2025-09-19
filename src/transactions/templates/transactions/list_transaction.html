@@ -271,6 +271,32 @@
         padding: .5rem !important; 
     }
 
+    /* Active Filter state */
+    .filter-dropdown-menu .dropdown-item.active {
+    background-color: #3771C8FF;
+    color: white;
+    font-weight: 600;
+    }
+
+    .filter-dropdown-menu .dropdown-item.active:hover,
+    .filter-dropdown-menu .dropdown-item.active:focus {
+        background-color: #7d7d7d;
+        color: #FFF;
+    }
+
+    .filter-dropdown-menu .dropdown-item.active i {
+        color: #FFF !important;
+    }
+
+    /* Optional: Add visual indicator to the filter button when a filter is active */
+    .filter-dropdown-btn.filtered {
+        background-color: #3771C8FF;
+        color: #FFF;
+    }
+
+    .filter-dropdown-btn.filtered:hover {
+        background-color: #7d7d7d;
+    }
 
 </style>
 <!--Main Content-->
@@ -360,27 +386,35 @@
                     <!-- <span class="badge bg-primary">{{ total_count }} total</span> -->
                     {% if total_count > 0 %}
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" id="filterDropdownBtn" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-funnel me-1"></i>Filter
+                        <button class="filter-dropdown-btn btn btn-outline-secondary btn-sm dropdown-toggle{% if transaction_filter_type %} filtered{% endif %}" 
+                                id="filterDropdownBtn" 
+                                type="button" 
+                                data-bs-toggle="dropdown">
+                            <i class="bi bi-funnel me-1"></i>
+                            {% if transaction_filter_type %}
+                                Filter: {{ transaction_filter_type|title }}
+                            {% else %}
+                                Filter
+                            {% endif %}
                         </button>
 
                         <ul class="dropdown-menu dropdown-menu-end filter-dropdown-menu" aria-labelledby="filterDropdownBtn">
                             <!--Fallback href for non-JS users-->
-                            <li><a class="dropdown-item filter-dropdown-item" href="?transaction_type=income" data-type="income">
+                            <li><a class="dropdown-item filter-dropdown-item {% if transaction_filter_type == 'income' %}active{% endif %}" href="?transaction_type=income" data-type="income">
                                 <i class="bi bi-arrow-up-circle me-2 text-success"></i>Income Only</a>
                             </li>
 
-                            <li><a class="dropdown-item filter-dropdown-item" href="?transaction_type=expense" data-type="expense">
+                            <li><a class="dropdown-item filter-dropdown-item {% if transaction_filter_type == 'expense' %}active{% endif %}" href="?transaction_type=expense" data-type="expense">
                                 <i class="bi bi-arrow-down-circle me-2 text-danger"></i>Expenses Only</a>
                             </li>
                             
                             <li><hr class="dropdown-divider"></li>
                             
-
+                            <!--Implement Context-proccess once functionality complete -->
                             <li><a class="dropdown-item" href="#"><i class="bi bi-calendar me-2"></i>This Month</a></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-calendar3 me-2"></i>Last Month</a></li>
                             
-                            <li><a class="dropdown-item filter-dropdown-item" href="?" data-type="">
+                            <li><a class="dropdown-item filter-dropdown-item {% if not transaction_filter_type %}active{% endif %}" href="?" data-type="">
                                 <i class="fa-solid fa-broom me-2"></i> Clear Filter</a>
                             </li>
                         </ul>

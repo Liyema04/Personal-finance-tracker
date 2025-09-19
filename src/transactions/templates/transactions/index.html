@@ -323,7 +323,7 @@
                         <img src="{% static 'images/accounts/avatar.jpeg' %}" width="36" class="rounded-circle">
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{% url 'accounts_profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item {% if active_links.accounts %}active{% endif %}" href="{% url 'accounts_profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
                 </div> 
