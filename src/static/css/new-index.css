@@ -31,7 +31,7 @@
 
     --senti-text-bg: #b3b3b3; /*section titles*/
     --primary-color-light: #F6F5FF;
-    --senti-green-light-bg: #67ff001a;
+    --senti-green-light-bg: #3771c81a; 
     --sibebar-toggle: var(--senti-primary-color);
     --sidebar-mobile-toggle-back: var(--senti-primary-color);/*#F9F6EE bone white*/
 
@@ -40,13 +40,16 @@
     --senti-hover-close-icon: var(--senti-text-bg);
     --senti-hover-close-link: var(--primary-color-light); 
     --senti-hover-white-text: #F9F6EE; /*bone white*/
-    --senti-hover-light-primary-bg: rgba(55, 113, 200, 0.800);
+    --senti-hover-light-primary-bg: #3771c8cc;
     --senti-hover-mobile-toggle: #7d7d7d;
     --senti-hover-mobile-toggle-1: #E4E9F7;
 
     /*Other*/
     --toggle-color: #DDD;
     --text-color: #707070;
+    --active-hover-text-icon: #3771C8FF;
+    --active-hover-close-icon: #FFF;
+    --active-hover-brd-b: #c0c0c0;
 
     /*==== Transition ====*/
     --tran-02: all 0.2s ease ;
@@ -75,12 +78,12 @@ body.dark {
     --sidebar-color: #242526;
 
     /*Senti Colors*/
-    --senti-primary-color: #c0c0c0; /*bone white*/ 
+    --senti-primary-color: #c0c0c0;
     --senti-green-color: #66ff0098;
 
     --senti-text-bg: #3771C8FF; 
     --primary-color-light: #3A3B3C;
-    --senti-green-light-bg: #67ff001a;
+    --senti-green-light-bg: #3771c81a;
     --sibebar-toggle: var(--senti-primary-color);
     --sidebar-mobile-toggle-back: var(--senti-primary-color); /*--senti-primary-color*/
 
@@ -97,6 +100,9 @@ body.dark {
     /*Other*/
     --toggle-color: #FFF;
     --text-color: #4b4b4b;
+    --active-hover-text-icon: #c0c0c0; 
+    --active-hover-close-icon: #66FF0098;
+    --active-hover-brd-b: #c0c0c0;
 
 }
 
@@ -135,6 +141,23 @@ body.dark {
     border-radius: 6px;
     margin-bottom: 8px;
     transition: var(--tran-03);
+}
+
+/*Sidebar active state*/
+.sidebar .nav-link a.active {
+    background: var(--senti-green-light-bg);
+    border-left: 3px solid var(--senti-primary-color);
+}
+
+.sidebar .nav-link a.active:hover .icon,
+.sidebar .nav-link a.active:hover .text {
+    color: var(--active-hover-text-icon) !important;
+    transition: var(--tran-03);
+}
+
+
+.sidebar .nav-link a.active:hover {
+    background: var(--senti-green-light-bg);
 }
 
 /* For smooth open and close */
@@ -237,6 +260,24 @@ body.dark {
     width: auto;
     justify-content: center;
     margin: 0 auto; /* Center the icon */
+}
+
+/*Sidebar close active-state*/
+.sidebar.close .nav-link a.active {
+    background: var(--senti-green-light-bg);
+    border-left: none !important;
+    border-bottom: 3px solid var(--senti-primary-color);
+}
+
+.sidebar.close .nav-link a.active:hover .icon,
+.sidebar.close .nav-link a.active:hover .text {
+    color: var(--active-hover-close-icon) !important;
+    transition: var(--tran-03);
+}
+
+.sidebar.close .nav-link a.active:hover {
+    background: var(--senti-green-light-bg);
+    border-bottom: 3px solid var(--active-hover-brd-b);
 }
 
 /*Sidebar toggle flip */

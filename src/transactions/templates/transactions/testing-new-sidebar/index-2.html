@@ -72,7 +72,7 @@
                         <ul class="menu-links">
                             <!--New <li> structure-->
                             <li class="nav-link">
-                                <a href="#">
+                                <a class="{% if active_links.dashboard %}active{% endif %}" href="{% url 'dashboard' %}" data-bs-toggle="tooltip" title="Dashboard">
                                     <div class="icon">
                                         <i class="fa-solid fa-bolt"></i>
                                     </div>
@@ -81,7 +81,7 @@
                             </li>
 
                             <li class="nav-link">
-                                <a href="#" data-bs-toggle="tooltip" title="Track your income and spending">
+                                <a class="{% if active_links.transactions %}active{% endif %}" href="{% url 'list_transaction' %}" data-bs-toggle="tooltip" title="Track your income and spending">
                                     <div class="icon">
                                         <i class="fa-solid fa-money-bills"></i>
                                     </div>
@@ -95,7 +95,7 @@
                             </li>
 
                             <li class="nav-link">
-                                <a href="#">
+                                <a class="{% if active_links.quick_add %}active{% endif %}" href="{% url 'add_transaction' %}" data-bs-toggle="tooltip" title="Make a Move">
                                     <div class="icon">
                                         <i class="fa-solid fa-circle-plus"></i>
                                     </div>
@@ -209,7 +209,7 @@
                             </a>
                         </li>
                         <li class="head-item">
-                            <a class="head-link">
+                            <a class="head-link" href="{% url 'accounts_profile' %}">
                                 <i class="fa-solid fa-user-circle"></i> <!--Icons-->
                                 <span class="head-text">Profile</span>
                             </a>
@@ -255,7 +255,7 @@
                         </a>
                     </li>
                     <li class="float-item">
-                        <a class="float-link" href="#}" aria-label="View profile">
+                        <a class="float-link" href="{% url 'accounts_profile' %}" aria-label="View profile">
                             <i class="fa-solid fa-user-circle"></i>
                             <span class="head-text">Profile</span>
                         </a>
