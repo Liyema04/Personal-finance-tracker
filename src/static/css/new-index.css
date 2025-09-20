@@ -1388,7 +1388,7 @@ body.dark .float-nav {
   border: none;
 }
 
-.float-link:active {
+.float-link.active {
     transform: scale(0.95);
     transition: transform 0.1s ease;
     border-bottom: 2px solid var(--senti-hover-mobile-toggle-1);
