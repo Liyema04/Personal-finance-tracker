@@ -4,9 +4,178 @@
 
 {% block title %}<title>Log Move</title>{% endblock %}
 
-
-
 {% block main_content %}
+<style>
+  .custom-input, 
+  .custom-select {
+      border-radius: 1rem !important;
+      border: 1px solid #dee2e6 !important;
+      padding: 12px 16px !important;
+      font-size: 16px !important;
+      transition: all 0.2s ease !important;
+      background-color: #fff !important;
+  }
+
+  .custom-input:focus, 
+  .custom-select:focus {
+      border-color: #007bff !important;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+      outline: none !important;
+  }
+
+  /* Form Labels */
+  .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      font-size: 14px;
+  }
+
+  /* Radio Button Styling */
+  .form-check {
+      padding: 8px 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 1rem;
+      margin-right: 12px;
+      transition: all 0.2s ease;
+      background-color: #fff;
+  }
+
+  .form-check:hover {
+      border-color: #007bff;
+      background-color: #f8f9fa;
+  }
+
+  .form-check input[type="radio"]:checked + .form-check-label {
+      color: #007bff;
+      font-weight: 600;
+  }
+
+  .form-check input[type="radio"]:checked {
+      background-color: #007bff;
+      border-color: #007bff;
+  }
+
+  /* Category Buttons */
+  .category-buttons .btn {
+      border-radius: 1rem;
+      border: 2px solid #e9ecef;
+      background: white;
+      color: #6c757d;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      width: 100%;
+  }
+
+  .category-buttons .btn:hover {
+      border-color: #007bff;
+      color: #007bff;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .category-buttons .btn.active {
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
+      box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+  }
+
+  .category-buttons .btn.income-category.active {
+      background: #28a745;
+      border-color: #28a745;
+      box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+  }
+
+  .category-buttons .btn.expense-category.active {
+      background: #dc3545;
+      border-color: #dc3545;
+      box-shadow: 0 2px 8px rgba(220,53,69,0.3);
+  }
+
+  /* Submit Button */
+  .btn-success {
+      border-radius: 1rem !important;
+      padding: 12px 24px !important;
+      font-weight: 600 !important;
+      font-size: 16px !important;
+      transition: all 0.2s ease !important;
+  }
+
+  .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(40,167,69,0.3);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+      .category-buttons {
+          display: none !important;
+      }
+      
+      .category-select {
+          display: block !important;
+      }
+      
+      /* Enhanced mobile dropdown */
+      .custom-select {
+          font-size: 16px !important; /* Prevents zoom on iOS */
+          min-height: 48px !important; /* Better touch target */
+      }
+      
+      .form-check {
+          margin-bottom: 8px;
+          margin-right: 8px;
+          padding: 12px 16px;
+      }
+      
+      .custom-input {
+          font-size: 16px !important; /* Prevents zoom on iOS */
+          min-height: 48px !important; /* Better touch target */
+      }
+      
+      /* Stack radio buttons vertically on very small screens */
+      @media (max-width: 480px) {
+          .d-flex.gap-3 {
+              flex-direction: column !important;
+              gap: 8px !important;
+          }
+          
+          .form-check {
+              margin-right: 0;
+              width: 100%;
+          }
+      }
+  }
+
+  /* Focus states for accessibility */
+  .custom-input:focus-visible, 
+  .custom-select:focus-visible {
+      outline: 2px solid #007bff;
+      outline-offset: 2px;
+  }
+
+  /* Error styling */
+  .text-danger {
+      font-size: 12px;
+      margin-top: 4px;
+      font-weight: 500;
+  }
+
+  .is-invalid.custom-input,
+  .is-invalid.custom-select {
+      border-color: #dc3545 !important;
+  }
+
+  .is-invalid.custom-input:focus,
+  .is-invalid.custom-select:focus {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+</style>
+
 <!--Main Content-->
 <main class="tracker-main-content p-4 flex-grow-1">
       <!--Header Section-->
@@ -23,9 +192,70 @@
         <div class="card border-0 shadow-sm mb-4 w-100" style="min-width: 250px;">
           <div class="card-body">
             <div class="form-group">
-              <form method="post">
+              <form method="post" id="transaction-form" >
                 {% csrf_token %}
-                {{ form|crispy }}
+
+                 <!-- Amount Field -->
+                <div class="mb-3">
+                  <label for="{{ form.amount.id_for_label }}" class="form-label">{{ form.amount.label }}</label>
+                  {{ form.amount }}
+                  {% if form.amount.errors %}
+                    <div class="text-danger">{{ form.amount.errors }}</div>
+                  {% endif %}
+                </div>
+
+                <!--Date-->
+                <div class="mb-3">
+                  <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+                  {{ form.date }}
+                  {% if form.date.errors %}
+                    <div class="text-danger">{{ form.date.errors }}</div>
+                  {% endif %}  
+                </div>
+
+                <!-- Type -->
+                <div class="mb-3">
+                  <label fclass="form-label">{{ form.type.label }}</label>
+                  <div class="d-flex gap-3">
+                    {% for choice in form.type %}
+                      <div class="form-check">
+                        {{ choice.tag }}
+                        <label class="form-check-label" for="{{ choice.id_for_label }}">
+                          {{ choice.choice_label }}
+                        </label>    
+                      </div>
+                    {% endfor %}
+                  </div>
+                  {% if form.type.errors %}
+                    <div class="text-danger">{{ form.type.errors }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Category -->
+                <div class="mb-3">
+                  <label class="form-label">{{ form.category.label }}</label>
+                  {{ form.category }}
+                  
+                  <!-- Category Buttons Container -->
+                  <div id="category-buttons" class="category-buttons d-none">
+                    <div class="row g-2" id="category-grid">
+                      <!-- Category buttons will be inserted here by JavaScript -->
+                    </div>
+                  </div>
+                  {% if form.category.errors %}
+                    <div class="text-danger">{{ form.category.errors }}</div>
+                  {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                  <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+                  {{ form.description }}
+                  {% if form.description.errors %}
+                    <div class="text-danger">{{ form.description.errors }}</div>
+                  {% endif %}
+                </div>
+
                 <button type="submit" class="btn btn-success mt-3">
                   <i class="bi bi-check-lg me-2"></i>Save
                 </button>
@@ -35,4 +265,54 @@
         </div>
       </div>
 </main>
+<script>
+  // Category data
+  const categories = {
+    income: [
+      ['SALARY', 'Work/Salary'],
+      ['SIDE_HUSTLE', 'Side Hustle'],
+      ['BUSARY', 'Scholarship/Bursary'],
+      ['ALLOWANCE', 'Family Support'],
+      ['STUDENT_LOAN', 'Student Loan'],
+      ['GRANT', 'Grant'],
+      ['GIFT', 'Gift']
+    ],
+
+    expense: [
+      ['GROCERIES', 'Groceries'],
+      ['RENT', 'Rent/Accommodation'],
+      ['TRANSPORT', 'Transport'],
+      ['DATA', 'Data/Airtime'],
+      ['GYM', 'Gym/Fitness'],
+      ['INSURANCE', 'Insurance'],
+      ['DEBT', 'Debt Repayment'],
+      ['ENTERTAINMENT', 'Entertainment'],
+      ['DINING', 'Eating Out'],
+      ['EDUCATION', 'Education'],
+      ['HEALTH', 'Health/Medical'],
+      ['CLOTHING', 'Clothing'],
+      ['SAVINGS', 'Savings/Investments'],
+      ['SUBSCRIPTIONS', 'Subscriptions'],
+      ['PERSONAL_GROOMING', 'Beauty/Grooming']
+    ],
+  }
+
+  function updateCategories(transactionType) {
+    const categorySelect = document.getElementById('id_category');
+    const categoryButtons = document.getElementById('category-buttons');
+    const categoryGrid = document.getElementById('category-grid');
+
+    if (!transactionType) {
+      categoryButtons.classList.add('d-none');
+      return;
+    }
+
+    // Clear existing options and buttons
+    categorySelect.innerHTML = '<option value="">Select category</option>';
+    
+
+  }
+
+</script>
+
 {% endblock %}
