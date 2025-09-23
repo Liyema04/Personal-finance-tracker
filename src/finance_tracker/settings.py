@@ -46,7 +46,7 @@ INSTALLED_APPS = [
        
     # third-party 
     'crispy_forms', # Added in enviroment
-    'crispy_bootstrap5',
+    'crispy_bootstrap5', # Template Pack
     'bootstrap_datepicker_plus',
     'django_filters',
     'sass_processor',
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
 ]
 
 # Crispy Forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = ("bootstrap5",)
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 

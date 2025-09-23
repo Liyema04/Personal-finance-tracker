@@ -261,7 +261,7 @@
         </div> 
         <!--Info Blocks-->
         <div class="col-xl-6 col-lg-12">
-            <div class="card shadow-sm h-100">
+            <div class="card bg-card-color shadow-sm h-100">
                 <div class="card-body p-3">
                     <h5 class="card-title text-primary">
                         <i class="bi bi-piggy-bank-fill me-2"></i> Lifetime Moves
@@ -270,7 +270,7 @@
                         <div class="liftime-content">
                             <div class="life-item">
                                 <small class="life-type fs-1 fw-medium text-success">Moves</small>
-                                <h1 class="life-value fw-bolder">{{ lifetime_moves }}</h1>
+                                <h1 class="life-value text-primary fw-bolder">{{ lifetime_moves }}</h1>
                             </div>
                             <div class="liftime-sub-content">    
                                 <div class="life-item">
@@ -319,7 +319,7 @@
         </div>
 
         <div class="col-xl-6 col-lg-12">
-            <div class="card shadow-sm h-100">
+            <div class="card bg-card-color shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="card-top">
                         <h5 class="card-title text-primary">
@@ -338,32 +338,32 @@
                         <div class="detail-content">
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Name:</small>
-                                <span class="item-value">{{ request.user.first_name|default:"Not provided" }}</span>
+                                <span class="item-value card-text">{{ request.user.first_name|default:"Not provided" }}</span>
                             </div>
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Surname:</small>
-                                <span class="item-value">{{ request.user.last_name|default:"Not provided" }}</span>
+                                <span class="item-value card-text">{{ request.user.last_name|default:"Not provided" }}</span>
                             </div>
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Username:</small>
-                                <span class="item-value">{{ request.user|default:"Not provided" }}</span>
+                                <span class="item-value card-text">{{ request.user|default:"Not provided" }}</span>
                             </div>
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Email:</small>
-                                <span class="item-value">{{ request.user.email|default:"Not provided" }}</span>
+                                <span class="item-value card-text">{{ request.user.email|default:"Not provided" }}</span>
                             </div>
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Date Joined:</small>
-                                <span class="item-value">{{ request.user.date_joined|date:"M d, Y" }}</span>
+                                <span class="item-value card-text">{{ request.user.date_joined|date:"M d, Y" }}</span>
                             </div>
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Last Login:</small>
-                                <span class="item-value">
+                                <span class="item-value card-text">
                                     {% if request.user.last_login %}
                                         {{ request.user.last_login|date:"M d, Y - H:i" }}
                                     {% else %}
@@ -374,7 +374,7 @@
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Account Status:</small>
-                                <span class="item-value">
+                                <span class="item-value card-text">
                                     {% if request.user.is_active %}
                                         <span class="badge bg-success">Active</span>
                                     {% else %}
@@ -385,7 +385,7 @@
 
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Account Type:</small>
-                                <span class="item-value">
+                                <span class="item-value card-text">
                                     <span class="badge bg-secondary">Freemium</span>
                                 </span>
                             </div>
@@ -393,35 +393,35 @@
                             {% if request.user.number %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Number:</small>
-                                <span class="item-value">{{ request.user.number }}</span>
+                                <span class="item-value card-text">{{ request.user.number }}</span>
                             </div>
                             {% endif %}
 
                             {% if request.user.gender %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Gender:</small>
-                                <span class="item-value">{{ request.user.gender }}</span>
+                                <span class="item-value card-text">{{ request.user.gender }}</span>
                             </div>
                             {% endif %}
 
                             {% if request.user.address %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Address:</small>
-                                <span class="item-value">{{ request.user.address }}</span>
+                                <span class="item-value card-text">{{ request.user.address }}</span>
                             </div>
                             {% endif %}
 
                             {% if request.user.id_number %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Passport/ID number:</small>
-                                <span class="item-value">{{ request.user.id_number }}</span>
+                                <span class="item-value card-text">{{ request.user.id_number }}</span>
                             </div>
                             {% endif %}
 
                             {% if request.user.country %}
                             <div class="detail-item">
                                 <small class="item-type fs-6 fw-medium text-secondary">Country:</small>
-                                <span class="item-value">{{ request.user.country }}</span>
+                                <span class="item-value card-text">{{ request.user.country }}</span>
                             </div>
                             {% endif %}
                         </div>
