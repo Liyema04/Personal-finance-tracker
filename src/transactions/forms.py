@@ -31,7 +31,7 @@ class TransactionForm(forms.ModelForm):
         max_digits=10,
         decimal_places=2,
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',
+            'class': 'form-control custom-input',
             'placeholder': 'Enter amount'
         })
     )
@@ -39,12 +39,19 @@ class TransactionForm(forms.ModelForm):
     # Date field with explicit label
     date = forms.DateField(
         label="Date",
-        widget=DatePickerInput(options={
-            "format": "YYYY-MM-DD",
-            "showClose": True,
-            "showClear": True,
-            "showTodayButton": True,             
-        })
+        widget=DatePickerInput(
+            options={
+                "format": "YYYY-MM-DD",
+                "showClose": True,
+                "showClear": True,
+                "showTodayButton": True,             
+            },
+            
+            attrs={
+                "class": "form-control custom-input",
+                "placeholder": "Select a date",
+            }
+        )
     )
     
     # Type field with explicit label
@@ -62,7 +69,7 @@ class TransactionForm(forms.ModelForm):
         label="Category",
         choices=[],  # Will be populated by JavaScript
         widget=forms.Select(attrs={
-            'class': 'form-control category-select',
+            'class': 'form-control category-select custom-input',
             'style': 'display: none;'  # Hidden by default, show buttons instead
         })
     )
@@ -74,7 +81,7 @@ class TransactionForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Optional description'
+            'placeholder': 'Optional'
         })
     )
     
