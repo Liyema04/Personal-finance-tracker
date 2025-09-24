@@ -6,6 +6,16 @@
 
 {% block main_content %}
 <style>
+  .card {
+    border: 2px solid rgba(179, 179, 179, 0.400) !important;
+    border-radius: 1rem !important;
+    min-width: 0 !important;
+  }
+
+  .info-field {
+    cursor: pointer !important;
+  }
+
   .custom-input, 
   .custom-select,
   input[type="text"].form-control,
@@ -263,7 +273,7 @@
 
       <!-- Transaction Form Card (Centered) -->
       <div class="quick-move d-flex align-items-center justify-content-center">
-        <div class="card border-0 shadow-sm mb-4 w-100" style="min-width: 250px;">
+        <div class="card shadow-sm mb-4 w-100" style="min-width: 250px;">
           <div class="card-body">
             <div class="form-group">
               <form method="post" id="transaction-form" >
@@ -309,7 +319,9 @@
 
                 <!-- Category -->
                 <div class="mb-3">
-                  <label class="form-label">{{ form.category.label }}</label>
+                  <label class="form-label">{{ form.category.label }}
+                    <i class="info-field fa-solid fa-circle-info" data-bs-toggle="tooltip" title="Sort rand spending 💸"></i> 
+                  </label>
                   {{ form.category }}
                   
                   <!-- Category Buttons Container -->

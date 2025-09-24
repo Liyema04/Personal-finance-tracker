@@ -5,37 +5,508 @@
 {% block title %}<title>Edit Transaction</title>{% endblock %}
 
 
-<div class="d-flex">
-  {% block main_content %}
-  <!--Main Content-->
-  <main class="tracker-main-content p-4 flex-grow-1">
-    <div id="back-block">
-        <h5><a class="back-redirect fw-medium" href="{% url 'list_transaction' %}">
-          <i class="bi bi-arrow-left-circle me-3"></i>Back</a>
-        </h5>
-    </div>
-    <div class="container-fluid">
-      <div class="row">
-        <!-- Form Block -->
-        <div class="col-md-7 d-flex align-items-start justify-content-center">
-          <div class="card shadow-sm w-100" style="max-width: 500px;">
-            <div class="card-header bg-primary text-white">
-              <h5>Update Transaction</h5>
+{% block main_content %}
+<style>
+  .card {
+    border: 2px solid rgba(179, 179, 179, 0.400) !important;
+    border-radius: 1rem !important;
+    min-width: 0 !important;
+  }
+
+  .custom-input, 
+  .custom-select,
+  input[type="text"].form-control,
+  input[type="date"].form-control,
+  .datepicker input {
+    border-radius: 1rem !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    transition: all 0.2s ease !important;
+    background-color: #fff !important;
+    min-height: 48px !important;
+    box-sizing: border-box !important;
+  }
+
+  .custom-input:focus, 
+  .custom-select:focus,
+  input[type="text"].form-control:focus,
+  input[type="date"].form-control:focus,
+  .datepicker input:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: none !important;
+  }
+
+  /*Custom date picker*/
+  .input-group .form-control {
+  border-right: 0 !important;
+  }
+
+  .input-group-text {
+    background: #fff !important;
+    margin-left: 8px !important;
+    border-radius: 1rem !important;
+  }
+
+
+  /* More specific DatePicker targeting */
+  .datepicker-days input,
+  .datepicker-months input, 
+  .datepicker-years input,
+  input.datepicker,
+  .bootstrap-datetimepicker-widget .form-control,
+  div[data-provide="datepicker"] input,
+  .input-group input[data-toggle="datetimepicker"],
+  #id_date {
+    border-radius: 0.5rem !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Target the specific field by ID */
+  #id_date.form-control {
+    border-radius: 1rem !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
+  }
+
+  .custom-input:focus, 
+  .custom-select:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    outline: none !important;
+  }
+
+  /* Form Labels */
+  .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  /* Radio Button Styling */
+  .form-check {
+    padding: 8px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 1rem;
+    margin-right: 12px;
+    transition: all 0.2s ease;
+    background-color: #fff;
+  }
+
+  .form-check:hover {
+    border-color: #007bff;
+    background-color: #f8f9fa;
+  }
+
+  .form-check input[type="radio"]:checked + .form-check-label {
+    color: #007bff;
+    font-weight: 600;
+  }
+
+  .form-check input[type="radio"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+
+  /* Category Buttons */
+  .category-buttons .btn {
+    border-radius: 1rem;
+    border: 2px solid #e9ecef;
+    background: white;
+    color: #6c757d;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    width: 100%;
+  }
+
+  .category-buttons .btn:hover {
+    border-color: #007bff;
+    color: #007bff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .category-buttons .btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+}
+
+  .category-buttons .btn.income-category.active {
+    background: #28a745;
+    border-color: #28a745;
+    box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+  }
+
+  .category-buttons .btn.expense-category.active {
+    background: #dc3545;
+    border-color: #dc3545;
+    box-shadow: 0 2px 8px rgba(220,53,69,0.3);
+  }
+
+  /* Submit Button */
+  .btn-outline-success {
+    border-radius: 1rem !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .btn-outline-success:hover {
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(40,167,69,0.3);
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+      .category-buttons {
+        display: none !important;
+      }
+      
+      .category-select {
+        display: block !important;
+      }
+      
+      /* Enhanced mobile dropdown */
+      .custom-select {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        min-height: 48px !important; /* Better touch target */
+      }
+      
+      .form-check {
+        margin-bottom: 8px;
+        margin-right: 8px;
+        padding: 12px 16px;
+      }
+      
+      .custom-input {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        min-height: 48px !important; /* Better touch target */
+      }
+      
+      /* Stack radio buttons vertically on very small screens */
+      @media (max-width: 480px) {
+          .d-flex.gap-3 {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          
+          .form-check {
+            margin-right: 0;
+            width: 100%;
+          }
+      }
+  }
+
+  /* Focus states for accessibility */
+  .custom-input:focus-visible, 
+  .custom-select:focus-visible,
+  input[type="text"].form-control:focus-visible,
+  input[type="date"].form-control:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+  }
+
+  /* Error styling */
+  .text-danger {
+    font-size: 12px;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .is-invalid.custom-input,
+  .is-invalid.custom-select,
+  input.is-invalid[type="text"].form-control,
+  input.is-invalid[type="date"].form-control {
+    border-color: #dc3545 !important;
+  }
+
+  .is-invalid.custom-input:focus,
+  .is-invalid.custom-select:focus,
+  input.is-invalid[type="text"].form-control:focus,
+  input.is-invalid[type="date"].form-control:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+
+  /* Additional DatePicker widget overrides */
+  .input-group .form-control {
+    border-radius: 1rem !important;
+  }
+
+  .input-group-append .btn {
+    border-radius: 0 1rem 1rem 0 !important;
+  }
+
+  /* Make sure the date input takes full width */
+  .bootstrap-datetimepicker-widget {
+    width: 100%;
+  }
+</style>
+
+
+<!--Main Content-->
+<main class="tracker-main-content p-4 flex-grow-1">
+  <!--Header Section-->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+          <h1 class="text-primary mb-1"><i class="fa-solid fa-edit"></i>
+              Edit Move
+          </h1>
+      </div>
+      <div class="d-none d-md-block">
+            <a href="{% url 'list_transaction' %}" class="btn btn-primary">
+                <i class="fa-solid fa-circle-left"></i> Back
+            </a>
+      </div>
+  </div>
+
+
+
+  <!--Edit Transaction Form Card (Centered)-->
+  <div class="quick-move d-flex align-items-center justify-content-center">
+    <div class="card shadow-sm mb-4 w-100" style="min-width: 250px;">
+      <div class="card-body">
+        <div class="form-group">
+          <form method="post" id="transaction-form" >
+            {% csrf_token %}
+
+            <!-- Amount Field -->
+            <div class="mb-3">
+              <label for="{{ form.amount.id_for_label }}" class="form-label">{{ form.amount.label }}</label>
+              {{ form.amount }}
+              {% if form.amount.errors %}
+                <div class="text-danger">{{ form.amount.errors }}</div>
+              {% endif %}
             </div>
-            <div class="card-body">
-              <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-success mt-3">
-                  <i class="bi bi-check-lg me-2"></i>Save Changes
-                </button>
-                <!-- not for delete -->
-              </form>
+
+            <!--Date-->
+            <div class="mb-3">
+              <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+              <div class="input-group">
+                  {{ form.date }}
+              </div>
+              {% if form.date.errors %}
+                <div class="text-danger">{{ form.date.errors }}</div>
+              {% endif %}  
             </div>
-          </div>
+
+            <!-- Type -->
+            <div class="mb-3">
+              <label class="form-label">{{ form.type.label }}</label>
+              <div class="d-flex gap-3">
+                {% for choice in form.type %}
+                  <div class="form-check">
+                    {{ choice.tag }}
+                    <label class="form-check-label" for="{{ choice.id_for_label }}">
+                      {{ choice.choice_label }}
+                    </label>    
+                  </div>
+                {% endfor %}
+              </div>
+              {% if form.type.errors %}
+                <div class="text-danger">{{ form.type.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+              <label class="form-label">{{ form.category.label }}</label>
+              {{ form.category }}
+              
+              <!-- Category Buttons Container -->
+              <div id="category-buttons" class="category-buttons d-none">
+                <div class="row g-2" id="category-grid">
+                  <!-- Category buttons will be inserted here by JavaScript -->
+                </div>
+              </div>
+              {% if form.category.errors %}
+                <div class="text-danger">{{ form.category.errors }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+              <label for="{{ form.description.id_for_label }}" class="form-label">{{ form.description.label }}</label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-outline-success mt-3">
+              <i class="bi bi-check-lg me-2"></i>Save Changes
+            </button>
+          </form>
         </div>
       </div>
     </div>
-  </main>
-  {% endblock %}
-</div>
+  </div>
+
+  <!--Back to Dashboard (Mobile)-->
+    <div class="d-md-none mt-3">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-primary w-100">
+            <i class="fa-solid fa-circle-left"></i> Back
+        </a>
+    </div>
+</main>
+<script>
+// Category data
+const categories = {
+    income: [
+        ['SALARY', 'Work/Salary'],
+        ['SIDE_HUSTLE', 'Side Hustle'],
+        ['BUSARY', 'Scholarship/Bursary'],
+        ['ALLOWANCE', 'Family Support'],
+        ['STUDENT_LOAN', 'Student Loan'],
+        ['GRANT', 'Grant'],
+        ['GIFT', 'Gift']
+    ],
+    expense: [
+        ['GROCERIES', 'Groceries'],
+        ['RENT', 'Rent/Accommodation'],
+        ['TRANSPORT', 'Transport'],
+        ['DATA', 'Data/Airtime'],
+        ['GYM', 'Gym/Fitness'],
+        ['INSURANCE', 'Insurance'],
+        ['DEBT', 'Debt Repayment'],
+        ['ENTERTAINMENT', 'Entertainment'],
+        ['DINING', 'Eating Out'],
+        ['EDUCATION', 'Education'],
+        ['HEALTH', 'Health/Medical'],
+        ['CLOTHING', 'Clothing'],
+        ['SAVINGS', 'Savings/Investments'],
+        ['SUBSCRIPTIONS', 'Subscriptions'],
+        ['PERSONAL_GROOMING', 'Beauty/Grooming']
+    ]
+};
+
+function updateCategories(transactionType) {
+    const categorySelect = document.getElementById('id_category');
+    const categoryButtons = document.getElementById('category-buttons');
+    const categoryGrid = document.getElementById('category-grid');
+    
+    if (!transactionType) {
+        categoryButtons.classList.add('d-none');
+        return;
+    }
+    
+    // Store the currently selected category before clearing
+    const currentSelectedCategory = categorySelect.value;
+    
+    // Clear existing options and buttons
+    categorySelect.innerHTML = '<option value="">Select category</option>';
+    categoryGrid.innerHTML = '';
+    
+    // Get categories for the selected type
+    const relevantCategories = categories[transactionType] || [];
+    
+    // Populate select dropdown (for mobile)
+    relevantCategories.forEach(([value, label]) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = label;
+        // Restore selection if it matches
+        if (value === currentSelectedCategory) {
+            option.selected = true;
+        }
+        categorySelect.appendChild(option);
+    });
+    
+    // Create category buttons (for desktop)
+    relevantCategories.forEach(([value, label]) => {
+        const col = document.createElement('div');
+        col.className = 'col-6 col-md-4 col-lg-3';
+        
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `btn btn-outline-secondary category-btn ${transactionType}-category`;
+        button.textContent = label;
+        button.dataset.value = value;
+        
+        // Highlight the button if it matches the selected category
+        if (value === currentSelectedCategory) {
+            button.classList.add('active');
+        }
+        
+        button.addEventListener('click', function() {
+            // Remove active class from all category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update hidden select
+            categorySelect.value = value;
+        });
+        
+        col.appendChild(button);
+        categoryGrid.appendChild(col);
+    });
+    
+    // Show category buttons
+    categoryButtons.classList.remove('d-none');
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the initially selected category (for edit forms)
+    const initialSelectedCategory = document.getElementById('id_category').value;
+    
+    // Check if there's already a selected type (for edit forms)
+    const typeInputs = document.querySelectorAll('input[name="type"]');
+    let initialSelectedType = null;
+    
+    typeInputs.forEach(input => {
+        if (input.checked) {
+            initialSelectedType = input.value;
+            // Update categories immediately for the pre-selected type
+            updateCategories(input.value);
+        }
+        
+        // Add event listener for type changes
+        input.addEventListener('change', function() {
+            updateCategories(this.value);
+        });
+    });
+    
+    // If no type is selected but we have a category, try to determine the type
+    // This handles edge cases where the form might have category but no type selected
+    if (!initialSelectedType && initialSelectedCategory) {
+        // Check which category list contains our selected category
+        const isIncomeCategory = categories.income.some(([value]) => value === initialSelectedCategory);
+        const isExpenseCategory = categories.expense.some(([value]) => value === initialSelectedCategory);
+        
+        if (isIncomeCategory) {
+            const incomeRadio = document.querySelector('input[name="type"][value="income"]');
+            if (incomeRadio) {
+                incomeRadio.checked = true;
+                updateCategories('income');
+            }
+        } else if (isExpenseCategory) {
+            const expenseRadio = document.querySelector('input[name="type"][value="expense"]');
+            if (expenseRadio) {
+                expenseRadio.checked = true;
+                updateCategories('expense');
+            }
+        }
+    }
+}); 
+</script>
+
+{% endblock %}
