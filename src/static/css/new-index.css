@@ -14,11 +14,75 @@
     box-sizing: border-box;
 }
 
-/*==== Hide Cursor globally ====*/
-* {
-    caret-color: transparent;
-
+/* Custom tooltip styling */
+.tooltip {
+    z-index: 10000 !important;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
+
+.tooltip .tooltip-inner {
+    background-color: #2c3e50 !important;
+    color: #fff !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    border: none !important;
+    max-width: 200px !important;
+}
+
+/* Tooltip arrow styling */
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #2c3e50 !important;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #2c3e50 !important;
+}
+
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
+    border-left-color: #2c3e50 !important;
+}
+
+.tooltip.bs-tooltip-end .tooltip-arrow::before {
+    border-right-color: #2c3e50 !important;
+}
+
+/* Enhanced info icon styling */
+.info-field {
+    color: var(--form-info-icon) !important;
+    margin-left: 6px !important;
+    font-size: 15px !important;
+    transition: all 0.2s ease !important;
+    cursor: help !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+.info-field:hover {
+    color: var(--form-info-icon-hover) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Alternative: More prominent info icon */
+.info-field.prominent {
+    background: rgba(0, 123, 255, 0.1);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #007bff;
+}
+
+.info-field.prominent:hover {
+    background: rgba(0, 123, 255, 0.2);
+    transform: scale(1.1);
+}
+
 :root {
     /*==== Colors ====*/
     --body-color: #E4E9F7;
@@ -47,6 +111,18 @@
     /*Other*/
     --toggle-color: #DDD;
     --text-color: #707070;
+    --form-text-color: #707070;
+    --form-input-border: #dee2e6;
+    --form-input-color: #fff;
+    --form-input-text-color: #707070;
+    --form-input-focus-border: #3771C8FF;
+    --form-input-focus-shadow: rgba(55, 113, 200, 0.250);
+    --form-info-icon: #c0c0c0;
+    --form-info-icon-hover: #2c3e50;
+    /*Type radio buttons*/
+    --form-input-radio-text: #F9F6EE; /*bone white*/
+    --form-iput-radio-tc: #7a7a7a;
+    
     --active-hover-text-icon: #3771C8FF;
     --active-hover-close-icon: #FFF;
     --active-hover-brd-b: #c0c0c0;
@@ -100,6 +176,20 @@ body.dark {
     /*Other*/
     --toggle-color: #FFF;
     --text-color: #4b4b4b;
+    --form-text-color: #fff;
+    --form-input-border: #707070;
+    --form-input-color: #242526;
+    --form-input-text-color: #fff;
+    --form-input-focus-border: #3771c8ff;
+    --form-info-icon: #fff;
+    --form-info-icon-hover: #2c3e50;
+    --form-input-focus-shadow: rgba(55, 113, 200, 0.250);
+
+    /*Type radio buttons*/
+    --form-input-radio-text: #FFF; /*white*/
+    --form-iput-radio-tc: #FFF;
+
+    
     --active-hover-text-icon: #c0c0c0; 
     --active-hover-close-icon: #66FF0098;
     --active-hover-brd-b: #c0c0c0;

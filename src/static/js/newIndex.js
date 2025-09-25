@@ -337,3 +337,17 @@ observer.observe(document.body, {
     childList: true,
     subtree: true
 });
+
+// Enhanced tooltip initialization with custom options
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            delay: { show: 300, hide: 100 },
+            placement: 'top',
+            trigger: 'hover focus',
+            html: true,
+            animation: true
+        });
+    });
+});

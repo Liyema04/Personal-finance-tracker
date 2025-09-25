@@ -1,11 +1,14 @@
-{% extends 'transactions/index.html' %}
+{% extends 'transactions/testing-new-sidebar/index-2.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+{% load sass_tags %}
 
 {% block title %}<title>Log Move</title>{% endblock %}
 
 {% block main_content %}
 <style>
+  @import url(/src/static/css/new-index.css);
+
   .card {
     border: 2px solid rgba(179, 179, 179, 0.400) !important;
     border-radius: 1rem !important;
@@ -22,23 +25,26 @@
   input[type="date"].form-control,
   .datepicker input {
     border-radius: 1rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     transition: all 0.2s ease !important;
-    background-color: #fff !important;
+    background-color: var(--form-input-color) !important;
     min-height: 48px !important;
     box-sizing: border-box !important;
+    color: var(--form-input-text-color) !important;
   }
 
   .custom-input:focus, 
   .custom-select:focus,
   input[type="text"].form-control:focus,
   input[type="date"].form-control:focus,
-  .datepicker input:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+  .datepicker input:focus,
+  #id_date.form-control:focus {
+    border-color: var(--form-input-focus-border) !important; /* input focus border*/
+    box-shadow: 0 0 0 0.2rem var(--form-input-focus-shadow) !important; /* input focus shadow*/
     outline: none !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /*Custom date picker*/
@@ -63,33 +69,36 @@
   .input-group input[data-toggle="datetimepicker"],
   #id_date {
     border-radius: 0.5rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     min-height: 48px !important;
     box-sizing: border-box !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /* Target the specific field by ID */
   #id_date.form-control {
     border-radius: 1rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     min-height: 48px !important;
+    color: var(--form-input-text-color) !important;
   }
 
   .custom-input:focus, 
   .custom-select:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    border-color: var(--form-input-focus-border) !important;  /* input focus border*/
+    box-shadow: 0 0 0 0.2rem var(--form-input-focus-shadow) !important; /* input focus shadow*/
     outline: none !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /* Form Labels */
   .form-label {
     font-weight: 600;
-    color: #495057;
+    color: var(--form-text-color);
     margin-bottom: 8px;
     font-size: 14px;
   }
@@ -97,34 +106,155 @@
   /* Radio Button Styling */
   .form-check {
     padding: 8px 16px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--form-input-border);
     border-radius: 1rem;
     margin-right: 12px;
     transition: all 0.2s ease;
-    background-color: #fff;
+    background-color: var(--form-input-color);
+    color: var(--form-iput-radio-tc);
+  }
+
+  /* Custom radio button appearance */
+  .form-check input[type="radio"] {
+    flex-shrink: 0;
+  }
+
+  /* Income radio dot colors */
+  .form-check:has(input[value="income"]) input[type="radio"] {
+    accent-color: #28a745;
+  }
+
+  /* Expense radio dot colors */
+  .form-check:has(input[value="expense"]) input[type="radio"] {
+    accent-color: #dc3545;
+  }
+
+  /* Fallback for browsers without :has() support */
+  .form-check.income-type input[type="radio"] {
+    accent-color: #28a745;
+  }
+
+  .form-check.expense-type input[type="radio"] {
+    accent-color: #dc3545;
+  }
+
+  /* Remove the conflicting generic blue styling */
+  .form-check input[type="radio"]:checked {
+    background-color: transparent !important;
+    border-color: transparent !important;
+  }
+
+  /* Income radio button styling */
+  .form-check:has(input[value="income"]) {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .form-check:has(input[value="income"]:checked) {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="income"]:checked) .form-check-label {
+    color: var(--form-input-radio-text) !important;
+    font-weight: 600;
+  }
+
+  .form-check:has(input[value="income"]) input[type="radio"]:checked {
+    background-color: var(--form-input-radio-text);
+    border-color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="income"]):hover {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.25);
+    color: #28a745;
+  }
+
+  /* Expense radio button styling */
+  .form-check:has(input[value="expense"]) {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+
+  .form-check:has(input[value="expense"]:checked) {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="expense"]:checked) .form-check-label {
+    color: var(--form-input-radio-text) !important;
+    font-weight: 600;
+  }
+
+  .form-check:has(input[value="expense"]) input[type="radio"]:checked {
+    background-color: var(--form-input-radio-text);
+    border-color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="expense"]):hover {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.25);
+    color: #dc3545;
+  }
+
+  /* Fallback for browsers that don't support :has() selector */
+  .form-check.income-type {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .form-check.income-type.checked {
+    background-color: #28a745;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check.income-type:hover {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.25);
+    color: #28a745;
+  }
+
+  .form-check.expense-type {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+
+  .form-check.expense-type.checked {
+    background-color: #dc3545;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check.expense-type:hover {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.25);
+    color: #dc3545;
   }
 
   .form-check:hover {
-    border-color: #007bff;
-    background-color: #f8f9fa;
+    border-color: #3771c8ff;
+    background-color: var(--form-input-focus-shadow);
+    color: var(--form-input-text-color);
   }
 
   .form-check input[type="radio"]:checked + .form-check-label {
-    color: #007bff;
+    color: #3771c8ff;
     font-weight: 600;
   }
 
   .form-check input[type="radio"]:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #3771c8ff;
+    border-color: #3771c8ff;
   }
 
   /* Category Buttons */
   .category-buttons .btn {
     border-radius: 1rem;
-    border: 2px solid #e9ecef;
-    background: white;
-    color: #6c757d;
+    border: 2px solid var(--form-input-border);
+    background: var(--form-input-color);
+    color: var(--form-input-text-color);
     padding: 12px 16px;
     font-size: 14px;
     font-weight: 500;
@@ -133,29 +263,43 @@
   }
 
   .category-buttons .btn:hover {
-    border-color: #007bff;
-    color: #007bff;
+    border-color: #3771c8ff;
+    color: #3771c8ff;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .category-buttons .btn.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: #3771c8ff;
+    color: #fff;
+    border-color: #3771c8ff;
     box-shadow: 0 2px 8px rgba(0,123,255,0.3);
 }
+
+  .category-buttons .btn.income-category:hover {
+    background: rgba(40, 167, 70, 0.250);
+    border-color: #28a745;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .category-buttons .btn.expense-category:hover {
+    background: rgba(220, 53, 70, 0.250);
+    border-color: #dc3545;
+    color: var(--form-input-text-color) !important;
+  }
 
   .category-buttons .btn.income-category.active {
     background: #28a745;
     border-color: #28a745;
     box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+    color: #fff !important;
   }
 
   .category-buttons .btn.expense-category.active {
     background: #dc3545;
     border-color: #dc3545;
     box-shadow: 0 2px 8px rgba(220,53,69,0.3);
+    color: #fff !important;
   }
 
   /* Submit Button */
@@ -168,7 +312,7 @@
   }
 
   .btn-outline-success:hover {
-    color: #fff;
+    color: #fff !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(40,167,69,0.3);
   }
@@ -219,7 +363,7 @@
   .custom-select:focus-visible,
   input[type="text"].form-control:focus-visible,
   input[type="date"].form-control:focus-visible {
-    outline: 2px solid #007bff;
+    outline: 2px solid var(--form-input-focus-border);
     outline-offset: 2px;
   }
 
@@ -273,7 +417,7 @@
 
       <!-- Transaction Form Card (Centered) -->
       <div class="quick-move d-flex align-items-center justify-content-center">
-        <div class="card shadow-sm mb-4 w-100" style="min-width: 250px;">
+        <div class="card bg-card-color shadow-sm mb-4 w-100" style="min-width: 250px;">
           <div class="card-body">
             <div class="form-group">
               <form method="post" id="transaction-form" >
@@ -384,6 +528,28 @@ const categories = {
     ]
 };
 
+function updateRadioButtonColors() {
+    const typeInputs = document.querySelectorAll('input[name="type"]');
+    typeInputs.forEach(input => {
+        const formCheck = input.closest('.form-check');
+
+        // Remove existing classes
+        formCheck.classList.remove('income-type', 'expense-type', 'checked');
+
+        // Add type-specific class
+        if (input.value === 'income') {
+            formCheck.classList.add('income-type');
+        } else if (input.value === 'expense') {
+            formCheck.classList.add('expense-type');
+        }
+
+        // Add checked class if this input checked
+        if (input.checked) {
+            formCheck.classList.add('checked');
+        }
+    });
+}
+
 function updateCategories(transactionType) {
     const categorySelect = document.getElementById('id_category');
     const categoryButtons = document.getElementById('category-buttons');
@@ -393,6 +559,9 @@ function updateCategories(transactionType) {
         categoryButtons.classList.add('d-none');
         return;
     }
+
+    // Store the currently selected category before clearing
+    const currentSelectedCategory = categorySelect.value;
     
     // Clear existing options and buttons
     categorySelect.innerHTML = '<option value="">Select category</option>';
@@ -406,6 +575,10 @@ function updateCategories(transactionType) {
         const option = document.createElement('option');
         option.value = value;
         option.textContent = label;
+        // Restore selection if it matches
+        if (value === currentSelectedCategory) {
+          option.selected = true;
+        }
         categorySelect.appendChild(option);
     });
     
@@ -419,6 +592,11 @@ function updateCategories(transactionType) {
         button.className = `btn btn-outline-secondary category-btn ${transactionType}-category`;
         button.textContent = label;
         button.dataset.value = value;
+        
+        // Highlight the button if it matches the selected category
+        if (value === currentSelectedCategory) {
+            button.classList.add('active');
+        } 
         
         button.addEventListener('click', function() {
             // Remove active class from all category buttons
@@ -439,14 +617,24 @@ function updateCategories(transactionType) {
     
     // Show category buttons
     categoryButtons.classList.remove('d-none');
+
+    // Update radio button colors after category update
+    updateRadioButtonColors();
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    // Get the initially selected category (for edit forms)
+    const initialSelectedCategory = document.getElementById('id_category').value;
+
     // Check if there's already a selected type (for edit forms)
     const typeInputs = document.querySelectorAll('input[name="type"]');
+    let initialSelectedType = null;
+
     typeInputs.forEach(input => {
         if (input.checked) {
+            initialSelectedType = input.value;
+            // Update categories immediately for the pre-selected type 
             updateCategories(input.value);
         }
         
@@ -456,17 +644,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // If editing existing transaction, highlight the selected category
-    const selectedCategory = document.getElementById('id_category').value;
-    if (selectedCategory) {
-        setTimeout(() => {
-            const button = document.querySelector(`[data-value="${selectedCategory}"]`);
-            if (button) {
-                button.classList.add('active');
+    // If no type is selected but we have a category, try to determine the type
+    if (!initialSelectedType && initialSelectedCategory) {
+        // Check which category list contains our selected category
+        const isIncomeCategory = categories.income.some(([value]) => value === initialSelectedCategory);
+        const isExpenseCategory = categories.expense.some(([value]) => value === initialSelectedCategory);
+        
+        if (isIncomeCategory) {
+            const incomeRadio = document.querySelector('input[name="type"][value="income"]');
+            if (incomeRadio) {
+                incomeRadio.checked = true;
+                updateCategories('income');
             }
-        }, 100);
+        } else if (isExpenseCategory) {
+            const expenseRadio = document.querySelector('input[name="type"][value="expense"]');
+            if (expenseRadio) {
+                expenseRadio.checked = true;
+                updateCategories('expense');
+            }
+        }
     }
-}); 
+
+    // Initialize radio button colors
+    updateRadioButtonColors();
+});
 </script>
 
 {% endblock %}
