@@ -48,16 +48,152 @@
   }
 
   /*Custom date picker*/
-  .input-group .form-control {
-  border-right: 0 !important;
-  }
-
   .input-group-text {
-    background: #fff !important;
+    background: var(--form-input-color) !important;
+    border: 2px solid var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
     margin-left: 8px !important;
     border-radius: 1rem !important;
+    transition: var(--tran-02);
   }
 
+  /* Date picker icon hover effect */
+  /*.input-group .form-control {
+    border-right: none !important;
+    border-radius: 1rem 0 0 1rem !important;
+  }
+
+  .input-group .form-control:focus {
+    border-right: none !important;
+  }*/
+  
+  .input-group-text:hover {
+    background: var(--form-input-focus-shadow) !important;
+    border-color: var(--form-input-focus-border) !important;
+    color: var(--form-input-focus-border) !important;
+  }
+
+  /* Amount field spinner buttons (hide) */
+  input[type="number"] {
+    -moz-appearance: textfield; /* Hide Firefox spinners */
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Hide WebKit spinners */
+    margin: 0;
+  }
+
+  /*Custom spinner*/
+  .amount-input-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .amount-input-container:hover .custom-spinners {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .custom-spinners {
+    position: absolute;
+    right: 15px !important;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  .spinner-btn {
+    width: 20px;
+    height: 16px;
+    background: var(--form-input-color);
+    border: 1px solid var(--form-input-border);
+    color: var(--form-input-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    line-height: 1;
+    user-select: none;
+    transition: all 0.2s ease;
+  }
+
+  .spinner-btn:first-child {
+    border-radius: 3px 3px 0 0;
+    border-bottom: none;
+  }
+
+  .spinner-btn:last-child {
+    border-radius: 0 0 3px 3px;
+  }
+
+  .spinner-btn:hover {
+    background: var(--form-input-focus-shadow);
+    border-color: var(--form-input-focus-border);
+    color: var(--form-input-focus-border);
+  }
+
+  .spinner-btn:active {
+    transform: scale(0.95);
+    background: var(--form-input-focus-border);
+    color: white;
+  }
+
+  /* Date input field adjustments for input group */
+  .input-group .form-control:focus + .input-group-text {
+    border-color: var(--form-input-focus-border) !important;
+    background: var(--form-input-focus-shadow) !important;
+  }
+
+  /* Datepicker widget dark mode styling */
+  .bootstrap-datetimepicker-widget {
+    background: var(--form-input-color) !important;
+    border: 2px solid var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days .table-condensed {
+    background: var(--form-input-color) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days th,
+  .bootstrap-datetimepicker-widget .datepicker-days td {
+    color: var(--form-input-text-color) !important;
+    border-color: var(--form-input-border) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days .active {
+    background: var(--form-input-focus-border) !important;
+    color: white !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days td:hover {
+    background: var(--form-input-focus-shadow) !important;
+    color: var(--form-input-focus-border) !important;
+  }
+
+  /* DatePicker button icons */
+  .bootstrap-datetimepicker-widget .picker-switch,
+  .bootstrap-datetimepicker-widget .prev,
+  .bootstrap-datetimepicker-widget .next {
+    background: var(--form-input-color) !important;
+    border-color: var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .picker-switch:hover,
+  .bootstrap-datetimepicker-widget .prev:hover,
+  .bootstrap-datetimepicker-widget .next:hover {
+    color: var(--form-input-focus-border) !important;
+  }
 
   /* More specific DatePicker targeting */
   .datepicker-days input,
@@ -161,6 +297,12 @@
     font-weight: 600;
   }
 
+  /*Income radio-select 'checked' -- on hover > label styling */
+  .form-check:has(input[value="income"]:checked):hover .form-check-label {
+    color: #28a745 !important;
+    font-weight: 600;
+  }
+
   .form-check:has(input[value="income"]) input[type="radio"]:checked {
     background-color: var(--form-input-radio-text);
     border-color: var(--form-input-radio-text);
@@ -170,6 +312,20 @@
     border-color: #28a745;
     background-color: rgba(40, 167, 69, 0.25);
     color: #28a745;
+  }
+
+  body.dark {
+    /*Income radio-select 'checked' -- on hover > label styling */
+    .form-check:has(input[value="income"]:checked):hover .form-check-label {
+      color: #FFF !important;
+      font-weight: 600;
+    } 
+
+    /*Expense radio-select 'checked' -- on hover > label styling */
+    .form-check:has(input[value="expense"]:checked):hover .form-check-label {
+      color: #FFF !important;
+      font-weight: 600;
+    }
   }
 
   /* Expense radio button styling */
@@ -186,6 +342,12 @@
 
   .form-check:has(input[value="expense"]:checked) .form-check-label {
     color: var(--form-input-radio-text) !important;
+    font-weight: 600;
+  }
+
+  /*Expense radio-select 'checked' -- on hover > label styling */
+  .form-check:has(input[value="expense"]:checked):hover .form-check-label {
+    color: #dc3545 !important;
     font-weight: 600;
   }
 
@@ -426,7 +588,13 @@
                  <!-- Amount Field -->
                 <div class="mb-3">
                   <label for="{{ form.amount.id_for_label }}" class="form-label">{{ form.amount.label }}</label>
-                  {{ form.amount }}
+                    <div class="amount-input-container">
+                      {{ form.amount }}
+                      <div class="custom-spinners">
+                        <button type="button" class="spinner-btn" onclick="incrementAmount()">▲</button>
+                        <button type="button" class="spinner-btn" onclick="decrementAmount()">▼</button>
+                      </div>
+                    </div>
                   {% if form.amount.errors %}
                     <div class="text-danger">{{ form.amount.errors }}</div>
                   {% endif %}
@@ -622,8 +790,79 @@ function updateCategories(transactionType) {
     updateRadioButtonColors();
 }
 
+// Format amount input to always show two decimal places
+function formatAmountInput(input) {
+    let value = parseFloat(input.value);
+    if (isNaN(value)) {
+        input.value = '0.00';
+    } else {
+        input.value = value.toFixed(2);
+    }
+}
+
+// Fixed increment function with proper 2 decimal formatting
+function incrementAmount() {
+    const input = document.getElementById('id_amount');
+    const currentValue = parseFloat(input.value) || 0;
+    const step = 0.01; // Always increment by 0.01
+    const newValue = currentValue + step;
+    input.value = newValue.toFixed(2);
+    
+    // Trigger input event for any listeners
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+// Fixed decrement function with proper 2 decimal formatting
+function decrementAmount() {
+    const input = document.getElementById('id_amount');
+    const currentValue = parseFloat(input.value) || 0;
+    const step = 0.01; // Always decrement by 0.01
+    const newValue = Math.max(0, currentValue - step); // Prevent negative values
+    input.value = newValue.toFixed(2);
+    
+    // Trigger input event for any listeners
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('id_amount');
+
+    if (amountInput) {
+        // Format on blur (when user leaves the field)
+        amountInput.addEventListener('blur', function() {
+            formatAmountInput(this);
+        });
+        
+        // Prevent more than 2 decimal places during typing
+        amountInput.addEventListener('input', function() {
+            let value = this.value;
+            
+            // Remove any non-numeric characters except decimal point
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Ensure only one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 decimal places
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            this.value = value;
+        });
+        
+        // Set initial format if empty
+        if (!amountInput.value || amountInput.value === '') {
+            amountInput.value = '0.00';
+        } else {
+            formatAmountInput(amountInput);
+        }
+    }
+    
     // Get the initially selected category (for edit forms)
     const initialSelectedCategory = document.getElementById('id_category').value;
 
