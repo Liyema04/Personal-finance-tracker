@@ -1,16 +1,23 @@
-{% extends 'transactions/index.html' %}
+{% extends 'transactions/testing-new-sidebar/index-2.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
+{% load sass_tags %}
 
 {% block title %}<title>Edit Transaction</title>{% endblock %}
 
 
 {% block main_content %}
 <style>
+  @import url(/src/static/css/new-index.css);
+
   .card {
     border: 2px solid rgba(179, 179, 179, 0.400) !important;
     border-radius: 1rem !important;
     min-width: 0 !important;
+  }
+
+  .info-field {
+    cursor: pointer !important;
   }
 
   .custom-input, 
@@ -19,36 +26,175 @@
   input[type="date"].form-control,
   .datepicker input {
     border-radius: 1rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     transition: all 0.2s ease !important;
-    background-color: #fff !important;
+    background-color: var(--form-input-color) !important;
     min-height: 48px !important;
     box-sizing: border-box !important;
+    color: var(--form-input-text-color) !important;
   }
 
   .custom-input:focus, 
   .custom-select:focus,
   input[type="text"].form-control:focus,
   input[type="date"].form-control:focus,
-  .datepicker input:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+  .datepicker input:focus,
+  #id_date.form-control:focus {
+    border-color: var(--form-input-focus-border) !important; /* input focus border*/
+    box-shadow: 0 0 0 0.2rem var(--form-input-focus-shadow) !important; /* input focus shadow*/
     outline: none !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /*Custom date picker*/
-  .input-group .form-control {
-  border-right: 0 !important;
-  }
-
   .input-group-text {
-    background: #fff !important;
+    background: var(--form-input-color) !important;
+    border: 2px solid var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
     margin-left: 8px !important;
     border-radius: 1rem !important;
+    transition: var(--tran-02);
   }
 
+  /* Date picker icon hover effect */
+  /*.input-group .form-control {
+    border-right: none !important;
+    border-radius: 1rem 0 0 1rem !important;
+  }
+
+  .input-group .form-control:focus {
+    border-right: none !important;
+  }*/
+  
+  .input-group-text:hover {
+    background: var(--form-input-focus-shadow) !important;
+    border-color: var(--form-input-focus-border) !important;
+    color: var(--form-input-focus-border) !important;
+  }
+
+  /* Amount field spinner buttons (hide) */
+  /*input[type="number"] {
+    -moz-appearance: textfield; /* Hide Firefox spinners 
+  }*/
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Hide WebKit spinners */
+    margin: 0;
+  }
+
+  /*Custom spinner*/
+  .amount-input-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .amount-input-container:hover .custom-spinners {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .custom-spinners {
+    position: absolute;
+    right: 15px !important;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  .spinner-btn {
+    width: 20px;
+    height: 16px;
+    background: var(--form-input-color);
+    border: 1px solid var(--form-input-border);
+    color: var(--form-input-text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    line-height: 1;
+    user-select: none;
+    transition: all 0.2s ease;
+  }
+
+  .spinner-btn:first-child {
+    border-radius: 3px 3px 0 0;
+    border-bottom: none;
+  }
+
+  .spinner-btn:last-child {
+    border-radius: 0 0 3px 3px;
+  }
+
+  .spinner-btn:hover {
+    background: var(--form-input-focus-shadow);
+    border-color: var(--form-input-focus-border);
+    color: var(--form-input-focus-border);
+  }
+
+  .spinner-btn:active {
+    transform: scale(0.95);
+    background: var(--form-input-focus-border);
+    color: white;
+  }
+
+  /* Date input field adjustments for input group */
+  .input-group .form-control:focus + .input-group-text {
+    border-color: var(--form-input-focus-border) !important;
+    background: var(--form-input-focus-shadow) !important;
+  }
+
+  /* Datepicker widget dark mode styling */
+  .bootstrap-datetimepicker-widget {
+    background: var(--form-input-color) !important;
+    border: 2px solid var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days .table-condensed {
+    background: var(--form-input-color) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days th,
+  .bootstrap-datetimepicker-widget .datepicker-days td {
+    color: var(--form-input-text-color) !important;
+    border-color: var(--form-input-border) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days .active {
+    background: var(--form-input-focus-border) !important;
+    color: white !important;
+  }
+
+  .bootstrap-datetimepicker-widget .datepicker-days td:hover {
+    background: var(--form-input-focus-shadow) !important;
+    color: var(--form-input-focus-border) !important;
+  }
+
+  /* DatePicker button icons */
+  .bootstrap-datetimepicker-widget .picker-switch,
+  .bootstrap-datetimepicker-widget .prev,
+  .bootstrap-datetimepicker-widget .next {
+    background: var(--form-input-color) !important;
+    border-color: var(--form-input-border) !important;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .bootstrap-datetimepicker-widget .picker-switch:hover,
+  .bootstrap-datetimepicker-widget .prev:hover,
+  .bootstrap-datetimepicker-widget .next:hover {
+    color: var(--form-input-focus-border) !important;
+  }
 
   /* More specific DatePicker targeting */
   .datepicker-days input,
@@ -60,33 +206,36 @@
   .input-group input[data-toggle="datetimepicker"],
   #id_date {
     border-radius: 0.5rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     min-height: 48px !important;
     box-sizing: border-box !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /* Target the specific field by ID */
   #id_date.form-control {
     border-radius: 1rem !important;
-    border: 1px solid #dee2e6 !important;
+    border: 2px solid var(--form-input-border) !important;
     padding: 12px 16px !important;
     font-size: 16px !important;
     min-height: 48px !important;
+    color: var(--form-input-text-color) !important;
   }
 
   .custom-input:focus, 
   .custom-select:focus {
-    border-color: #007bff !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    border-color: var(--form-input-focus-border) !important;  /* input focus border*/
+    box-shadow: 0 0 0 0.2rem var(--form-input-focus-shadow) !important; /* input focus shadow*/
     outline: none !important;
+    color: var(--form-input-text-color) !important;
   }
 
   /* Form Labels */
   .form-label {
     font-weight: 600;
-    color: #495057;
+    color: var(--form-text-color);
     margin-bottom: 8px;
     font-size: 14px;
   }
@@ -94,34 +243,194 @@
   /* Radio Button Styling */
   .form-check {
     padding: 8px 16px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--form-input-border);
     border-radius: 1rem;
     margin-right: 12px;
     transition: all 0.2s ease;
-    background-color: #fff;
+    background-color: var(--form-input-color);
+    color: var(--form-iput-radio-tc);
+  }
+
+  /* Custom radio button appearance */
+  .form-check input[type="radio"] {
+    flex-shrink: 0;
+  }
+
+  /* Income radio dot colors */
+  .form-check:has(input[value="income"]) input[type="radio"] {
+    accent-color: #28a745;
+  }
+
+  /* Expense radio dot colors */
+  .form-check:has(input[value="expense"]) input[type="radio"] {
+    accent-color: #dc3545;
+  }
+
+  /* Fallback for browsers without :has() support */
+  .form-check.income-type input[type="radio"] {
+    accent-color: #28a745;
+  }
+
+  .form-check.expense-type input[type="radio"] {
+    accent-color: #dc3545;
+  }
+
+  /* Remove the conflicting generic blue styling */
+  .form-check input[type="radio"]:checked {
+    background-color: transparent !important;
+    border-color: transparent !important;
+  }
+
+  /* Income radio button styling */
+  .form-check:has(input[value="income"]) {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .form-check:has(input[value="income"]:checked) {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="income"]:checked) .form-check-label {
+    color: var(--form-input-radio-text) !important;
+    font-weight: 600;
+  }
+
+  /*Income radio-select 'checked' -- on hover > label styling */
+  .form-check:has(input[value="income"]:checked):hover .form-check-label {
+    color: #28a745 !important;
+    font-weight: 600;
+  }
+
+  .form-check:has(input[value="income"]) input[type="radio"]:checked {
+    background-color: var(--form-input-radio-text);
+    border-color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="income"]):hover {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.25);
+    color: #28a745;
+  }
+
+  body.dark {
+    /*Income radio-select 'checked' -- on hover > label styling */
+    .form-check:has(input[value="income"]:checked):hover .form-check-label {
+      color: #FFF !important;
+      font-weight: 600;
+    } 
+
+    /*Expense radio-select 'checked' -- on hover > label styling */
+    .form-check:has(input[value="expense"]:checked):hover .form-check-label {
+      color: #FFF !important;
+      font-weight: 600;
+    }
+
+    /* Dark mode adjustments for select 
+    select.custom-select.income-select {
+      color: #5cb85c !important;
+      background: rgba(40, 167, 69, 0.1) !important;
+    }
+
+    select.custom-select.expense-select {
+      color: #ff6b6b !important;
+      background: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    */
+  }
+
+  /* Expense radio button styling */
+  .form-check:has(input[value="expense"]) {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+
+  .form-check:has(input[value="expense"]:checked) {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="expense"]:checked) .form-check-label {
+    color: var(--form-input-radio-text) !important;
+    font-weight: 600;
+  }
+
+  /*Expense radio-select 'checked' -- on hover > label styling */
+  .form-check:has(input[value="expense"]:checked):hover .form-check-label {
+    color: #dc3545 !important;
+    font-weight: 600;
+  }
+
+  .form-check:has(input[value="expense"]) input[type="radio"]:checked {
+    background-color: var(--form-input-radio-text);
+    border-color: var(--form-input-radio-text);
+  }
+
+  .form-check:has(input[value="expense"]):hover {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.25);
+    color: #dc3545;
+  }
+
+  /* Fallback for browsers that don't support :has() selector */
+  .form-check.income-type {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+
+  .form-check.income-type.checked {
+    background-color: #28a745;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check.income-type:hover {
+    border-color: #28a745;
+    background-color: rgba(40, 167, 69, 0.25);
+    color: #28a745;
+  }
+
+  .form-check.expense-type {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+  }
+
+  .form-check.expense-type.checked {
+    background-color: #dc3545;
+    color: var(--form-input-radio-text);
+  }
+
+  .form-check.expense-type:hover {
+    border-color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.25);
+    color: #dc3545;
   }
 
   .form-check:hover {
-    border-color: #007bff;
-    background-color: #f8f9fa;
+    border-color: #3771c8ff;
+    background-color: var(--form-input-focus-shadow);
+    color: var(--form-input-text-color);
   }
 
   .form-check input[type="radio"]:checked + .form-check-label {
-    color: #007bff;
+    color: #3771c8ff;
     font-weight: 600;
   }
 
   .form-check input[type="radio"]:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #3771c8ff;
+    border-color: #3771c8ff;
   }
 
   /* Category Buttons */
   .category-buttons .btn {
     border-radius: 1rem;
-    border: 2px solid #e9ecef;
-    background: white;
-    color: #6c757d;
+    border: 2px solid var(--form-input-border);
+    background: var(--form-input-color);
+    color: var(--form-input-text-color);
     padding: 12px 16px;
     font-size: 14px;
     font-weight: 500;
@@ -130,30 +439,100 @@
   }
 
   .category-buttons .btn:hover {
-    border-color: #007bff;
-    color: #007bff;
+    border-color: #3771c8ff;
+    color: #3771c8ff;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .category-buttons .btn.active {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    background: #3771c8ff;
+    color: #fff;
+    border-color: #3771c8ff;
     box-shadow: 0 2px 8px rgba(0,123,255,0.3);
 }
+
+  .category-buttons .btn.income-category:hover {
+    background: rgba(40, 167, 70, 0.250);
+    border-color: #28a745;
+    color: var(--form-input-text-color) !important;
+  }
+
+  .category-buttons .btn.expense-category:hover {
+    background: rgba(220, 53, 70, 0.250);
+    border-color: #dc3545;
+    color: var(--form-input-text-color) !important;
+  }
 
   .category-buttons .btn.income-category.active {
     background: #28a745;
     border-color: #28a745;
     box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+    color: #fff !important;
   }
 
   .category-buttons .btn.expense-category.active {
     background: #dc3545;
     border-color: #dc3545;
     box-shadow: 0 2px 8px rgba(220,53,69,0.3);
+    color: #fff !important;
   }
+
+  /* Category Select(dropdown) 
+  /* Wrapper 
+  .category-select-wrapper {
+    position: relative !important;
+  }
+
+  .category-select-wrapper::after {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(calc(-50% + 12px)); /* Adjust for label 
+    pointer-events: none;
+    font-size: 12px;
+    color: var(--form-input-text-color);
+    transition: var(--tran-02)
+  }
+
+  /* Income select 
+  select.custom-select.income-select {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.05) !important;
+    color: #1e7e34 !important;
+  }
+
+  select.custom-select.income-select::after {
+    color: #28a745 !important;
+  }
+
+  select.custom-select.income-select:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  }
+
+  select.custom-select.income-select:hover {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  }
+
+  /* Expense Select 
+  select.custom-select.expense-select {
+    border-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.05) !important;
+    color: #bd2130 !important;
+  }
+
+  select.custom-select.expense-select::after {
+    color: #dc3545 !important;
+  }
+
+  select.custom-select.expense-select:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+
+  */
 
   /* Submit Button */
   .btn-outline-success {
@@ -165,17 +544,22 @@
   }
 
   .btn-outline-success:hover {
-    color: #fff;
+    color: #fff !important;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(40,167,69,0.3);
   }
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
-      .category-buttons {
+      /*.category-buttons {
+        display: none !important;
+      } */
+      
+      /* Keep Native select hidden on mobile */
+      #id_category {
         display: none !important;
       }
-      
+
       .category-select {
         display: block !important;
       }
@@ -195,6 +579,27 @@
       .custom-input {
         font-size: 16px !important; /* Prevents zoom on iOS */
         min-height: 48px !important; /* Better touch target */
+      }
+
+      /* Category display for type-buttons on mobile */
+      .category-buttons .btn {
+        width: 100% !important;
+        margin-bottom: 8px;
+      }
+
+      /* Override grid for mobile - single column */
+      #category-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+
+      #category-grid .col-6,
+      #category-grid .col-md-4,
+      #category-grid .col-lg-3 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
       }
       
       /* Stack radio buttons vertically on very small screens */
@@ -216,7 +621,7 @@
   .custom-select:focus-visible,
   input[type="text"].form-control:focus-visible,
   input[type="date"].form-control:focus-visible {
-    outline: 2px solid #007bff;
+    outline: 2px solid var(--form-input-focus-border);
     outline-offset: 2px;
   }
 
@@ -278,7 +683,7 @@
 
   <!--Edit Transaction Form Card (Centered)-->
   <div class="quick-move d-flex align-items-center justify-content-center">
-    <div class="card shadow-sm mb-4 w-100" style="min-width: 250px;">
+    <div class="card bg-card-color shadow-sm mb-4 w-100 mobile-scroll-fade" style="min-width: 250px;">
       <div class="card-body">
         <div class="form-group">
           <form method="post" id="transaction-form" >
@@ -287,7 +692,13 @@
             <!-- Amount Field -->
             <div class="mb-3">
               <label for="{{ form.amount.id_for_label }}" class="form-label">{{ form.amount.label }}</label>
-              {{ form.amount }}
+                <div class="amount-input-container">
+                  {{ form.amount }}
+                  <div class="custom-spinners">
+                    <button type="button" class="spinner-btn" onclick="incrementAmount()">▲</button>
+                    <button type="button" class="spinner-btn" onclick="decrementAmount()">▼</button>
+                  </div>
+                </div>
               {% if form.amount.errors %}
                 <div class="text-danger">{{ form.amount.errors }}</div>
               {% endif %}
@@ -394,16 +805,64 @@ const categories = {
     ]
 };
 
+function updateRadioButtonColors() {
+    const typeInputs = document.querySelectorAll('input[name="type"]');
+    typeInputs.forEach(input => {
+        const formCheck = input.closest('.form-check');
+
+        // Remove existing classes
+        formCheck.classList.remove('income-type', 'expense-type', 'checked');
+
+        // Add type-specific class
+        if (input.value === 'income') {
+            formCheck.classList.add('income-type');
+        } else if (input.value === 'expense') {
+            formCheck.classList.add('expense-type');
+        }
+
+        // Add checked class if this input checked
+        if (input.checked) {
+            formCheck.classList.add('checked');
+        }
+    });
+}
+
 function updateCategories(transactionType) {
     const categorySelect = document.getElementById('id_category');
     const categoryButtons = document.getElementById('category-buttons');
     const categoryGrid = document.getElementById('category-grid');
+
+    // Add custom-select class if not present
+    if (!categorySelect.classList.contains('custom-select')) {
+        categorySelect.classList.add('custom-select');
+    }  
+
+    // Add wrapper classes for styling
+    const selectWrapper = categorySelect.closest('.mb-3');
+    if (selectWrapper) {
+      selectWrapper.classList.add('category-select-wrapper');
+    }
     
     if (!transactionType) {
         categoryButtons.classList.add('d-none');
+        //Remove type classes
+        categorySelect.classList.remove('income-select','expense-select');
+        if (selectWrapper) {
+          selectWrapper.classList.remove('income', 'expense');
+        }
         return;
     }
-    
+
+    // Add type-specific classe to select
+    categorySelect.classList.remove('income-select', 'expense-select');
+    categorySelect.classList.add(`${transactionType}-select`);
+
+    // Add class to wrapper for arrow color
+    if (selectWrapper) {
+      selectWrapper.classList.remove('income', 'expense');
+      selectWrapper.classList.add(transactionType);
+    }
+
     // Store the currently selected category before clearing
     const currentSelectedCategory = categorySelect.value;
     
@@ -421,7 +880,7 @@ function updateCategories(transactionType) {
         option.textContent = label;
         // Restore selection if it matches
         if (value === currentSelectedCategory) {
-            option.selected = true;
+          option.selected = true;
         }
         categorySelect.appendChild(option);
     });
@@ -429,7 +888,8 @@ function updateCategories(transactionType) {
     // Create category buttons (for desktop)
     relevantCategories.forEach(([value, label]) => {
         const col = document.createElement('div');
-        col.className = 'col-6 col-md-4 col-lg-3';
+        // Responsive classes: full width on mobile, grid on desktop
+        col.className = 'col-12 col-md-4 col-lg-3';
         
         const button = document.createElement('button');
         button.type = 'button';
@@ -440,7 +900,7 @@ function updateCategories(transactionType) {
         // Highlight the button if it matches the selected category
         if (value === currentSelectedCategory) {
             button.classList.add('active');
-        }
+        } 
         
         button.addEventListener('click', function() {
             // Remove active class from all category buttons
@@ -451,8 +911,11 @@ function updateCategories(transactionType) {
             // Add active class to clicked button
             this.classList.add('active');
             
-            // Update hidden select
+            // Update hidden select (needed for form submission)
             categorySelect.value = value;
+
+            // Trigger change event for form validation
+            categorySelect.dispatchEvent(new Event('change', { bubbles: true }));
         });
         
         col.appendChild(button);
@@ -461,21 +924,204 @@ function updateCategories(transactionType) {
     
     // Show category buttons
     categoryButtons.classList.remove('d-none');
+
+    // Update radio button colors after category update
+    updateRadioButtonColors();
+}
+
+// Format amount input to always show two decimal places
+function formatAmountInput(input) {
+    let value = parseFloat(input.value);
+    if (isNaN(value)) {
+        input.value = '0.00';
+    } else {
+        input.value = value.toFixed(2);
+    }
+}
+
+// Fixed increment function with proper 2 decimal formatting
+
+// Increment/Decrement with hold support
+let incrementInterval = null;
+let decrementInterval = null;
+
+
+function incrementAmount() {
+    const input = document.getElementById('id_amount');
+    const currentValue = parseFloat(input.value) || 0;
+    const step = 0.01; // Always increment by 0.01
+    const newValue = currentValue + step;
+    input.value = newValue.toFixed(2);
+    
+    // Trigger input event for any listeners
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+// Fixed decrement function with proper 2 decimal formatting
+function decrementAmount() {
+    const input = document.getElementById('id_amount');
+    const currentValue = parseFloat(input.value) || 0;
+    const step = 0.01; // Always decrement by 0.01
+    const newValue = Math.max(0, currentValue - step); // Prevent negative values
+    input.value = newValue.toFixed(2);
+    
+    // Trigger input event for any listeners
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+function startIncrement() {
+  incrementAmount();
+  incrementInterval = setInterval(incrementAmount, 100);
+}
+
+function stopIncrement() {
+  if (incrementInterval) {
+    clearInterval(incrementInterval);
+    incrementInterval = null;
+  }
+}
+
+function startDecrement() {
+  decrementAmount();
+  decrementInterval = setInterval(decrementAmount, 100);
+}
+
+
+function stopDecrement() {
+  if (decrementInterval) {
+    clearInterval(decrementInterval);
+    decrementInterval = null;
+  }
 }
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('id_category');
+    if (categorySelect && !categorySelect.classList.contains('custom-select')){
+      categorySelect.classList.add('custom-select');
+    }
+
+    const amountInput = document.getElementById('id_amount');
+
+    if (amountInput) {
+        // Format on blur (when user leaves the field)
+        amountInput.addEventListener('blur', function() {
+            formatAmountInput(this);
+        });
+        
+        // Fixed input handler - preserves caret position -> Prevent more than 2 decimal places during typing
+        amountInput.addEventListener('input', function(e) {
+            const cursorPosition = this.selectionStart;
+            let value = this.value;
+            const originalLength = value.length;
+            
+            // Remove any non-numeric characters except decimal point
+            value = value.replace(/[^0-9.]/g, '');
+            
+            // Ensure only one decimal point
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 decimal places
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            
+            // Only update if value changed
+            if (this.value !== value) {
+                this.value = value;
+                
+                // Restore cursor position, accounting for removed characters
+                const lengthDiff = originalLength - value.length;
+                const newPosition = Math.max(0, cursorPosition - lengthDiff);
+                this.setSelectionRange(newPosition, newPosition);
+            }
+        });
+
+        // Prevent invalid keys from being entered
+        amountInput.addEventListener('keydown', function(e) {
+            // Allow: backspace, delete, tab, escape, enter, decimal point
+            if ([46, 8, 9, 27, 13, 110, 190].indexOf(e.keyCode) !== -1 ||
+                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                
+                // Check for decimal point - only allow one
+                if (e.keyCode === 190 || e.keyCode === 110) {
+                    if (this.value.indexOf('.') !== -1) {
+                        e.preventDefault();
+                    }
+                }
+                return;
+            }
+            
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && 
+                (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+        
+        // Set initial format if empty
+        if (!amountInput.value || amountInput.value === '') {
+            amountInput.value = '0.00';
+        } else {
+            formatAmountInput(amountInput);
+        }
+    }
+
+    // Setup spinner buttons with hold functionality
+    const incrementBtn = document.querySelector('.spinner-btn[onclick*="increment"]');
+    const decrementBtn = document.querySelector('.spinner-btn[onclick*="decrement"]');
+
+    if (incrementBtn) {
+        incrementBtn.removeAttribute('onclick');
+        incrementBtn.addEventListener('mousedown', startIncrement);
+        incrementBtn.addEventListener('mouseup', stopIncrement);
+        incrementBtn.addEventListener('mouseleave', stopIncrement);
+        incrementBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startIncrement();
+        });
+        incrementBtn.addEventListener('touchend', stopIncrement);
+    }
+
+    if (decrementBtn) {
+        decrementBtn.removeAttribute('onclick');
+        decrementBtn.addEventListener('mousedown', startDecrement);
+        decrementBtn.addEventListener('mouseup', stopDecrement);
+        decrementBtn.addEventListener('mouseleave', stopDecrement);
+        decrementBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startDecrement();
+        });
+        decrementBtn.addEventListener('touchend', stopDecrement);
+    }
+
+    // Cleanup intervals when page unloads
+    window.addEventListener('beforeunload', function() {
+        stopIncrement();
+        stopDecrement();
+    });
+
+    
     // Get the initially selected category (for edit forms)
     const initialSelectedCategory = document.getElementById('id_category').value;
-    
+
     // Check if there's already a selected type (for edit forms)
     const typeInputs = document.querySelectorAll('input[name="type"]');
     let initialSelectedType = null;
-    
+
     typeInputs.forEach(input => {
         if (input.checked) {
             initialSelectedType = input.value;
-            // Update categories immediately for the pre-selected type
+            // Update categories immediately for the pre-selected type 
             updateCategories(input.value);
         }
         
@@ -486,7 +1132,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // If no type is selected but we have a category, try to determine the type
-    // This handles edge cases where the form might have category but no type selected
     if (!initialSelectedType && initialSelectedCategory) {
         // Check which category list contains our selected category
         const isIncomeCategory = categories.income.some(([value]) => value === initialSelectedCategory);
@@ -506,7 +1151,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-}); 
+
+    // Initialize radio button colors
+    updateRadioButtonColors();
+});
 </script>
 
 {% endblock %}
