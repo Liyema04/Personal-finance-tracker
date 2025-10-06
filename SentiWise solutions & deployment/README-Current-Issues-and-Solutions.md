@@ -1,6 +1,6 @@
 # SentiWise: Addressing Gaps in Personal Finance Trackers
 ## Project Overview
-SentiWise is an innovative personal finance tracker designed specifically for South African students and young adults, focusing on the behavioral and emotional aspects of money management ("Senti" meaning "feelings" in Afrikaans).
+SentiWise is an innovative personal finance tracker designed specifically for South African students and young adults, focusing on the behavioral and emotional aspects of money management.
 
 ### Identified Market Gaps & Proposed Solutions
 1. Overwhelming Complexity in Existing Apps
