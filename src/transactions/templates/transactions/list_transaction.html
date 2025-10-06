@@ -13,6 +13,10 @@
         min-width: 0;
     }
 
+    .back-b {
+        border-radius: 1rem !important;
+    }
+
     .summary-period-badge {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
@@ -60,7 +64,7 @@
     .stats-summary {
         background: linear-gradient(135deg, #3771c8ff 0%, #67ff00 100%);
         color: white;
-        border-radius: 0.5rem;
+        border-radius: 1rem;
     }
 
     .stat-item {
@@ -388,7 +392,7 @@
             </h1>
         </div>
         <div class="d-none d-md-block">
-            <a href="{% url 'add_transaction' %}" class="btn btn-outline-dark">
+            <a href="{% url 'add_transaction' %}" class="back-b btn btn-outline-dark">
                 <i class="bi bi-plus-circle me-2"></i>Add Move
             </a>
         </div>
@@ -434,7 +438,7 @@
 
     <!--Mobile Add Button-->
     <div class="d-md-none mb-3">
-        <a href="{% url 'add_transaction' %}" class="btn btn-primary w-100">
+        <a href="{% url 'add_transaction' %}" class="back-b btn btn-primary w-100">
             <i class="bi bi-plus-circle me-2"></i> Add New Move
         </a>
     </div>
@@ -656,7 +660,7 @@
                 <!--Load More Button (only if there are more transactions)  -->
                 {% if has_more %}
                 <div class="load-more-container" id="loadMoreContainer">
-                    <button class="btn btn-outline-primary btn-load-more" id="loadMoreBtn">
+                    <button class="back-b btn btn-outline-primary btn-load-more" id="loadMoreBtn">
                         <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
                         <span class="load-text">
                             <i class="bi bi-arrow-down-circle me-2"></i>
@@ -691,7 +695,7 @@
 
     <!--Back to Dashboard (Mobile)-->
     <div class="d-md-none mt-3">
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark w-100">
+        <a href="{% url 'dashboard' %}" class="back-b btn btn-outline-dark w-100">
             <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>
