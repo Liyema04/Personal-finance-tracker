@@ -74,9 +74,9 @@
   }
 
   /* Amount field spinner buttons (hide) */
-  input[type="number"] {
-    -moz-appearance: textfield; /* Hide Firefox spinners */
-  }
+  /*input[type="number"] {
+    -moz-appearance: textfield; /* Hide Firefox spinners 
+  }*/
 
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button {
@@ -326,6 +326,19 @@
       color: #FFF !important;
       font-weight: 600;
     }
+
+    /* Dark mode adjustments for select 
+    select.custom-select.income-select {
+      color: #5cb85c !important;
+      background: rgba(40, 167, 69, 0.1) !important;
+    }
+
+    select.custom-select.expense-select {
+      color: #ff6b6b !important;
+      background: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    */
   }
 
   /* Expense radio button styling */
@@ -464,6 +477,62 @@
     color: #fff !important;
   }
 
+  /* Category Select(dropdown) 
+  /* Wrapper 
+  .category-select-wrapper {
+    position: relative !important;
+  }
+
+  .category-select-wrapper::after {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(calc(-50% + 12px)); /* Adjust for label 
+    pointer-events: none;
+    font-size: 12px;
+    color: var(--form-input-text-color);
+    transition: var(--tran-02)
+  }
+
+  /* Income select 
+  select.custom-select.income-select {
+    border-color: #28a745 !important;
+    background-color: rgba(40, 167, 69, 0.05) !important;
+    color: #1e7e34 !important;
+  }
+
+  select.custom-select.income-select::after {
+    color: #28a745 !important;
+  }
+
+  select.custom-select.income-select:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  }
+
+  select.custom-select.income-select:hover {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+  }
+
+  /* Expense Select 
+  select.custom-select.expense-select {
+    border-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.05) !important;
+    color: #bd2130 !important;
+  }
+
+  select.custom-select.expense-select::after {
+    color: #dc3545 !important;
+  }
+
+  select.custom-select.expense-select:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+  }
+
+  */
+
   /* Submit Button */
   .btn-outline-success {
     border-radius: 1rem !important;
@@ -481,10 +550,15 @@
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
-      .category-buttons {
+      /*.category-buttons {
+        display: none !important;
+      } */
+      
+      /* Keep Native select hidden on mobile */
+      #id_category {
         display: none !important;
       }
-      
+
       .category-select {
         display: block !important;
       }
@@ -504,6 +578,27 @@
       .custom-input {
         font-size: 16px !important; /* Prevents zoom on iOS */
         min-height: 48px !important; /* Better touch target */
+      }
+
+      /* Category display for type-buttons on mobile */
+      .category-buttons .btn {
+        width: 100% !important;
+        margin-bottom: 8px;
+      }
+
+      /* Override grid for mobile - single column */
+      #category-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+
+      #category-grid .col-6,
+      #category-grid .col-md-4,
+      #category-grid .col-lg-3 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
       }
       
       /* Stack radio buttons vertically on very small screens */
@@ -579,7 +674,7 @@
 
       <!-- Transaction Form Card (Centered) -->
       <div class="quick-move d-flex align-items-center justify-content-center">
-        <div class="card bg-card-color shadow-sm mb-4 w-100" style="min-width: 250px;">
+        <div class="card bg-card-color shadow-sm mb-4 w-100 mobile-scroll-fade" style="min-width: 250px;">
           <div class="card-body">
             <div class="form-group">
               <form method="post" id="transaction-form" >
@@ -630,7 +725,7 @@
                 </div>
 
                 <!-- Category -->
-                <div class="mb-3">
+                <div class="mb-3 category-select-wrapper">
                   <label class="form-label">{{ form.category.label }}
                     <i class="info-field fa-solid fa-circle-info" data-bs-toggle="tooltip" title="Sort rand spending 💸"></i> 
                   </label>
@@ -642,6 +737,7 @@
                       <!-- Category buttons will be inserted here by JavaScript -->
                     </div>
                   </div>
+
                   {% if form.category.errors %}
                     <div class="text-danger">{{ form.category.errors }}</div>
                   {% endif %}
@@ -722,10 +818,36 @@ function updateCategories(transactionType) {
     const categorySelect = document.getElementById('id_category');
     const categoryButtons = document.getElementById('category-buttons');
     const categoryGrid = document.getElementById('category-grid');
+
+    // Add custom-select class if not present
+    if (!categorySelect.classList.contains('custom-select')) {
+        categorySelect.classList.add('custom-select');
+    }  
+
+    // Add wrapper classes for styling
+    const selectWrapper = categorySelect.closest('.mb-3');
+    if (selectWrapper) {
+      selectWrapper.classList.add('category-select-wrapper');
+    }
     
     if (!transactionType) {
         categoryButtons.classList.add('d-none');
+        //Remove type classes
+        categorySelect.classList.remove('income-select','expense-select');
+        if (selectWrapper) {
+          selectWrapper.classList.remove('income', 'expense');
+        }
         return;
+    }
+
+    // Add type-specific classe to select
+    categorySelect.classList.remove('income-select', 'expense-select');
+    categorySelect.classList.add(`${transactionType}-select`);
+
+    // Add class to wrapper for arrow color
+    if (selectWrapper) {
+      selectWrapper.classList.remove('income', 'expense');
+      selectWrapper.classList.add(transactionType);
     }
 
     // Store the currently selected category before clearing
@@ -753,7 +875,8 @@ function updateCategories(transactionType) {
     // Create category buttons (for desktop)
     relevantCategories.forEach(([value, label]) => {
         const col = document.createElement('div');
-        col.className = 'col-6 col-md-4 col-lg-3';
+        // Responsive classes: full width on mobile, grid on desktop
+        col.className = 'col-12 col-md-4 col-lg-3';
         
         const button = document.createElement('button');
         button.type = 'button';
@@ -775,8 +898,11 @@ function updateCategories(transactionType) {
             // Add active class to clicked button
             this.classList.add('active');
             
-            // Update hidden select
+            // Update hidden select (needed for form submission)
             categorySelect.value = value;
+
+            // Trigger change event for form validation
+            categorySelect.dispatchEvent(new Event('change', { bubbles: true }));
         });
         
         col.appendChild(button);
@@ -826,6 +952,11 @@ function decrementAmount() {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
+    const categorySelect = document.getElementById('id_category');
+    if (categorySelect && !categorySelect.classList.contains('custom-select')){
+      categorySelect.classList.add('custom-select');
+    }
+
     const amountInput = document.getElementById('id_amount');
 
     if (amountInput) {
