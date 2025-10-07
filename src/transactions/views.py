@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from transactions.models import Transaction, Category
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Avg, F, Count
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.core.serializers.json import DjangoJSONEncoder
@@ -394,15 +394,37 @@ def handle_ajax_transactions(request, transactions_qs):
 def transactions_detail_page(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
     
+
     # Getting human-readable category
     category_display = dict(Category.DEFAULT_CATEGORIES).get(transaction.category) # if error -- try: Category.category
+    similar_transactions = Transaction.objects.filter(
+        user = request.user,
+        category = transaction.category
+    ).exclude(id = transaction_id).order_by('-date')[:3] # Shows at three transactions in same category
+    
+    # Category lifetime percentage
+    
+    """
+    p_move_category = Transaction.objects.aggregate(
+        user = request.user,
+        current_category = transaction.category,
+        avg_percentage = Avg(F(Min('current_category'))) * 100 / F(Max('current_category')), output_field=FloatField() 
+    )
+     
+    """
+    totals = Transaction.objects.filter(user=request.user).aggregate(
+        total_moves = Count('id'),
+        category_moves=Count('id', filter=Q(category=transaction.category))
+    )
+    
+    total_moves = totals.get('total_moves') or 0
+    category_moves = totals.get('category_moves') or 0
+    p_move_category = (category_moves / total_moves * 100) if total_moves else 0.0
     
     context = {
         'transaction': transaction,
         'category_display': category_display,
-        'similar_transactions': Transaction.objects.filter(
-            user = request.user,
-            category = transaction.category
-        ).exclude(id = transaction_id).order_by('-date')[:3] # Suggests related items
+        'similar_transactions': similar_transactions,
+        'avg_percentage': f"{p_move_category:.1f}"
     } 
     return render(request, "transactions/detail_transaction.html", context)
