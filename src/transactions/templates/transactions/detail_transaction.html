@@ -6,7 +6,7 @@
 
 {% block main_content %}
 <style>
-  @import url(/src/static/css/new-index.css);
+  @import url("{% static 'css/new-index.css' %}");
 
   .card {
     border: 2px solid rgba(179, 179, 179, 0.400) !important;
@@ -17,6 +17,19 @@
   .back-b {
     border-radius: 1rem !important;
   }
+
+  #container {
+    margin-top: 30px;
+    padding: 10px;
+  }
+
+  #category-percent-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
 
 </style>
 <!--Main Content-->
@@ -77,7 +90,13 @@
       <div class="card bg-card-color shadow-sm h-100 mobile-scroll-fade">
         <div class="card-body p-3">
           <h5 class="card-title text-primary">Related Moves<i class="info-field fa-solid fa-circle-info" data-bs-toggle="tooltip" title="Similar moves in this category ◷"></i></h5>
-          <span>{{ avg_percentage }}%</span>
+          <div id="container">
+            <canvas id="chart" class="category-percent" height="200" width="200">
+            </canvas>
+          </div>
+          <div class="card-text">
+            <span id="category-percent-label" class="c-p-l lb-item">{{ avg_percentage }}%</span>
+          </div>
           {% for t in similar_transactions %}
           <!-- Lifetime:Category Spendature -->
           <div class="py-2 border-bottom">
@@ -95,4 +114,308 @@
       </a>
   </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+<script>
+  // Category chartData values - Chart.js v3/v4 compatible
+  (function(){
+    // Get the percentage value from Django template
+    const pct = Number('{{ avg_percentage|default:0 }}');
+    const primary = Math.min(Math.max(pct, 0), 100);
+    const remainder = +(100 - primary).toFixed(2);
+
+    // Color calculation constants
+    const red_min_hex = '45';
+    const red_min_dec = parseInt(red_min_hex, 16);
+    const red_max_hex = 'cc';
+    const red_max_dec = parseInt(red_max_hex, 16);
+    const green_min_hex = '35';
+    const green_min_dec = parseInt(green_min_hex, 16);
+    const green_max_hex = 'ac';
+    const green_max_dec = parseInt(green_max_hex, 16);
+    const blue_min_hex = '20';
+    const blue_min_dec = parseInt(blue_min_hex, 16);
+    const blue_max_hex = '78';
+    const blue_max_dec = parseInt(blue_max_hex, 16);
+
+    const pi = Math.PI;
+
+    // Helper function to get value or default (Chart.js v2 compatibility)
+    const getValueOrDefault = (value, defaultValue) => {
+      return value !== undefined && value !== null ? value : defaultValue;
+    };
+
+    // Function to calculate dynamic color based on arc angle
+    const animateArc = chart => {
+      const meta = chart.getDatasetMeta(0);
+      if (!meta || !meta.data || !meta.data[0]) return;
+      
+      let arc = meta.data[0];
+      let angle = arc.endAngle + pi / 2;
+      let angle_inverse = 2 * pi - angle;
+      let blue = Math.round(
+        (angle / (2 * pi)) * blue_max_dec + (angle_inverse / (2 * pi)) * blue_min_dec
+      ).toString(16);
+      
+      if (arc.endAngle < pi / 2) {
+        let green = Math.round(
+          (angle / pi) * green_max_dec + ((pi - angle) / pi) * green_min_dec
+        ).toString(16);
+        if (green.length < 2) green = '0' + green;
+        let color = `#${red_max_hex}${green}${blue}`;
+        if (!arc.round) arc.round = {};
+        arc.round.backgroundColor = color;
+        drawArc(chart, arc, color);
+      } else {
+        let red = Math.round(
+          ((2 * pi - angle) / pi) * red_max_dec + ((angle - pi) / pi) * red_min_dec
+        ).toString(16);
+        if (red.length < 2) red = '0' + red;
+        if (red === '45') red = '32';
+        if (blue === '78') blue = '4a';
+        let color = `#${red}${green_max_hex}${blue}`;
+        if (!arc.round) arc.round = {};
+        arc.round.backgroundColor = color;
+        drawArc(chart, arc, color);
+      }
+    };
+
+    // Draw the arc with the specified color (robust for Chart.js v2/v3/v4)
+    const drawArc = (chart, arc, color) => {
+      const chartArea = chart.chartArea;
+      if (!chartArea) return;
+
+      const ctx = chart.ctx;
+      const meta = chart.getDatasetMeta(0);
+      if (!meta) return;
+
+      // Controller may be in different places depending on Chart.js version
+      const controller = (meta && meta.controller) || (chart._metasets && chart._metasets[0] && chart._metasets[0].controller);
+      const outerRadius = (controller && controller.outerRadius) || chart.outerRadius || 0;
+      const innerRadius = (controller && controller.innerRadius) || chart.innerRadius || 0;
+
+      let startAngle = arc ? (arc.startAngle ?? arc._view?.startAngle ?? 0) : 0;
+      let endAngle = arc ? (arc.endAngle ?? arc._view?.endAngle ?? 2 * Math.PI) : 2 * Math.PI;
+
+      // normalize so startAngle <= endAngle (handles versions/angle wrap)
+      if (endAngle < startAngle) {
+        const tmp = startAngle; startAngle = endAngle; endAngle = tmp;
+      }
+
+      const x = (chartArea.left + chartArea.right) / 2;
+      const y = (chartArea.top + chartArea.bottom) / 2;
+
+      ctx.save();
+      ctx.beginPath();
+      // outer arc (clockwise)
+      ctx.arc(x, y, outerRadius, startAngle, endAngle, false);
+      // inner arc (counter-clockwise) to create donut segment
+      ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+      ctx.closePath();
+
+      // Use even-odd fill to ensure correct ring filling across browsers
+      try {
+        ctx.fillStyle = color;
+        if (typeof ctx.fill === 'function') {
+          // modern browsers support fill with 'evenodd' winding
+          ctx.fill('evenodd');
+        } else {
+          ctx.fill();
+        }
+      } catch (e) {
+        // fallback
+        ctx.fill();
+      }
+      ctx.restore();
+    };
+
+    // Draw a single rounded cap at the END of the arc
+    const drawRoundCaps = (chart, arc) => {
+      if (!arc || !arc.round) return;
+      const area = chart.chartArea;
+      if (!area) return;
+
+      const meta = chart.getDatasetMeta(0);
+      const controller =
+        (meta && meta.controller) ||
+        (chart._metasets && chart._metasets[0] && chart._metasets[0].controller);
+
+      const outerRadius = (controller && controller.outerRadius) || chart.outerRadius || 0;
+      const innerRadius = (controller && controller.innerRadius) || chart.innerRadius || 0;
+      const radius = (outerRadius + innerRadius) / 2;
+      const thickness = Math.max((outerRadius - innerRadius) / 2, 1);
+
+      const centerX = (area.left + area.right) / 2;
+      const centerY = (area.top + area.bottom) / 2;
+
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.fillStyle = arc.round.backgroundColor || '#e0e0e0';
+
+      // Draw only END cap
+      const endX = radius * Math.cos(arc.endAngle - Math.PI / 2);
+      const endY = radius * Math.sin(arc.endAngle - Math.PI / 2);
+      ctx.beginPath();
+      //ctx.arc(endX, endY, thickness, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    // Chart configuration
+    const chartData = {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [primary, remainder],
+          backgroundColor: ["#e0e0e0", "#e0e0e0"],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        resizeDelay: 100, // <— helps smooth resizing
+        cutout: '90%',
+        events: [],
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            enabled: false
+          }
+        },
+        animation: {
+          onProgress: (animation) => {
+            animateArc(animation.chart);
+          },
+          duration: 1000,
+          easing: 'linear'
+        }
+      },
+      plugins: [{
+        id: 'customText',
+        beforeDraw: (chart) => {
+          const area = chart.chartArea;
+          if (!area) return;
+          drawArc(chart, null, '#e0e0e0');
+        },
+        afterDraw: (chart) => {
+          const chartArea = chart.chartArea;
+          if (!chartArea) return;
+          
+          const ctx = chart.ctx;
+          const centerX = (chartArea.left + chartArea.right) / 2;
+          const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+          const category = '{{ transaction.category|default:"Uncategorized" }}'; // new category
+          
+          // Main percentage text
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#646464';
+          ctx.font = 'bold 48px Roboto, Arial, sans-serif';
+          ctx.fillText(`${primary.toFixed(1)}%`, centerX, centerY - 10);
+
+          // Category text
+          ctx.fillStyle = '#a6a6a6';
+          ctx.font = 'bold 16px Roboto, Arial, sans-serif';
+          ctx.fillText(category, centerX, centerY + 35); 
+
+          // Draw rounded corners
+          const meta = chart.getDatasetMeta(0);
+          if (!meta || !meta.data || !meta.data[0]) return;
+          
+          const arc = meta.data[0];
+          if (!arc.round) return;
+          
+          const outerRadius = chart._metasets[0].controller.outerRadius;
+          const innerRadius = chart._metasets[0].controller.innerRadius;
+          const radius = (outerRadius + innerRadius) / 2;
+          const thickness = (outerRadius - innerRadius) / 2;
+          
+          const startAngle = pi / 2 - arc.startAngle;
+          const endAngle = pi / 2 - arc.endAngle;
+          
+          ctx.save();
+          ctx.translate(centerX, centerY);
+          ctx.fillStyle = arc.round.backgroundColor || '#e0e0e0';
+          ctx.beginPath();
+          ctx.arc(
+            radius * Math.sin(startAngle),
+            radius * Math.cos(startAngle),
+            thickness,
+            0,
+            2 * pi
+          );
+          ctx.arc(
+            radius * Math.sin(endAngle),
+            radius * Math.cos(endAngle),
+            thickness,
+            0,
+            2 * pi
+          );
+          ctx.fill();
+          ctx.restore();
+        },
+        afterRender: (chart) => {
+          // Called after resizing or dataset changes
+          const arc = chart.getDatasetMeta(0).data[0];
+          if (arc && arc.round?.backgroundColor) {
+            drawArc(chart, arc, arc.round.backgroundColor);
+            drawRoundCaps(chart, arc);
+          }
+        }
+      }]
+    };
+
+    // Update fallback label
+    const lbl = document.getElementById('category-percent-label');
+    if (lbl) lbl.textContent = `${primary.toFixed(2)}%`;
+
+    // Create the chart ONCE and keep a reference accessible to resize handler
+    const canvas = document.getElementById('chart');
+    // keep global reference so resize/update handlers can use it
+    let chart = window.sentiChart || null;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (chart && typeof chart.destroy === 'function') {
+        try { chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
+      }
+      chart = new Chart(ctx, chartData);
+      window.sentiChart = chart;
+      if (lbl) lbl.style.display = 'none';
+    }
+
+    // Handle responsive resize - redraw the colored arc (debounced)
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const chart = window.sentiChart;
+        if (!chart) return;
+
+        try {
+          // Trigger Chart.js layout pass (no animation)
+          chart.resize();
+          chart.update('none');
+
+          // Wait for layout to complete, then re-fill and re-cap
+          requestAnimationFrame(() => {
+            animateArc(chart);
+            const arc = chart.getDatasetMeta(0).data[0];
+            if (arc && arc.round?.backgroundColor) {
+              drawArc(chart, arc, arc.round.backgroundColor);
+              drawRoundCaps(chart, arc);
+            }
+          });
+        } catch (e) {
+          console.warn('Chart resize refresh failed:', e);
+        }
+      }, 120);
+    });
+
+  })(); 
+</script>
 {% endblock %}

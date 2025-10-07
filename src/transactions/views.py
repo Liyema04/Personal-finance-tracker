@@ -425,6 +425,8 @@ def transactions_detail_page(request, transaction_id):
         'transaction': transaction,
         'category_display': category_display,
         'similar_transactions': similar_transactions,
-        'avg_percentage': f"{p_move_category:.1f}"
+        # numeric value (2-decimal) for JS; keep display string for fallback 
+        'avg_percentage': round(p_move_category, 2),
+        'avg_percentage_display': f"{p_move_category:.2f}" # 'f' = float formatting
     } 
     return render(request, "transactions/detail_transaction.html", context)
