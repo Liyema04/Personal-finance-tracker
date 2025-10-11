@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'bootstrap_datepicker_plus',
     'django_filters',
     'sass_processor',
+    'django_extensions',
     
     # Own
     'transactions.apps.TransactionsConfig',
