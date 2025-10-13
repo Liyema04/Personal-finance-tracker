@@ -1,5 +1,7 @@
 // bootstrap-custom.scss
 
+// Apply Changes = sass bootstrap-custom.scss bootstrap-custom.css
+
 //1. Import your variables here
 @use "./variables";
 
@@ -11,7 +13,7 @@
   $secondary: #b3b3b3, // Senti -> Grey
   $body-bg: #FFF, // Senti -> White
   $body-color: #707070, // Senti -> Darker Grey
-  $danger: #dc2f02, // Senti -> Red/danger
+  $danger: #dc3545, // Senti -> Red/danger
   $info: #669bbc, // Senti -> Info
   $dark: #707070,
 );
@@ -19,6 +21,10 @@
 // 4. Add your custom utilities that use CSS custom properties
 .bg-senti-primary {
   background-color: var(--senti-primary-color) !important;
+}
+
+.dl-text {
+  color: #fff !important;
 }
 
 body .bg-card-color {
@@ -91,6 +97,10 @@ body.dark {
   .btn-primary {
     background-color: var(--senti-primary-color);
     border-color: var(--senti-primary-color);
+  }
+
+  .dl-text {
+    color: #707070 !important;
   }
   
   .text-primary {
