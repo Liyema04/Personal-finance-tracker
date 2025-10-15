@@ -1,8 +1,9 @@
-const body = document.querySelector("body"),
+ const body = document.querySelector("body"),
       sidebar = body.querySelector(".sidebar"),
       desktopToggle = body.querySelector(".sidebar .toggle"), // Desktop toggle
       modeSwitch = body.querySelector(".toggle-switch"),
       modeText = body.querySelector(".mode-text");
+     
 
 // Get ALL mobile toggles (header and footer)
 let mobileToggles = [];
@@ -222,10 +223,14 @@ document.addEventListener("click", (e) => {
 if (modeSwitch) {
     modeSwitch.addEventListener("click", () => {
         body.classList.toggle("dark");
+
+        // Checking current state AFTER toggle and save
         if (body.classList.contains("dark")) {
-            modeText.innerText = "Light Mode";
+            modeText.innerText = "Light Mode"
+            localStorage.setItem('dark', 'active');
         } else {
-            modeText.innerText = "Dark Mode";
+            modeText.innerText = "Dark Mode"
+            localStorage.removeItem('dark');
         }
     });
 }
@@ -265,6 +270,18 @@ window.addEventListener("resize", () => {
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
     console.log('DOM loaded, initializing...'); // Debug log
+
+    // Saving Theme - Testing for saved theme/modes  
+    const savedTheme = localStorage.getItem('dark');
+
+    // Applying saved theme 
+    if (savedTheme === 'active') {
+        body.classList.add("dark");
+        if (modeText) modeText.innerText = "Light Mode";    
+    } else {
+        body.classList.remove("dark");
+        if (modeText) modeText.innerText = "Light Mode";
+    }
     
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
