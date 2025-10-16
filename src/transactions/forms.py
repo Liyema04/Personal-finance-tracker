@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Transaction
+from .models import Transaction, Budget, Category
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Field, Div, HTML
@@ -133,3 +133,27 @@ class TransactionForm(forms.ModelForm):
         model = Transaction
         fields = ("amount", "date", "type", "category", "description")
         # Remove labels from here since we're defining them explicitly above
+        
+class BudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = ['category', 'limit', 'period_start', 'period_end']
+        
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # built-in expense choices (list of (key,label))
+        bltin = Category.get_expense_categories()
+        
+        # include user-created categories (Category model has 'category' code & 'name') 
+        user_choices = []
+        if user is not None:
+            user_cats = Category.objects.filter(user=user)
+            
+            # map to (value, label) - stores code as you prefer
+            user_choices = [(c.category, c.name) for c in user_cats]
+        
+        # combine & dupe (maintaining builtin first)
+        combined = bltin + [c for c in user_choices if c[0] not in {b[0] for b in bltin}]
+        self.fields['category'].widget = forms.Select(choices=combined, attrs={'class': 'form-select'})
+        self.fields['category'].required = True                   
