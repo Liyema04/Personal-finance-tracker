@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .managers import TransactionQuerySet
 
 # Create your models here.
 class Category(models.Model):
@@ -84,6 +85,8 @@ class Transaction(models.Model):
     date = models.DateField()
     type = models.CharField(max_length=7, choices=TRANSACTION_TYPES)
     description = models.CharField(max_length=255, blank=True)
+    
+    objects = TransactionQuerySet.as_manager()
     
     def __str__(self):
         return f"{self.type} - {self.amount} on {self.date}"
