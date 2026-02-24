@@ -3,3 +3,13 @@ SentiWise solutions & deployment/
 
 # Enviroment variables
 .env
+
+# Django
+# Default static files served by Django
+staticfiles/
+*.pyc
+__pycache__/
+*.sqlite3
+.env
+media/
+v_env/
