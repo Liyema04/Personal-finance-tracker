@@ -1,3 +1,4 @@
+from datetime import datetime
 import factory #Module 'factory' from factory-boy library which will allow us to generate fake data...
 from transactions.models import Transaction, Category, User
 
@@ -10,3 +11,31 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('last_name')
     username = factory.Sequence(lambda n: 'user%d' % n)
     
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Category
+        django_get_or_create = ('name',)
+        
+    name = factory.Iterator(
+        ['Side Hustle', 'Work/Salary', 'Rent/Accommodation', 'Groceries', 'Entertainment']
+    )
+    
+class TransactionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Transaction
+    
+    user =  factory.SubFactory(UserFactory)
+    category = factory.SubFactory(CategoryFactory)
+    amount = 565
+    date = factory.Faker(
+        'date_between',
+        start_date=datetime(year=2025, month=11, day=1).date(),
+        end_date=datetime.now().date()
+    )
+    
+    type = factory.Faker(
+        'random_element',
+        elements =  [
+            x[0] for x in Transaction.TRANSACTION_TYPES # list comprehension that lookd at the transaction types (e.g. income & expenses)
+        ]
+    )
